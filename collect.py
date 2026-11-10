@@ -71,6 +71,48 @@ def google_input(resort, limit):
             "shouldDownloadAssets": False, "shouldDownloadPreviews": False, "skipDetails": False}
 
 
+def fetch_items(dataset_id, token):
+    items, offset = [], 0
+    while True:
+        page = requests.get(f"{API}/datasets/{dataset_id}/items",
+                            params={"token": token, "clean": "true", "offset": offset, "limit": 1000}, timeout=120).json()
+        items += page
+        if len(page) < 1000:
+            return items
+        offset += 1000
+
+
+def reuse_runs(since, resorts, token):
+    """Results of Apify runs that already finished since `since` (ISO time), keyed by (platform, slug).
+    Used when a collection ran fine but its results never got saved - no need to pay for it twice."""
+    by_page = {r["meta_page_id"]: r for r in resorts if r.get("meta_page_id")}
+    by_domain = {r["domain"]: r for r in resorts if r.get("domain")}
+    runs = requests.get(f"{API}/actor-runs", params={"token": token, "desc": 1, "limit": 200}, timeout=60).json()["data"]["items"]
+    found = {}
+    for run in runs:
+        if run.get("startedAt", "") < since or run.get("status") != "SUCCEEDED":
+            continue
+        inp = requests.get(f"{API}/key-value-stores/{run['defaultKeyValueStoreId']}/records/INPUT",
+                           params={"token": token}, timeout=60).json()
+        resort, platform = None, None
+        if inp.get("domains"):
+            platform, resort = "google", by_domain.get(inp["domains"][0])
+        elif inp.get("urls"):
+            page_id = str(inp["urls"][0].get("url", "")).split("view_all_page_id=")[-1]
+            platform, resort = "meta", by_page.get(page_id)
+        if not resort or (platform, resort["slug"]) in found:
+            continue                                 # newest run per resort/platform wins
+        full = requests.get(f"{API}/actor-runs/{run['id']}", params={"token": token}, timeout=60).json()["data"]
+        items = fetch_items(run["defaultDatasetId"], token)
+        info = {"label": f"{platform}:{resort['slug']}", "actor": META_ACTOR if platform == "meta" else GOOGLE_ACTOR,
+                "run_id": run["id"], "status": "REUSED", "items": len(items),
+                "cost_usd": round(full.get("usageTotalUsd") or 0, 4),
+                "started": run.get("startedAt"), "finished": run.get("finishedAt")}
+        print(f"  {info['label']}: reused run {run['id']}, {len(items)} items")
+        found[(platform, resort["slug"])] = (items, info)
+    return found
+
+
 # ------------------------------------------------------------------ normalizing
 def dig(d, *paths, default=""):
     """First non-empty value among dotted paths, e.g. dig(ad, 'snapshot.body.text', 'body')."""
@@ -89,6 +131,13 @@ def ts(v):
     if isinstance(v, (int, float)) and v > 0:
         return datetime.fromtimestamp(v, timezone.utc).strftime("%Y-%m-%d")
     return str(v or "")[:10]
+
+
+def bare(url):
+    """Media links from Facebook's CDN carry long random signatures that GitHub's secret scanner can mistake
+    for cloud keys (which blocks the push). They expire within days anyway, so the CSV keeps the link without
+    them; the untouched link is still in data/raw/."""
+    return str(url or "").split("?")[0]
 
 
 def norm_meta(ad, resort):
@@ -113,9 +162,9 @@ def norm_meta(ad, resort):
         "link_description": dig(snap, "link_description", default=""),
         "cta": dig(snap, "cta_text", default=""),
         "link": dig(snap, "link_url", default=""),
-        "video_url": dig(first_video, "video_hd_url", "video_sd_url", default=""),
-        "image_url": dig(first_image, "original_image_url", "resized_image_url", default="")
-                     or dig(first_video, "video_preview_image_url", default=""),
+        "video_url": bare(dig(first_video, "video_hd_url", "video_sd_url", default="")),
+        "image_url": bare(dig(first_image, "original_image_url", "resized_image_url", default="")
+                          or dig(first_video, "video_preview_image_url", default="")),
         "n_cards": len(cards),
         "cta_type": dig(snap, "cta_type", default=""),
         "caption": dig(snap, "caption", default=""),
@@ -193,6 +242,8 @@ def main():
     ap.add_argument("--limit", type=int, default=int(os.environ.get("ADS_PER_RESORT", 150)))
     # Google is billed per ad with details (~$0.002 each), so it gets its own, lower cap
     ap.add_argument("--google-limit", type=int, default=int(os.environ.get("GOOGLE_ADS_PER_RESORT", 50)))
+    ap.add_argument("--reuse-since", default=os.environ.get("REUSE_SINCE", ""),
+                    help="ISO time: use Apify runs that already finished since then instead of starting new ones")
     ap.add_argument("--parallel", type=int, default=3)
     args = ap.parse_args()
     token = os.environ.get("APIFY_TOKEN")
@@ -212,8 +263,14 @@ def main():
         if args.platform in ("google", "both") and r.get("domain"):
             jobs.append(("google", r))
 
+    reused = reuse_runs(args.reuse_since, resorts, token) if args.reuse_since else {}
+
     def work(job):
         platform, r = job
+        if (platform, r["slug"]) in reused:
+            items, info = reused[(platform, r["slug"])]
+            save_raw(platform, r["slug"], items, today)
+            return platform, r, items, info
         actor, payload = ((META_ACTOR, meta_input(r, args.limit)) if platform == "meta"
                           else (GOOGLE_ACTOR, google_input(r, min(args.limit, args.google_limit))))
         try:
