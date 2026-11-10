@@ -117,10 +117,19 @@ def norm_meta(ad, resort):
         "image_url": dig(first_image, "original_image_url", "resized_image_url", default="")
                      or dig(first_video, "video_preview_image_url", default=""),
         "n_cards": len(cards),
+        "cta_type": dig(snap, "cta_type", default=""),
+        "caption": dig(snap, "caption", default=""),
+        "page_likes": dig(snap, "page_like_count", default=""),
+        "library_url": dig(ad, "ad_library_url", default=""),
     }
 
 
 def norm_google(ad, resort):
+    stats = ad.get("regionStats") or []
+    # Google only publishes impressions/surfaces for EU regions; keep the surfaces (Search, YouTube...) as a hint
+    surfaces = sorted({x.get("surfaceName", "") for r in stats if isinstance(r, dict)
+                       for x in r.get("surfaceServingStats") or [] if x.get("surfaceName")})
+    regions = dig(ad, "creativeRegions", default=[]) or [r.get("regionName", "") for r in stats if isinstance(r, dict)]
     return {
         "ad_id": str(dig(ad, "creativeId", "creative_id", "id", "adId")),
         "resort": resort["resort"], "slug": resort["slug"], "domain": resort["domain"],
@@ -129,10 +138,11 @@ def norm_google(ad, resort):
         "format": dig(ad, "format", "adFormat", "creativeFormat"),
         "first_shown": ts(dig(ad, "firstShown", "first_shown", "firstShownDate", "startDate")),
         "last_shown": ts(dig(ad, "lastShown", "last_shown", "lastShownDate", "endDate")),
-        "regions": "|".join(map(str, dig(ad, "regions", "regionStats", default=[]) or []))[:300]
-        if isinstance(dig(ad, "regions", default=[]), list) else str(dig(ad, "regions"))[:300],
-        "preview_url": dig(ad, "previewUrl", "imageUrl", "preview.imageUrl", "variations.0.imageUrl"),
-        "url": dig(ad, "url", "adUrl", "transparencyUrl"),
+        "served_days": dig(ad, "numServedDays", default=""),
+        "surfaces": "|".join(surfaces),
+        "regions": "|".join(map(str, regions))[:300],
+        "preview_url": dig(ad, "previewUrl", "imageUrl", "preview.imageUrl"),
+        "url": dig(ad, "adLibraryUrl", "url", "adUrl", "transparencyUrl"),
     }
 
 
@@ -181,6 +191,8 @@ def main():
     ap.add_argument("--platform", default="both", choices=["meta", "google", "both"])
     ap.add_argument("--only", help="one resort slug")
     ap.add_argument("--limit", type=int, default=int(os.environ.get("ADS_PER_RESORT", 150)))
+    # Google is billed per ad with details (~$0.002 each), so it gets its own, lower cap
+    ap.add_argument("--google-limit", type=int, default=int(os.environ.get("GOOGLE_ADS_PER_RESORT", 50)))
     ap.add_argument("--parallel", type=int, default=3)
     args = ap.parse_args()
     token = os.environ.get("APIFY_TOKEN")
@@ -203,7 +215,7 @@ def main():
     def work(job):
         platform, r = job
         actor, payload = ((META_ACTOR, meta_input(r, args.limit)) if platform == "meta"
-                          else (GOOGLE_ACTOR, google_input(r, args.limit)))
+                          else (GOOGLE_ACTOR, google_input(r, min(args.limit, args.google_limit))))
         try:
             items, info = run_actor(actor, payload, token, f"{platform}:{r['slug']}")
         except Exception as e:
