@@ -8,6 +8,9 @@ on:
       limit:
         description: "Max ads per resort per platform"
         default: "150"
+      reuse_since:
+        description: "Optional: reuse Apify runs started after this UTC time (e.g. 2026-11-10T16:40) instead of paying again"
+        default: ""
 permissions:
   contents: write
 concurrency: collect
@@ -25,6 +28,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          REUSE_SINCE: ${{ inputs.reuse_since }}
         run: python collect.py --platform ${{ inputs.platform }} --limit ${{ inputs.limit }}
       - name: Save data
         if: always()
@@ -34,3 +38,10 @@ jobs:
           git add data/
           git diff --cached --quiet || git commit -m "ad collection $(date -u +%F_%H%M)"
           git pull --rebase --quiet && git push
+      - name: Keep the data even if saving to the repo failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ad-data
+          path: data/
+          retention-days: 14
