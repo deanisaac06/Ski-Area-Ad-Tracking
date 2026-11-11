@@ -1,15 +1,34 @@
 # Ski Area Ad Tracking
 
-Collects the ads US ski resorts run on Meta (Facebook/Instagram) and Google, as the first step toward a searchable resort ad library (plan: `ad-library-tracker-plan.md` in the Claude project).
+A self-updating library of the Meta (Facebook/Instagram) and Google ads run by 20 pilot US ski resorts,
+with a weekly emailed report.
 
-## Pilot (20 resorts)
-- `resorts.csv` - the 20 pilot resorts from the Ski Area Ad Atlas (top-ranked US prospects with both a Meta page ID and a domain).
-- `collect.py` - one Apify run per resort per platform:
-  - Meta: `curious_coder/facebook-ads-library-scraper` on the resort's Ad Library page (US, active ads). Meta only shows US ads while they run, so history builds from the first check.
-  - Google: `silva95gustavo/google-ads-scraper` on the resort's domain (US). Google keeps past ads, so this also backfills.
-- Output in `data/`: `ads_meta.csv`, `ads_google.csv` (one row per ad, with first/last seen), `runs.csv` (every Apify run and its cost), and the raw Apify output in `data/raw/` for checking fields.
+**Site:** https://deanisaac06.github.io/Ski-Area-Ad-Tracking/ (GitHub Pages, served from `docs/`)
 
-Run it: Actions → **Collect ads (pilot)** → Run workflow. Needs the `APIFY_TOKEN` repository secret.
+## What runs when (`.github/workflows/weekly.yml`, hourly on Mon/Tue/Thu/Fri; `run.py` only does what's due)
+| Step | When |
+|---|---|
+| Meta collection (active US ads per resort page, via Apify) | Mondays + Thursdays |
+| Google collection (ads shown since the last check, via Apify) | Mondays |
+| Save images to `docs/media/` (Meta links expire in ~5 days) | every run |
+| AI tags with Gemini: campaign type, offer, prices, deadline, standouts | every run, newest first |
+| Weekly report: emailed + saved to `docs/reports/` | Mondays ~6–7am Pacific; if the AI summary fails it retries hourly and sends without it after 24h |
+| Rebuild the site data (`docs/data.js`) and spreadsheets (`data/ads_*.csv`) | every run |
 
-## Next (after the pilot)
-Media saved to Cloudflare R2, AI tags (Gemini), the winner score, a weekly schedule, all US resorts, and the search site.
+Run it by hand: **Actions → Ad library (weekly) → Run workflow**, with action `auto`, `collect-meta`,
+`collect-google`, `collect-both`, `report` or `build`.
+
+## Files
+- `collect.py`: Apify runs, saving `data/raw/<platform>/<date>/<resort>.json.gz` and costs in `data/runs.csv`
+- `library.py`: rebuilds every ad from the raw downloads, plus the winner score → `docs/data.js`, `data/ads_*.csv`
+- `media.py`: image copies; `ai.py`: Gemini tags and summary; `report.py`: weekly report; `mailer.py`: Gmail
+- `resorts.csv`: resorts (`pilot=yes` are tracked)
+- `docs/index.html` + `docs/app.js`: the site
+
+## Secrets
+`APIFY_TOKEN` (required), `GEMINI_API_KEY` (AI tags + summary), `SMTP_USER`, `SMTP_PASS`, `REPORT_TO`
+(Gmail sender, app password, recipient; same values as the Instagram tracker).
+
+## Costs
+Apify free plan ($5/month credit): Meta is close to free. Google is about $0.002 per ad, capped at 50 per resort
+per check, and only ads shown since the last check are pulled.
