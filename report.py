@@ -29,7 +29,7 @@ Most new ads: {busiest}.
 NEW ADS (resort | platform | format | campaign | offer/prices/deadline | copy):
 {new_rows}
 
-LONGEST-RUNNING / TOP-SCORING LIVE ADS (winner score = run length vs the resort's normal + staying power + multiple versions; a proxy, since spend and results aren't public):
+LONGEST-RUNNING / TOP-SCORING LIVE ADS (winner score = budget-adjusted: outlasting its launch batch, run length vs the resort's own ads (weighted down for resorts that leave everything running), extra versions, steady serving, reused creative; a proxy, since spend and results aren't public):
 {top_rows}
 
 ADS THAT STOPPED THIS WEEK:
@@ -178,7 +178,7 @@ def render(g, summary, img_for, notice=None, for_site=False):
 {more_new}
 {(h2('Offers & deadlines') + '<table width="100%" style="border-collapse:collapse;background:#fff">' + offers + '</table>') if offers else ''}
 {h2('Top-scoring live ads this season')}
-<div style="font-size:12px;color:#5B6B7B;margin-bottom:6px">Winner score 0&ndash;100: how long an ad has run vs the resort's normal, staying power, and whether it runs several versions. Resorts keep paying for what works.</div>
+<div style="font-size:12px;color:#5B6B7B;margin-bottom:6px">Winner score 0&ndash;100: adjusted for budget. Whether an ad outlasted the others its resort launched the same week, how long it ran vs that resort's own ads, extra versions, steady serving and reuse. Resorts keep paying for what works.</div>
 {grid(g['top'], img_for) if g['top'] else '<p style="color:#5B6B7B">Not enough history yet.</p>'}
 {(h2('Stands out') + '<ul style="padding-left:18px;margin:0">' + stand + '</ul>') if stand else ''}
 {h2('By resort')}
