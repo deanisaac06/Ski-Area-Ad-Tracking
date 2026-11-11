@@ -7,14 +7,14 @@ dialog.mv[open]{display:flex;align-items:center;justify-content:center}
 dialog.mv::backdrop{background:rgba(5,10,16,.6)}
 .mv .mvx{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.16);color:#fff;border:0;border-radius:6px;padding:7px 12px;font-size:14px;cursor:pointer}
 .mv .mvx:hover{background:rgba(255,255,255,.28)}
-.mv .mvcap{position:absolute;top:16px;left:16px;right:110px;color:#cfd8e2;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv .mvcap{position:absolute;top:16px;left:16px;right:290px;color:#cfd8e2;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mv .mvscroll{width:100%;height:100%;overflow:auto;display:flex;align-items:center;justify-content:center}
 .mv .mvscroll img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;border-radius:4px;background:#fff}
 .mv .mvscroll.z{display:block;text-align:center}
 .mv .mvscroll.z img{max-width:none;max-height:none;width:auto;cursor:zoom-out}
 .mv video{max-width:100%;max-height:100%;border-radius:4px;background:#000;outline:none}
 .mv iframe.yt{width:min(1100px,100%);aspect-ratio:16/9;max-height:100%;border:0;border-radius:4px;background:#000}
-.mv .mvnav{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.mv .mvnav{position:absolute;top:10px;right:110px;display:flex;gap:8px}
 .mv .mvnav a,.mv .mvnav button{background:rgba(255,255,255,.16);color:#fff;border:0;border-radius:6px;padding:6px 11px;font-size:13px;text-decoration:none;cursor:pointer}
 .dthumb.clk{cursor:zoom-in}
 .dthumb.clk.vid{cursor:pointer}
@@ -41,7 +41,7 @@ const mv = document.createElement('dialog');
 mv.className = 'mv'; mv.setAttribute('aria-label', 'Media viewer');
 document.body.appendChild(mv);
 mv.addEventListener('click', e => { if (e.target === mv || e.target.classList.contains('mvscroll')) mv.close(); });
-mv.addEventListener('close', () => { mv.innerHTML = ''; });
+mv.addEventListener('close', () => { setTimeout(() => { if (!mv.open) mv.innerHTML = ''; }, 0); });
 function show(html, cap, extra){
   mv.innerHTML = `<div class="mvcap">${esc(cap)}</div><button class="mvx" type="button">Close ✕</button>${html}${extra?`<div class="mvnav">${extra}</div>`:''}`;
   mv.querySelector('.mvx').onclick = () => mv.close();
