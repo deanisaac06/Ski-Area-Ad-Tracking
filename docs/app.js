@@ -150,7 +150,7 @@ function render(){
   if(list.length>shown.length) $('#results').insertAdjacentHTML('beforeend',`<div style="text-align:center;margin:18px 0"><button class="btn" id="more">Show ${Math.min(240,list.length-shown.length)} more of ${list.length-shown.length}</button></div>`);
 }
 
-function scoreBlock(a){
+function scoreBlock(a){if(a.sig&&window.scoreBlock2)return window.scoreBlock2(a,{esc,tier,PN});
   const pp=a.parts||[null,null,null];
   const rows=[
     ['Run length vs this resort’s normal',pp[0],60,`${a.days}d ${a.live?'live so far':'total'} vs this resort’s typical ${a.norm||'—'}d on ${PN[a.p]}.${a.live?' Still running, so this is a minimum.':''}`],
@@ -267,7 +267,7 @@ function openAd(id){
       <div style="display:flex;gap:8px;flex-wrap:wrap">${a.url?`<a class="btn" href="${esc(a.url)}" target="_blank" rel="noopener">${libLink}</a>`:''}${yt?`<a class="btn" href="${esc(yt)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>`:''}<button class="btn" id="goResort">All ads from ${esc(a.n)}</button></div>
       ${a.p==='meta'&&a.kind==='Video'?'<p class="note">Video ads show their poster frame here; the Meta Ad Library link plays the video while the ad is running.</p>':''}
     </div>`;
-  d.showModal();
+  d.showModal();if(window.mediaHook)window.mediaHook(a,d);
   $('#closeBtn').onclick=()=>d.close();
   $('#saveBtn').onclick=()=>{saved.has(a.key)?saved.delete(a.key):saved.add(a.key);persist();render();openAd(a.key);};
   $('#goResort').onclick=()=>{d.close();go({t:'n',v:a.n});};
