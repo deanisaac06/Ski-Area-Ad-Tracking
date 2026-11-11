@@ -16,7 +16,8 @@ import requests
 import library
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta"
-MODELS = ["gemini-3.8-flash", "gemini-flash-latest"]
+MODELS = ["gemini-3.8-flash", "gemini-flash-latest"]                 # the weekly summary
+TAG_MODELS = ["gemini-flash-lite-latest", "gemini-3.8-flash-lite", "gemini-flash-latest"]   # tagging: simple, high volume
 PACE = 6.5            # seconds between calls - keeps under the free tier's per-minute limit
 TEXT_BATCH, IMAGE_BATCH = 12, 6
 
@@ -61,19 +62,19 @@ def call(model, parts, deadline, json_out=False, system=None, temperature=0.3, t
     for attempt in range(3):
         try:
             r = requests.post(f"{GEMINI_URL}/models/{model}:generateContent",
-                              timeout=max(20, min(240, deadline - time.time())),
+                              timeout=max(20, min(100 if json_out else 180, deadline - time.time())),
                               headers={"x-goog-api-key": key(), "Content-Type": "application/json"}, json=body)
         except requests.exceptions.Timeout:
-            if attempt < 2 and time.time() + 60 < deadline:
+            if attempt < 1 and time.time() + 60 < deadline:
                 print(f"  {model}: timed out, retrying")
                 continue
             raise
         if r.status_code == 400 and "thinking" in r.text.lower() and model not in NO_THINKING:
             NO_THINKING[model] = True
             return call(model, parts, deadline, json_out, system, temperature)
-        if r.status_code in (429, 500, 503) and attempt < 2 and time.time() + 30 * (attempt + 1) < deadline:
-            print(f"  {model}: busy (HTTP {r.status_code}), retrying in {30 * (attempt + 1)}s")
-            time.sleep(30 * (attempt + 1))
+        if r.status_code in (429, 500, 503) and attempt < 1 and time.time() + 30 < deadline:
+            print(f"  {model}: busy (HTTP {r.status_code}), retrying in 20s")
+            time.sleep(20)
             continue
         break
     try:
@@ -92,17 +93,17 @@ def flash_models():
         r = requests.get(f"{GEMINI_URL}/models", params={"pageSize": 200}, headers={"x-goog-api-key": key()}, timeout=30)
         names = [m["name"].split("/", 1)[1] for m in r.json().get("models", [])
                  if "generateContent" in m.get("supportedGenerationMethods", [])]
-        flash = [n for n in names if re.fullmatch(r"gemini-\d+(\.\d+)?-flash", n)]
-        return sorted(flash, key=lambda n: float(re.findall(r"\d+(?:\.\d+)?", n)[0]), reverse=True)
+        flash = [n for n in names if re.fullmatch(r"gemini-\d+(\.\d+)?-flash(-lite)?", n)]
+        return sorted(flash, key=lambda n: (float(re.findall(r"\d+(?:\.\d+)?", n)[0]), "lite" not in n), reverse=True)
     except Exception:
         return []
 
 
-def ask(parts, deadline, **kw):
+def ask(parts, deadline, models=None, **kw):
     """Try the configured models, then whatever Flash models the key can see."""
     tried = []
-    for m in MODELS + ["__discover__"]:
-        for model in (flash_models()[:2] if m == "__discover__" else [m]):
+    for m in (models or MODELS) + ["__discover__"]:
+        for model in (flash_models()[:3] if m == "__discover__" else [m]):
             if model in tried or time.time() > deadline - 15:
                 continue
             tried.append(model)
@@ -179,7 +180,7 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
                     parts += [{"text": f"image for k={a['key']}:"},
                               {"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(f.read()).decode()}}]
         calls += 1
-        out = ask(parts, deadline, json_out=True)
+        out = ask(parts, deadline, models=TAG_MODELS, json_out=True)
         if not out:
             fails += 1
             if fails >= 3:
