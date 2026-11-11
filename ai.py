@@ -18,7 +18,7 @@ import library
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta"
 MODELS = ["gemini-3.8-flash", "gemini-flash-latest"]
 PACE = 6.5            # seconds between calls - keeps under the free tier's per-minute limit
-TEXT_BATCH, IMAGE_BATCH = 25, 8
+TEXT_BATCH, IMAGE_BATCH = 12, 6
 
 TAG_PROMPT = """You are tagging ski resort ads for a searchable ad library. For EACH ad below return one JSON object.
 
@@ -45,18 +45,32 @@ def key():
     return os.environ.get("GEMINI_API_KEY")
 
 
-def call(model, parts, deadline, json_out=False, system=None, temperature=0.3):
+NO_THINKING = {}            # models that rejected the thinking setting (then sent without it)
+
+
+def call(model, parts, deadline, json_out=False, system=None, temperature=0.3, think=True):
     body = {"contents": [{"role": "user", "parts": parts}],
             "generationConfig": {"temperature": temperature, "maxOutputTokens": 8192}}
     if json_out:
         body["generationConfig"]["responseMimeType"] = "application/json"
+        if model not in NO_THINKING:     # tagging is simple - long "thinking" just makes requests time out
+            body["generationConfig"]["thinkingConfig"] = {"thinkingBudget": 256}
     if system:
         body["systemInstruction"] = {"parts": [{"text": system}]}
     r = None
     for attempt in range(3):
-        r = requests.post(f"{GEMINI_URL}/models/{model}:generateContent",
-                          timeout=max(20, min(120, deadline - time.time())),
-                          headers={"x-goog-api-key": key(), "Content-Type": "application/json"}, json=body)
+        try:
+            r = requests.post(f"{GEMINI_URL}/models/{model}:generateContent",
+                              timeout=max(20, min(240, deadline - time.time())),
+                              headers={"x-goog-api-key": key(), "Content-Type": "application/json"}, json=body)
+        except requests.exceptions.Timeout:
+            if attempt < 2 and time.time() + 60 < deadline:
+                print(f"  {model}: timed out, retrying")
+                continue
+            raise
+        if r.status_code == 400 and "thinking" in r.text.lower() and model not in NO_THINKING:
+            NO_THINKING[model] = True
+            return call(model, parts, deadline, json_out, system, temperature)
         if r.status_code in (429, 500, 503) and attempt < 2 and time.time() + 30 * (attempt + 1) < deadline:
             print(f"  {model}: busy (HTTP {r.status_code}), retrying in {30 * (attempt + 1)}s")
             time.sleep(30 * (attempt + 1))
@@ -152,7 +166,7 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
     prompt = lambda lines: TAG_PROMPT.format(campaigns=", ".join(library.CAMPAIGNS), themes=", ".join(library.THEMES),
                                              year=year, next_year=year + 1, ads="\n".join(lines))
     deadline = time.time() + max_seconds
-    done, calls = 0, 0
+    done, calls, fails = 0, 0, 0
     for kind, batch in batches:
         if calls >= max_calls or time.time() > deadline - 60:
             break
@@ -167,8 +181,13 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
         calls += 1
         out = ask(parts, deadline, json_out=True)
         if not out:
-            print("  tagging stopped - Gemini not answering; the rest wait for the next run")
-            break
+            fails += 1
+            if fails >= 3:
+                print("  tagging stopped - Gemini not answering; the rest wait for the next run")
+                break
+            time.sleep(30)
+            continue
+        fails = 0
         try:
             got = parse(out)
         except Exception as e:
