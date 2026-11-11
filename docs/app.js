@@ -150,7 +150,7 @@ function render(){
   if(list.length>shown.length) $('#results').insertAdjacentHTML('beforeend',`<div style="text-align:center;margin:18px 0"><button class="btn" id="more">Show ${Math.min(240,list.length-shown.length)} more of ${list.length-shown.length}</button></div>`);
 }
 
-function scoreBlock(a){if(a.sig&&window.scoreBlock2)return window.scoreBlock2(a,{esc,tier,PN});
+function scoreBlock(a){if(window.scoreBlock2)return window.scoreBlock2(a,{esc,tier,PN});
   const pp=a.parts||[null,null,null];
   const rows=[
     ['Run length vs this resort’s normal',pp[0],60,`${a.days}d ${a.live?'live so far':'total'} vs this resort’s typical ${a.norm||'—'}d on ${PN[a.p]}.${a.live?' Still running, so this is a minimum.':''}`],
