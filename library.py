@@ -156,7 +156,7 @@ def build_ads():
                 old = ads.get(key)
                 ad["first_seen"] = old["first_seen"] if old else d
                 ad["last_seen"] = d
-                ad["seen"] = (old["seen"] if old else 0) + 1
+                ad["seen"] = (old["seen"] if old else 0) + 1; ad["v_first"] = old.get("v_first", old.get("versions")) if old else ad.get("versions")
                 ads[key] = ad
     for ad in ads.values():
         last_run = latest_run.get((ad["p"], ad["slug"]), "")
@@ -268,7 +268,7 @@ def compact(a, tags, media):
     t = tags.get(a["key"]) or rule_tags(a)
     keep = ["id", "p", "slug", "n", "s", "rg", "start", "end", "live", "kind", "fmt", "versions", "title", "body",
             "desc", "cta", "link", "url", "days", "norm", "ws", "parts", "first_seen", "last_seen", "plats",
-            "advertiser", "headlines", "regions", "surfaces", "served_days", "video_src"]
+            "advertiser", "headlines", "regions", "surfaces", "served_days", "video_src", "vid", "img_l", "sig", "conf", "evergreen"]
     out = {k: a[k] for k in keep if k in a and a[k] not in ("", None, [], 0) or k in ("live", "ws")}
     if a["p"] == "meta":
         out.pop("video_src", None)                  # Meta video links expire within days; the ad library link stays
@@ -296,7 +296,7 @@ def build(now=None):
     for k, a in ads.items():
         a["key"] = k
     lst = list(ads.values())
-    score(lst, today)
+    rstats = __import__("scoring").score_all(lst, today)
     tags, media = load_json(TAGS, {}), load_json(MEDIA, {})
     out = [compact(a, tags, media) for a in lst]
     out.sort(key=lambda a: (a.get("start") or ""), reverse=True)
@@ -312,7 +312,7 @@ def build(now=None):
     resorts = [{"slug": r["slug"], "n": r["resort"], "s": r["state"], "rg": r["region"], "domain": r["domain"],
                 "meta_page_id": r.get("meta_page_id", ""),
                 "checked_meta": latest_run.get(("meta", r["slug"]), ""),
-                "checked_google": latest_run.get(("google", r["slug"]), "")} for r in load_resorts()]
+                "checked_google": latest_run.get(("google", r["slug"]), ""), "stats": rstats.get(r["slug"], {})} for r in load_resorts()]
     lib = {"generated": now.strftime("%Y-%m-%d %H:%M UTC"), "today": today.isoformat(),
            "last_check": max(latest_run.values(), default=""), "campaigns": CAMPAIGNS,
            "resorts": resorts, "reports": reports, "ads": out}
