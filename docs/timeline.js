@@ -79,7 +79,7 @@ function tip(){ if (!TIP) { TIP = document.createElement('div'); TIP.className =
 
 function mount(el, ads, o){
   if (!el) return;
-  const s = S[o.key] || (S[o.key] = {ppd: null, day: null, color: 'camp', compact: true});
+  const s = S[o.key] || (S[o.key] = {ppd: null, day: null, color: 'plat', compact: true});
   const today = t(o.today);
   const items = ads.filter(a => a.start).map(a => {
     const a0 = t(a.start); let a1 = a.live ? today : t(a.end || a.last_shown || a.start); if (a1 < a0) a1 = a0;
