@@ -315,19 +315,19 @@ footer.foot{color:var(--muted);font-size:12px;margin-top:34px;max-width:80ch}
       <div class="ctl" id="custom" hidden><input type="date" id="dfrom" aria-label="From date"> to <input type="date" id="dto" aria-label="To date"></div>
       <div class="ctl">Format<div class="seg" id="kinds"><button data-k="all" aria-pressed="true">All</button><button data-k="Video">Video</button><button data-k="Static">Static</button><button data-k="Carousel">Carousel</button><button data-k="Dynamic">Dynamic</button><button data-k="Text">Text</button></div></div>
       <span class="spacer"></span>
-      <label class="ctl" for="sort">Sort<select id="sort"><option value="new">Newest</option><option value="perf">Winner score</option><option value="long">Running longest</option><option value="resort">Resort A–Z</option></select></label>
+      <label class="ctl" for="sort">Sort<select id="sort"><option value="new">Newest</option><option value="perf">Winner score</option><option value="long">Running longest</option><option value="peer">Best vs similar resorts</option><option value="resort">Resort A–Z</option></select></label>
       <button class="help" id="helpBtn" aria-expanded="false" aria-label="How the winner score works">?</button>
       <div class="seg" id="views" aria-label="View"><button data-v="grid" aria-pressed="true">Grid</button><button data-v="list">List</button></div>
     </div>
     <div class="active" id="active"></div>
 <div class="helpbox" id="helpbox" hidden><b>Winner score (0–100).</b> Neither Meta nor Google shows spend or results, so the score reads what resorts reveal by their behavior — they keep paying for ads that work:
 <ul><li><b>Run length compared with the resort's normal (60 pts).</b> 40 days means more at a resort whose ads usually last 10 days. Ads still running only count their days so far.</li><li><b>Staying power (20 pts).</b> Full points at 90+ days. Google uses days actually served.</li><li><b>Multiple versions (20 pts).</b> Several versions or dynamic creative running together.</li></ul>
-Ads under a week old show “Too early.” Meta shows US ads only while they run, so Meta history starts when tracking began (Nov 10, 2026); Google history goes back years.</div>
+Ads under a week old show “Too early.” Meta shows US ads only while they run, so Meta history starts when tracking began (Nov 10, 2026); Google history goes back years.<br><br><b>Vs peers.</b> Each ad's run length is compared with the same ad type (for example Google video) at resorts with a similar estimated ad budget, using the Ski Area Ad Atlas. “Beats 80%” means it ran longer than 80% of those ads. Small groups widen to neighboring budget classes, then to all tracked resorts. <b>Resort rankings</b> in the sidebar sorts resorts by estimated spend into Major, Large, Mid and Small budget classes.</div>
     <div id="results"></div>
     <footer class="foot">Updated automatically: Meta every Monday and Thursday, Google every Monday. Images are saved copies; campaign types, offers and themes are tagged by AI (or keyword rules until the AI reaches an ad).</footer>
   </main>
 </div>
 <dialog class="drawer" id="drawer" aria-labelledby="dtitle"></dialog>
 <script src="data.js"></script>
-<script src="extra.js"></script><script src="timeline.js"></script><script src="app.js"></script>
+<script src="extra.js"></script><script src="timeline.js"></script><script src="app.js"></script><script src="peers.js"></script>
 </body></html>
