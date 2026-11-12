@@ -112,6 +112,11 @@ def main():
     media.run()                      # before tagging: image-only ads are tagged from their saved image
     ai.tag_new_ads(); __import__("archive").run()  # frames, every card/version, AI video notes, landing pages
 
+    try:
+        __import__("quality").run()  # ad health check: repair broken ads or set them aside as unavailable
+    except Exception as e:
+        print("Ad health check skipped:", str(e)[:200])
+
     if args.report:
         do_report(st, now, (now.date() - timedelta(days=now.weekday())).isoformat(), force_send=True)
     elif args.auto:
