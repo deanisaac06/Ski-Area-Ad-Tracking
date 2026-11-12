@@ -152,7 +152,7 @@ if (MODE === 'ov') {
 const D = p >= 10 ? 22 : p >= 3 ? 12 : 8, bd = Math.max(1, Math.ceil((D + 2) / p)), cols = {};
 let mx = 1;
 [...items].sort((a, b) => a.s - b.s || (a.a.p < b.a.p ? -1 : 1)).forEach(i => { i.k = Math.floor((i.s - min) / bd); i.h = cols[i.k] = (cols[i.k] || 0) + 1; if (i.h > mx) mx = i.h; });
-const step = Math.max(3, Math.min(D + 2, 420 / mx)), H = Math.max(110, Math.ceil(D + 30 + (mx - 1) * step)), by = H - D - 10, cx = k => x(min + k * bd) + bd * p / 2;
+const step = Math.max(3, Math.min(D + 2, 240 / mx)), H = Math.max(110, Math.ceil(D + 30 + (mx - 1) * step)), by = H - D - 10, cx = k => x(min + k * bd) + bd * p / 2;
 const dots = items.map(i => { const a = i.a; return `<button type="button" class="tb od${a.gone ? ' x' : ''}${a.p === 'google' ? ' g' : ''}" data-id="${esc(a.key)}" data-w="${i.w}" style="left:${cx(i.k) - D / 2}px;top:${by - (i.h - 1) * step}px;width:${D}px;height:${D}px;--c:${color(i)}" aria-label="${esc(o.PN[a.p] + ' ' + a.kind + ', launched ' + mdy(i.s))}">${D >= 22 && a.img && !a.gone ? `<img src="${esc(a.img)}" alt="" loading="lazy">` : ''}</button>`; }).join('');
 const cnt = Object.entries(cols).filter(e => e[1] >= 3).map(([k, n]) => `<span class="oc" style="left:${cx(+k)}px;top:${by - (n - 1) * step - 14}px">${n}</span>`).join('');
 C.style.width = (LABEL + W) + 'px';
