@@ -48,6 +48,10 @@ def save_json(path, data, indent=None):
 
 
 def load_resorts():
+    return __import__("roster").load()  # resorts.csv + every ski area in the atlas
+
+
+def _old_load_resorts():
     with open(os.path.join(HERE, "resorts.csv"), newline="", encoding="utf-8") as f:
         return [r for r in csv.DictReader(f) if r.get("pilot", "").strip().lower() == "yes"]
 
@@ -315,7 +319,7 @@ def build(now=None):
 
     reports = sorted(load_json(os.path.join(DOCS, "reports", "index.json"), []), key=lambda r: r["date"], reverse=True)
     resorts = [{"slug": r["slug"], "n": r["resort"], "s": r["state"], "rg": r["region"], "domain": r["domain"],
-                "meta_page_id": r.get("meta_page_id", ""),
+                "meta_page_id": r.get("meta_page_id", ""), "tier": r.get("tier", ""),
                 "checked_meta": latest_run.get(("meta", r["slug"]), ""),
                 "checked_google": latest_run.get(("google", r["slug"]), ""), "stats": rstats.get(r["slug"], {})} for r in load_resorts()]
     try:  # who buys each resort's media now; emails a switch the moment it shows up
