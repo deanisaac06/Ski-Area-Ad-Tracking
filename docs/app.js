@@ -14,7 +14,7 @@ const WEEK_AGO=addDays(TODAY,-7);
 
 ADS.forEach(a=>{
   a.isnew=(a.start||'')>=WEEK_AGO;
-  a.copy=[a.title,a.body,a.desc,a.seen_text].filter(Boolean).join(' — ');
+  a.copy=[a.title,a.body,a.desc,a.seen_text,a.arc&&a.arc.note&&[a.arc.note.summary,a.arc.note.voiceover,a.arc.note.onscreen,a.arc.note.offer].filter(Boolean).join(' ')].filter(Boolean).join(' — ');
   a.camp=a.camp&&a.camp.length?a.camp:['Brand & general'];
   a.themes=a.themes||[]; a.prices=a.prices||[];
 });
@@ -234,7 +234,7 @@ function openAd(id){
   const a=ADS.find(x=>x.key===id); if(!a) return;
   const d=$('#drawer');
   const libLink=a.p==='meta'?'Open in Meta Ad Library ↗':'Open in Google Ads Transparency ↗';
-  const yt=a.video_src&&/youtube|youtu\.be/.test(a.video_src)?a.video_src:'';
+  const yt=a.yt?'https://www.youtube.com/watch?v='+a.yt:'';
   d.innerHTML=`<div class="dhead"><div><h2 id="dtitle">${esc(a.n)}</h2><div class="sub">${esc(STATE[a.s]||a.s)} · ${PN[a.p]} ${esc(a.kind)}${a.advertiser?' · '+esc(a.advertiser):''}</div></div>
     <div class="acts"><button class="btn" id="saveBtn">${saved.has(a.key)?'★ Saved':'☆ Save'}</button><button class="btn" id="closeBtn">Close</button></div></div>
     <div class="dbody">
