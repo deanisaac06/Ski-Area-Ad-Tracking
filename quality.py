@@ -36,7 +36,7 @@ MAX_TRIES = 3
 ERR_TEXT = re.compile(
     r"that.s an error|that.s all we know|\berror\s*(?:code\s*)?\d{3}\b|"
     r"\b(?:400|403|404|410|429|500|502|503|504)\b\W{0,3}(?:that|error|not found|bad request|forbidden|server|service)|"
-    r"page not found|not found on this server|internal server error|service unavailable|bad gateway|"
+    r"<(?:rating|category|open hours|distance)[ >]|page not found|not found on this server|internal server error|service unavailable|bad gateway|"
     r"something went wrong|please try again later|ad (?:is )?(?:not|no longer) available|"
     r"this ad (?:was|has been) removed|content (?:is )?(?:currently )?unavailable|access denied|request blocked", re.I)
 REASON = {
@@ -45,6 +45,10 @@ REASON = {
     "collapsed": "The ad template rendered collapsed, with no real content",
     "missing": "The ad's picture link was dead (404) and no other copy could be found",
     "empty": "Nothing about the ad was captured beyond its dates",
+    "template": "Google sent an empty ad template (placeholders like <Rating>, no real content)",
+    "broken": "The ad's preview came back without its main picture",
+    "icon": "Only a logo or map pin came back, not the ad itself",
+    "shared": "The saved picture is a Google placeholder that also shows up under other resorts' ads",
 }
 
 def inspect(im):
@@ -85,6 +89,19 @@ def check_file(rel):
     except Exception:
         return "missing", 0, 0
 
+VIS = {}  # vision.py's content check for this run: {ad key: {"v": verdict, "how": ..., "fp": ...}}
+
+def seen(k):
+    """The content check's verdict for the ad's saved picture ('' when it looked like the real ad)."""
+    return (VIS.get(k) or {}).get("v", "")
+
+def bad_pic(im):
+    """A verdict when a replacement picture is itself a placeholder, else ''."""
+    try:
+        return __import__("vision").bad_picture(im)
+    except Exception:
+        return ""
+
 def bad_text(s):
     return bool(s) and bool(ERR_TEXT.search(s))
 
@@ -107,7 +124,7 @@ def examine(k, a, rel, tags, rec, failed):
         else:
             p, w, h = check_file(rel)
         out.update({"p": p, "f": f, "w": w, "h": h})
-        return txt_prob or p, out
+        return txt_prob or p or seen(k), out
     if a.get("img_src") and failed.get(k, 0) < 3:
         return None, out  # media.py is still trying to download it
     if a.get("img_src"):
@@ -152,7 +169,7 @@ def repair(k, a, media_map, large, ph):
             im = fetch(src)
         except Exception:
             continue
-        if im.size[0] <= 120 or inspect(im):
+        if im.size[0] <= 120 or inspect(im) or bad_pic(im):
             continue  # YouTube's 120px "no picture" placeholder, or another broken picture
         media.write(rel, media.jpeg(im, media.THUMB))
         media_map[k] = rel
@@ -166,6 +183,11 @@ def repair(k, a, media_map, large, ph):
     return ""
 
 def run(max_fix=200):
+    global VIS
+    try:
+        VIS = __import__("vision").run() or {}  # is each saved picture really the ad? (checks new ads as they come in)
+    except Exception as e:
+        print(" content check skipped:", str(e)[:200])
     ads, _ = library.build_ads()
     for k, a in ads.items():
         a["key"] = k
@@ -241,6 +263,7 @@ def apply(out):
     """Called by library.build: adds the health status and picture shape to each ad for the site."""
     q = library.load_json(QUAL, {})
     n = Counter()
+    vis = library.load_json(os.path.join(library.DATA, "vision.json"), {}).get("ads") or {}
     for a in out:
         r = q.get(a["key"])
         if not r:
@@ -250,7 +273,7 @@ def apply(out):
         st = r.get("st")
         if st in ("fixed", "text", "gone"):
             a["q"] = {"st": st, "why": r.get("why", ""), "src": r.get("src", ""), "d": r.get("d", ""),
-                      "msg": REASON.get(r.get("why", ""), "")}
+                      "msg": REASON.get(r.get("why", ""), "") + (" (spotted by: " + vis[a["key"]]["how"] + ")" if (vis.get(a["key"]) or {}).get("how") and st != "fixed" else "")}
             n[st] += 1
         if st in ("text", "gone"):
             a["img"] = ""
