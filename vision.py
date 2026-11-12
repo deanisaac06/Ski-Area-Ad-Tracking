@@ -247,6 +247,8 @@ def run(max_calls=MAX_CALLS, max_seconds=MAX_SECONDS):
     for fp, r in fpv.items():
         if r.get("v") in BAD:
             bad[fp] = r["v"]
+        elif r.get("v") == "ad":
+            bad.pop(fp, None)  # the AI saw a real ad here: never treat this picture as broken
     # verdicts: the picture itself, then the AI, then known-broken pictures, then pictures shared across resorts
     out, n = {}, defaultdict(int)
     for r in rows:
