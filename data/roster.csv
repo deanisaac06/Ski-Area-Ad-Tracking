@@ -1,0 +1,276 @@
+slug,resort,state,region,country,tier,domain,meta_page_id,opportunity,atlas_rank,mm,google_known,source,pilot
+jackson-hole,Jackson Hole,WY,West,US,weekly,jacksonhole.com,24718308041,A,1,2697.9,yes,resorts.csv,yes
+taos-ski-valley,Taos Ski Valley,NM,West,US,weekly,skitaos.com,181855391854595,A,3,1060.8,yes,resorts.csv,yes
+whitefish-mountain,Whitefish Mountain,MT,West,US,weekly,skiwhitefish.com,30030734308,A,6,597.7,yes,resorts.csv,yes
+smugglers-notch,Smugglers' Notch,VT,East,US,weekly,smuggs.com,34354422297,A,7,563.6,yes,resorts.csv,yes
+powder-mountain,Powder Mountain,UT,West,US,weekly,powdermountain.com,46326540287,A,9,530.9,yes,resorts.csv,yes
+timberline-lodge,Timberline Lodge,OR,West,US,weekly,timberlinelodge.com,58400258883,A,12,441.8,yes,resorts.csv,yes
+camelback,Camelback,PA,East,US,weekly,camelbackresort.com,561614990589978,A,19,348.1,yes,resorts.csv,yes
+jay-peak,Jay Peak,VT,East,US,weekly,jaypeakresort.com,19659899440,B,21,563.6,yes,resorts.csv,yes
+sundance,Sundance,UT,West,US,weekly,sundanceresort.com,29461717631,A,23,333.0,yes,resorts.csv,yes
+alta,Alta,UT,West,US,weekly,alta.com,127280227321831,A,25,267.3,no,resorts.csv,yes
+telluride,Telluride,CO,West,US,weekly,tellurideskiresort.com,350091519847,B,26,624.2,yes,resorts.csv,yes
+holiday-valley,Holiday Valley,NY,East,US,weekly,holidayvalley.com,10938924963,A,28,263.2,yes,resorts.csv,yes
+sugar-bowl,Sugar Bowl,CA,West,US,weekly,sugarbowl.com,329976209771,A,29,257.4,yes,resorts.csv,yes
+alyeska,Alyeska,AK,West,US,weekly,alyeskaresort.com,89226280489,A,30,252.4,yes,resorts.csv,yes
+loveland,Loveland,CO,West,US,weekly,skiloveland.com,20922486192,A,33,234.0,yes,resorts.csv,yes
+blue-mountain,Blue Mountain,PA,East,US,weekly,skibluemt.com,92181707870,A,34,234.0,yes,resorts.csv,yes
+crystal-mountain-mi,Crystal Mountain (MI),MI,East,US,weekly,crystalmountain.com,23025211773,B,39,482.6,yes,resorts.csv,yes
+whiteface,Whiteface,NY,East,US,weekly,whiteface.com,107657715463,A,40,252.4,,resorts.csv,yes
+mt-hood-meadows,Mt. Hood Meadows,OR,West,US,weekly,skihood.com,71883619877,A,41,190.2,yes,resorts.csv,yes
+grand-targhee,Grand Targhee,WY,West,US,weekly,grandtarghee.com,37640136750,A,42,189.3,yes,resorts.csv,yes
+crystal-mountain,Crystal Mountain (WA),WA,West,US,biweekly,crystalmountainresort.com,,D,,263.2,yes,atlas,yes
+summit-at-snoqualmie,Summit at Snoqualmie,WA,West,US,biweekly,summitatsnoqualmie.com,,B,56,273.5,yes,atlas,yes
+stevens-pass,Stevens Pass,WA,West,US,biweekly,stevenspass.com,,D,,198.9,yes,atlas,yes
+mission-ridge,Mission Ridge,WA,West,US,biweekly,missionridge.com,55066726737,A,122,37.9,no,atlas,yes
+mt-baker,Mt. Baker,WA,West,US,biweekly,mtbaker.us,86858903483,A,130,31.6,no,atlas,yes
+white-pass,White Pass,WA,West,US,biweekly,skiwhitepass.com,82667828192,A,124,35.8,no,atlas,yes
+49-degrees-north,49 Degrees North,WA,West,US,biweekly,ski49n.com,169455726407774,A,116,42.3,yes,atlas,yes
+mt-spokane,Mt. Spokane,WA,West,US,biweekly,mtspokane.com,,A,148,28.0,yes,atlas,yes
+ski-bluewood,Ski Bluewood,WA,West,US,biweekly,bluewood.com,,C,174,9.3,no,atlas,yes
+loup-loup-ski-bowl,Loup Loup Ski Bowl,WA,West,US,biweekly,,,C,205,9.7,,atlas,yes
+leavenworth-ski-hill,Leavenworth Ski Hill,WA,West,US,biweekly,skileavenworth.com,,C,219,3.5,no,atlas,yes
+hurricane-ridge,Hurricane Ridge,WA,West,US,biweekly,,,C,220,3.1,,atlas,yes
+echo-valley,Echo Valley,WA,West,US,biweekly,,,C,201,3.1,,atlas,yes
+sitzmark,Sitzmark,WA,West,US,biweekly,,,C,227,1.6,,atlas,yes
+badger-mountain,Badger Mountain,WA,West,US,biweekly,,,C,228,0.8,,atlas,yes
+mt-bachelor,Mt. Bachelor,OR,West,US,biweekly,mtbachelor.com,,B,13,1127.1,yes,atlas,yes
+mt-hood-skibowl,Mt. Hood Skibowl,OR,West,US,biweekly,skibowl.com,88191060762,A,111,44.8,yes,atlas,yes
+hoodoo,Hoodoo,OR,West,US,biweekly,skihoodoo.com,,A,140,18.6,no,atlas,yes
+mt-ashland,Mt. Ashland,OR,West,US,biweekly,mtashland.com,,C,181,16.3,no,atlas,yes
+willamette-pass,Willamette Pass,OR,West,US,biweekly,willamettepass.com,,C,159,13.9,no,atlas,yes
+anthony-lakes,Anthony Lakes,OR,West,US,biweekly,anthonylakes.com,,C,217,5.8,no,atlas,yes
+cooper-spur,Cooper Spur,OR,West,US,biweekly,,,C,187,3.9,,atlas,yes
+ferguson-ridge,Ferguson Ridge,OR,West,US,biweekly,,,C,229,1.2,,atlas,yes
+warner-canyon,Warner Canyon,OR,West,US,biweekly,,,C,230,1.2,,atlas,yes
+sun-valley,Sun Valley,ID,West,US,biweekly,sunvalley.com,,B,16,1251.2,yes,atlas,yes
+schweitzer,Schweitzer,ID,West,US,biweekly,schweitzer.com,,D,,445.5,yes,atlas,yes
+bogus-basin,Bogus Basin,ID,West,US,biweekly,bogusbasin.org,35076686877,A,83,81.5,yes,atlas,yes
+tamarack,Tamarack,ID,West,US,biweekly,tamarackidaho.com,15630743329,B,62,222.8,yes,atlas,yes
+brundage,Brundage,ID,West,US,biweekly,brundage.com,55643082680,A,95,54.1,yes,atlas,yes
+silver-mountain,Silver Mountain,ID,West,US,biweekly,silvermt.com,,A,84,59.7,yes,atlas,yes
+lookout-pass,Lookout Pass,ID,West,US,biweekly,skilookout.com,120643147683,B,202,30.3,yes,atlas,yes
+kelly-canyon,Kelly Canyon,ID,West,US,biweekly,kellycanyon.com,,C,165,11.6,no,atlas,yes
+pomerelle,Pomerelle,ID,West,US,biweekly,pomerelle-mtn.com,,C,166,11.6,no,atlas,yes
+pebble-creek,Pebble Creek,ID,West,US,biweekly,pebblecreekskiarea.com,,C,175,9.3,no,atlas,yes
+soldier-mountain,Soldier Mountain,ID,West,US,biweekly,soldiermountain.com,,C,221,3.5,no,atlas,yes
+magic-mountain,Magic Mountain,ID,West,US,biweekly,,,C,188,5.8,,atlas,yes
+little-ski-hill,Little Ski Hill,ID,West,US,biweekly,,,C,222,3.9,,atlas,yes
+snowhaven,Snowhaven,ID,West,US,biweekly,,,C,231,1.9,,atlas,yes
+cottonwood-butte,Cottonwood Butte,ID,West,US,biweekly,,,C,232,1.9,,atlas,yes
+rotarun,Rotarun,ID,West,US,biweekly,,,C,233,1.9,,atlas,yes
+big-sky,Big Sky,MT,West,US,biweekly,bigskyresort.com,,B,24,1720.4,yes,atlas,yes
+bridger-bowl,Bridger Bowl,MT,West,US,biweekly,bridgerbowl.com,219783875638,A,108,59.0,no,atlas,yes
+red-lodge-mountain,Red Lodge Mountain,MT,West,US,biweekly,redlodgemountain.com,78730139188,A,125,35.8,yes,atlas,yes
+discovery,Discovery,MT,West,US,biweekly,skidiscovery.com,,A,141,18.6,no,atlas,yes
+montana-snowbowl,Montana Snowbowl,MT,West,US,biweekly,montanasnowbowl.com,,C,156,16.3,no,atlas,yes
+great-divide,Great Divide,MT,West,US,biweekly,skigd.com,,C,167,11.6,no,atlas,yes
+lost-trail-powder-mtn,Lost Trail Powder Mtn,MT,West,US,biweekly,losttrail.com,,C,168,11.6,no,atlas,yes
+showdown,Showdown,MT,West,US,biweekly,showdownmontana.com,,C,162,13.2,yes,atlas,yes
+blacktail-mountain,Blacktail Mountain,MT,West,US,biweekly,skiblacktail.com,,C,176,9.3,no,atlas,yes
+maverick-mountain,Maverick Mountain,MT,West,US,biweekly,,,C,189,3.9,,atlas,yes
+teton-pass-ski-area,Teton Pass Ski Area,MT,West,US,biweekly,,,C,190,3.9,,atlas,yes
+turner-mountain,Turner Mountain,MT,West,US,biweekly,,,C,206,1.9,,atlas,yes
+bear-paw-ski-bowl,Bear Paw Ski Bowl,MT,West,US,biweekly,,,C,234,1.9,,atlas,yes
+yellowstone-club,Yellowstone Club,MT,West,US,biweekly,,,C,213,0.0,,atlas,yes
+snow-king,Snow King,WY,West,US,biweekly,snowkingmountain.com,117714748388463,A,135,28.1,yes,atlas,yes
+snowy-range,Snowy Range,WY,West,US,biweekly,,,C,169,11.6,,atlas,yes
+white-pine,White Pine,WY,West,US,biweekly,whitepineski.com,,C,191,4.6,no,atlas,yes
+hogadon,Hogadon,WY,West,US,biweekly,,,C,214,7.8,,atlas,yes
+antelope-butte,Antelope Butte,WY,West,US,biweekly,,,C,218,5.8,,atlas,yes
+sleeping-giant,Sleeping Giant,WY,West,US,biweekly,,,C,223,3.9,,atlas,yes
+meadowlark,Meadowlark,WY,West,US,biweekly,,,C,192,3.9,,atlas,yes
+pine-creek,Pine Creek,WY,West,US,biweekly,,,C,207,1.9,,atlas,yes
+vail,Vail,CO,West,US,weekly,,,D,,4352.0,,atlas,yes
+breckenridge,Breckenridge,CO,West,US,weekly,,,D,,4352.0,,atlas,yes
+keystone,Keystone,CO,West,US,biweekly,,,D,,1782.0,,atlas,yes
+beaver-creek,Beaver Creek,CO,West,US,biweekly,,,D,,2448.0,,atlas,yes
+crested-butte,Crested Butte,CO,West,US,biweekly,skicb.com,,D,,1224.0,yes,atlas,yes
+aspen-snowmass,Aspen Snowmass (4 mtns),CO,West,US,weekly,aspensnowmass.com,,B,2,4379.2,yes,atlas,yes
+steamboat,Steamboat,CO,West,US,weekly,steamboat.com,,D,,3440.8,yes,atlas,yes
+winter-park,Winter Park,CO,West,US,biweekly,winterparkresort.com,,D,,1878.5,yes,atlas,yes
+copper-mountain,Copper Mountain,CO,West,US,biweekly,coppercolorado.com,,B,14,1878.5,yes,atlas,yes
+arapahoe-basin,Arapahoe Basin,CO,West,US,biweekly,arapahoebasin.com,,D,,263.2,yes,atlas,yes
+eldora,Eldora,CO,West,US,biweekly,eldora.com,,B,61,201.8,yes,atlas,yes
+purgatory,Purgatory,CO,West,US,biweekly,purgatory.ski,,B,35,445.5,yes,atlas,yes
+monarch,Monarch,CO,West,US,biweekly,skimonarch.com,56232837661,A,85,59.7,no,atlas,yes
+wolf-creek,Wolf Creek,CO,West,US,biweekly,wolfcreekski.com,65475908503,A,117,42.1,no,atlas,yes
+powderhorn,Powderhorn,CO,West,US,biweekly,powderhorn.com,,B,120,67.3,yes,atlas,yes
+sunlight,Sunlight,CO,West,US,biweekly,sunlightmtn.com,69844248352,A,126,35.1,no,atlas,yes
+ski-cooper,Ski Cooper,CO,West,US,biweekly,skicooper.com,,C,182,16.3,no,atlas,yes
+granby-ranch,Granby Ranch,CO,West,US,biweekly,granbyranch.com,152768684797595,C,139,26.7,yes,atlas,yes
+echo-mountain,Echo Mountain,CO,West,US,biweekly,echomntn.com,,C,177,9.3,no,atlas,yes
+howelsen-hill,Howelsen Hill,CO,West,US,biweekly,,,C,203,11.6,,atlas,yes
+ski-hesperus,Ski Hesperus,CO,West,US,biweekly,skihesperus.com,,C,193,3.5,no,atlas,yes
+silverton-mountain,Silverton Mountain,CO,West,US,biweekly,silvertonmountain.com,,C,163,12.6,yes,atlas,yes
+kendall-mountain,Kendall Mountain,CO,West,US,biweekly,,,C,235,1.9,,atlas,yes
+lake-city-chapman-hill-cranor,Lake City / Chapman Hill / Cranor,CO,West,US,biweekly,,,C,224,2.3,,atlas,yes
+park-city,Park City,UT,West,US,weekly,parkcitymountain.com,,D,,4692.0,yes,atlas,yes
+deer-valley,Deer Valley,UT,West,US,biweekly,deervalley.com,,D,,2033.2,yes,atlas,yes
+snowbird,Snowbird,UT,West,US,biweekly,snowbird.com,,B,15,939.3,yes,atlas,yes
+brighton,Brighton,UT,West,US,biweekly,brightonresort.com,,B,53,292.5,yes,atlas,yes
+snowbasin,Snowbasin,UT,West,US,biweekly,snowbasin.com,,B,22,668.2,yes,atlas,yes
+solitude,Solitude,UT,West,US,biweekly,solitudemountain.com,,D,,204.8,yes,atlas,yes
+brian-head,Brian Head,UT,West,US,biweekly,brianhead.com,,B,43,297.0,yes,atlas,yes
+nordic-valley,Nordic Valley,UT,West,US,biweekly,nordicvalley.com,,B,208,18.6,no,atlas,yes
+beaver-mountain,Beaver Mountain,UT,West,US,biweekly,skithebeav.com,,C,160,13.9,no,atlas,yes
+woodward-park-city,Woodward Park City,UT,West,US,biweekly,woodwardparkcity.com,,C,142,23.2,yes,atlas,yes
+eagle-point,Eagle Point,UT,West,US,biweekly,eaglepointresort.com,162901957056481,C,170,11.6,yes,atlas,yes
+cherry-peak,Cherry Peak,UT,West,US,biweekly,cherrypeakresort.com,,C,178,9.3,no,atlas,yes
+ski-santa-fe,Ski Santa Fe,NM,West,US,biweekly,skisantafe.com,436784673006975,A,97,53.7,yes,atlas,yes
+angel-fire,Angel Fire,NM,West,US,biweekly,angelfireresort.com,111597309301,B,54,281.8,yes,atlas,yes
+red-river,Red River,NM,West,US,biweekly,redriverskiarea.com,89721969374,B,91,113.6,yes,atlas,yes
+ski-apache,Ski Apache,NM,West,US,biweekly,skiapache.com,,A,87,58.5,yes,atlas,yes
+sipapu,Sipapu,NM,West,US,biweekly,sipapunm.com,,B,209,18.6,no,atlas,yes
+pajarito,Pajarito,NM,West,US,biweekly,pajaritomtn.com,,C,183,7.0,no,atlas,yes
+sandia-peak,Sandia Peak,NM,West,US,biweekly,sandiapeak.com,,C,179,9.9,yes,atlas,yes
+ski-cloudcroft,Ski Cloudcroft,NM,West,US,biweekly,,,C,194,3.9,,atlas,yes
+arizona-snowbowl,Arizona Snowbowl,AZ,West,US,biweekly,snowbowl.ski,,B,72,134.6,yes,atlas,yes
+sunrise-park,Sunrise Park,AZ,West,US,biweekly,sunriseskipark.com,,A,127,35.1,no,atlas,yes
+mt-lemmon-ski-valley,Mt. Lemmon Ski Valley,AZ,West,US,biweekly,,,C,195,3.9,,atlas,yes
+elk-ridge,Elk Ridge,AZ,West,US,biweekly,,,C,210,1.9,,atlas,yes
+mt-rose,Mt. Rose,NV,West,US,biweekly,skirose.com,110183809646,B,114,87.8,yes,atlas,yes
+lee-canyon,Lee Canyon,NV,West,US,biweekly,leecanyonlv.com,,B,98,87.8,yes,atlas,yes
+diamond-peak,Diamond Peak,NV,West,US,biweekly,diamondpeak.com,61156970188,A,96,67.3,yes,atlas,yes
+sky-tavern,Sky Tavern,NV,West,US,biweekly,,,C,215,7.8,,atlas,yes
+elko-snobowl,Elko Snobowl,NV,West,US,biweekly,,,C,236,1.9,,atlas,yes
+mammoth-mountain,Mammoth Mountain,CA,West,US,weekly,mammothmountain.com,,D,,3753.6,yes,atlas,yes
+palisades-tahoe,Palisades Tahoe,CA,West,US,weekly,palisadestahoe.com,,D,,2815.2,yes,atlas,yes
+heavenly,Heavenly,CA,West,US,biweekly,,,D,,2448.0,,atlas,yes
+northstar,Northstar,CA,West,US,biweekly,,,D,,1904.0,,atlas,yes
+big-bear,Big Bear (Bear Mtn + Snow Summit),CA,West,US,biweekly,bigbearmountainresort.com,,D,,672.8,yes,atlas,yes
+snow-valley,Snow Valley,CA,West,US,biweekly,,,D,,146.2,,atlas,yes
+june-mountain,June Mountain,CA,West,US,biweekly,,,D,,58.5,,atlas,yes
+kirkwood,Kirkwood,CA,West,US,biweekly,,,D,,175.5,,atlas,yes
+sierra-at-tahoe,Sierra-at-Tahoe,CA,West,US,biweekly,sierraattahoe.com,80397677330,A,50,155.4,yes,atlas,yes
+mountain-high,Mountain High,CA,West,US,biweekly,mthigh.com,29245663978,B,70,175.5,yes,atlas,yes
+bear-valley,Bear Valley,CA,West,US,biweekly,bearvalley.com,,B,115,87.8,yes,atlas,yes
+dodge-ridge,Dodge Ridge,CA,West,US,biweekly,dodgeridge.com,,B,128,70.2,yes,atlas,yes
+china-peak,China Peak,CA,West,US,biweekly,skichinapeak.com,,B,129,70.2,yes,atlas,yes
+boreal,Boreal,CA,West,US,biweekly,rideboreal.com,,B,58,222.0,yes,atlas,yes
+soda-springs,Soda Springs,CA,West,US,biweekly,,,C,143,23.2,,atlas,yes
+mt-shasta-ski-park,Mt. Shasta Ski Park,CA,West,US,biweekly,skipark.com,,C,149,19.8,yes,atlas,yes
+mt-baldy,Mt. Baldy,CA,West,US,biweekly,mtbaldyresort.com,,A,144,18.6,no,atlas,yes
+tahoe-donner-downhill,Tahoe Donner Downhill,CA,West,US,biweekly,tahoedonner.com,,C,180,19.4,yes,atlas,yes
+donner-ski-ranch,Donner Ski Ranch,CA,West,US,biweekly,,,C,150,19.4,,atlas,yes
+homewood,Homewood,CA,West,US,biweekly,,,A,109,46.8,,atlas,yes
+badger-pass,Badger Pass,CA,West,US,biweekly,,,C,157,15.5,,atlas,yes
+mt-waterman-alta-sierra-coppervale-buckhorn,Mt. Waterman / Alta Sierra / Coppervale / Buckhorn,CA,West,US,biweekly,,,C,196,5.8,,atlas,yes
+granlibakken,Granlibakken,CA,West,US,biweekly,,,C,211,1.9,,atlas,yes
+hilltop,Hilltop,AK,West,US,biweekly,,,C,184,15.5,,atlas,yes
+eaglecrest,Eaglecrest,AK,West,US,biweekly,skieaglecrest.com,,C,212,9.3,no,atlas,yes
+arctic-valley,Arctic Valley,AK,West,US,biweekly,,,C,216,7.8,,atlas,yes
+skeetawk,Skeetawk,AK,West,US,biweekly,,,C,225,3.9,,atlas,yes
+moose-mountain,Moose Mountain,AK,West,US,biweekly,,,C,197,3.9,,atlas,yes
+mt-eyak,Mt. Eyak,AK,West,US,biweekly,,,C,237,0.8,,atlas,yes
+terry-peak,Terry Peak,SD,West,US,biweekly,terrypeak.com,,C,161,13.9,no,atlas,yes
+great-bear,Great Bear,SD,West,US,biweekly,,,C,185,15.5,,atlas,yes
+mystic-miner,Mystic Miner,SD,West,US,biweekly,,,C,198,5.8,,atlas,yes
+bottineau-winter-park,Bottineau Winter Park,ND,West,US,biweekly,,,C,204,11.6,,atlas,yes
+huff-hills,Huff Hills,ND,West,US,biweekly,,,C,199,3.9,,atlas,yes
+frost-fire,Frost Fire,ND,West,US,biweekly,,,C,226,3.9,,atlas,yes
+sundown-mountain,Sundown Mountain,IA,West,US,biweekly,sundownmtn.com,,A,131,31.0,yes,atlas,yes
+seven-oaks,Seven Oaks,IA,West,US,biweekly,,,C,171,11.6,,atlas,yes
+mt-crescent,Mt. Crescent,IA,West,US,biweekly,,,C,172,11.6,,atlas,yes
+sleepy-hollow,Sleepy Hollow,IA,West,US,biweekly,,,C,173,11.6,,atlas,yes
+hidden-valley,Hidden Valley,MO,West,US,biweekly,,,D,,58.1,,atlas,yes
+snow-creek,Snow Creek,MO,West,US,biweekly,,,D,,31.0,,atlas,yes
+lutsen-mountains,Lutsen Mountains,MN,West,US,biweekly,lutsen.com,,B,78,117.0,yes,atlas,yes
+afton-alps,Afton Alps,MN,West,US,biweekly,,,D,,58.1,,atlas,yes
+buck-hill,Buck Hill,MN,West,US,biweekly,buckhill.com,,A,137,23.2,no,atlas,yes
+welch-village,Welch Village,MN,West,US,biweekly,welchvillage.com,,A,138,23.2,no,atlas,yes
+giants-ridge,Giants Ridge,MN,West,US,biweekly,giantsridge.com,,A,110,58.5,yes,atlas,yes
+hyland-hills,Hyland Hills,MN,West,US,biweekly,,,A,132,38.8,,atlas,yes
+spirit-mountain,Spirit Mountain,MN,West,US,biweekly,,,A,133,38.8,,atlas,yes
+wild-mountain,Wild Mountain,MN,West,US,biweekly,wildmountain.com,,C,151,19.8,yes,atlas,yes
+mount-kato,Mount Kato,MN,West,US,biweekly,,,C,145,23.2,,atlas,yes
+andes-tower-hills,Andes Tower Hills,MN,West,US,biweekly,,,C,146,23.2,,atlas,yes
+powder-ridge,Powder Ridge,MN,West,US,biweekly,,,C,152,19.4,,atlas,yes
+stowe,Stowe,VT,East,US,biweekly,stowe.com,,D,,1360.0,,atlas,yes
+okemo,Okemo,VT,East,US,biweekly,okemo.com,,D,,816.8,,atlas,yes
+mount-snow,Mount Snow,VT,East,US,biweekly,mountsnow.com,,D,,292.5,,atlas,yes
+killington-pico,Killington / Pico,VT,East,US,biweekly,killington.com,,B,10,1336.5,,atlas,yes
+stratton,Stratton,VT,East,US,biweekly,stratton.com,,D,,668.2,,atlas,yes
+sugarbush,Sugarbush,VT,East,US,biweekly,sugarbush.com,,D,,519.8,,atlas,yes
+bolton-valley,Bolton Valley,VT,East,US,biweekly,boltonvalley.com,112593644322,A,103,49.7,yes,atlas,yes
+burke-mountain,Burke Mountain,VT,East,US,biweekly,skiburke.com,303348433022,A,118,42.3,yes,atlas,yes
+bromley,Bromley,VT,East,US,biweekly,bromley.com,79674335743,B,112,74.6,yes,atlas,yes
+mad-river-glen,Mad River Glen,VT,East,US,biweekly,madriverglen.com,90212840431,A,164,18.6,,atlas,yes
+loon-mountain,Loon Mountain,NH,East,US,biweekly,loonmtn.com,,B,55,234.0,,atlas,yes
+bretton-woods,Bretton Woods,NH,East,US,biweekly,brettonwoods.com,10150112245600232,B,48,267.3,,atlas,yes
+cannon-mountain,Cannon Mountain,NH,East,US,biweekly,cannonmt.com,131074673586704,A,73,99.5,,atlas,yes
+waterville-valley,Waterville Valley,NH,East,US,biweekly,waterville.com,116289461772019,A,67,87.8,,atlas,yes
+cranmore,Cranmore,NH,East,US,biweekly,cranmore.com,47647707593,B,88,117.0,yes,atlas,yes
+gunstock,Gunstock,NH,East,US,biweekly,gunstock.com,134458846606073,A,93,70.2,,atlas,yes
+pats-peak,Pats Peak,NH,East,US,biweekly,patspeak.com,20008463809,A,105,49.4,,atlas,yes
+ragged-mountain,Ragged Mountain,NH,East,US,biweekly,raggedmountainresort.com,155209207855796,A,79,70.2,yes,atlas,yes
+attitash-wildcat-sunapee,Attitash / Wildcat / Sunapee,NH,East,US,biweekly,attitash.com,,D,,263.2,,atlas,yes
+sunday-river,Sunday River,ME,East,US,biweekly,sundayriver.com,,B,17,816.8,,atlas,yes
+sugarloaf,Sugarloaf,ME,East,US,biweekly,sugarloaf.com,,B,27,519.8,,atlas,yes
+saddleback,Saddleback,ME,East,US,biweekly,saddlebackmaine.com,43267888509,A,104,49.7,,atlas,yes
+pleasant-mountain,Pleasant Mountain,ME,East,US,biweekly,pleasantmountain.com,,A,89,58.5,,atlas,yes
+mt-abram,Mt. Abram,ME,East,US,biweekly,mtabram.com,,C,158,15.5,,atlas,yes
+jiminy-peak,Jiminy Peak,MA,East,US,biweekly,jiminypeak.com,8143267787,B,75,124.3,yes,atlas,yes
+wachusett,Wachusett,MA,East,US,biweekly,wachusett.com,7033298269,A,52,147.9,yes,atlas,yes
+berkshire-east,Berkshire East,MA,East,US,biweekly,berkshireeast.com,151248704917382,A,92,57.2,yes,atlas,yes
+bousquet,Bousquet,MA,East,US,biweekly,bousquetmountain.com,122335834448575,A,136,26.3,yes,atlas,yes
+gore-mountain,Gore Mountain,NY,East,US,biweekly,goremountain.com,119555222608,A,94,70.2,,atlas,yes
+belleayre,Belleayre,NY,East,US,biweekly,belleayre.com,98288592896,A,86,74.6,,atlas,yes
+hunter-mountain,Hunter Mountain,NY,East,US,biweekly,huntermtn.com,,D,,234.0,,atlas,yes
+windham-mountain-club,Windham Mountain Club,NY,East,US,biweekly,windhammountainclub.com,47761142153,A,71,84.5,yes,atlas,yes
+greek-peak,Greek Peak,NY,East,US,biweekly,greekpeak.net,165706732899,B,123,74.6,yes,atlas,yes
+bristol-mountain,Bristol Mountain,NY,East,US,biweekly,bristolmountain.com,106993826011746,A,80,70.2,,atlas,yes
+plattekill,Plattekill,NY,East,US,biweekly,plattekill.com,,C,153,19.4,,atlas,yes
+seven-springs-laurel-hidden-valley,Seven Springs / Laurel / Hidden Valley,PA,East,US,biweekly,7springs.com,,D,,292.5,,atlas,yes
+liberty-roundtop-whitetail-jack-frost-big-boulder,Liberty / Roundtop / Whitetail / Jack Frost / Big Boulder,PA,East,US,biweekly,,,D,,409.5,,atlas,yes
+elk-mountain,Elk Mountain,PA,East,US,biweekly,elkskier.com,181860461831969,A,99,52.6,,atlas,yes
+bear-creek,Bear Creek,PA,East,US,biweekly,bcmountainresort.com,123066604385826,A,76,74.6,,atlas,yes
+montage-mountain,Montage Mountain,PA,East,US,biweekly,montagemountainresorts.com,288781601137,A,119,42.1,,atlas,yes
+snowshoe,Snowshoe,WV,East,US,biweekly,snowshoemtn.com,,D,,668.2,,atlas,yes
+massanutten,Massanutten,VA,East,US,biweekly,massresort.com,92904578338,A,57,134.5,yes,atlas,yes
+wintergreen,Wintergreen,VA,East,US,biweekly,wintergreenresort.com,188271997030,B,66,148.0,yes,atlas,yes
+bryce-resort,Bryce Resort,VA,East,US,biweekly,bryceresort.com,460045065586,C,154,19.8,,atlas,yes
+canaan-valley,Canaan Valley,WV,East,US,biweekly,canaanresort.com,48261643870,C,200,13.9,,atlas,yes
+winterplace,Winterplace,WV,East,US,biweekly,winterplace.com,114198868651857,A,63,100.9,yes,atlas,yes
+sugar-mountain,Sugar Mountain,NC,East,US,biweekly,skisugar.com,,A,81,70.2,no,atlas,yes
+beech-mountain,Beech Mountain,NC,East,US,biweekly,beechmountainresort.com,107324634825,A,113,44.8,no,atlas,yes
+cataloochee,Cataloochee,NC,East,US,biweekly,cataloochee.com,,A,134,31.0,,atlas,yes
+boyne-mountain-the-highlands,Boyne Mountain / The Highlands,MI,East,US,biweekly,boynemountain.com,,B,45,292.5,,atlas,yes
+nubs-nob,Nub's Nob,MI,East,US,biweekly,nubsnob.com,436995229486704,A,100,52.6,,atlas,yes
+mount-bohemia,Mount Bohemia,MI,East,US,biweekly,mtbohemia.com,1511180765835775,C,186,7.0,,atlas,yes
+shanty-creek,Shanty Creek,MI,East,US,biweekly,shantycreek.com,205254550306,C,155,19.8,,atlas,yes
+granite-peak,Granite Peak,WI,East,US,biweekly,skigranitepeak.com,,A,68,87.8,,atlas,yes
+cascade-mountain,Cascade Mountain,WI,East,US,biweekly,cascademountain.com,232337597065,A,64,99.5,,atlas,yes
+trollhaugen,Trollhaugen,WI,East,US,biweekly,trollhaugen.com,66139413572,A,106,49.4,,atlas,yes
+perfect-north,Perfect North,IN,East,US,biweekly,perfectnorth.com,144064568950334,A,69,87.8,,atlas,yes
+snow-trails,Snow Trails,OH,East,US,biweekly,snowtrails.com,95510637826,A,107,49.0,yes,atlas,yes
+whistler-blackcomb,Whistler Blackcomb,BC,Canada,CA,weekly,whistlerblackcomb.com,,D,,5440.0,,atlas,yes
+big-white,Big White,BC,Canada,CA,biweekly,bigwhite.com,7296168274,B,8,1496.0,yes,atlas,yes
+silverstar,SilverStar,BC,Canada,CA,biweekly,skisilverstar.com,130898433635474,B,36,445.5,yes,atlas,yes
+sun-peaks,Sun Peaks,BC,Canada,CA,biweekly,sunpeaksresort.com,50367183005,B,37,519.8,yes,atlas,yes
+red-mountain,RED Mountain,BC,Canada,CA,biweekly,redresort.com,162636951279,A,20,290.3,yes,atlas,yes
+whitewater,Whitewater,BC,Canada,CA,biweekly,skiwhitewater.com,,A,121,38.8,,atlas,yes
+fernie,Fernie,BC,Canada,CA,biweekly,skifernie.com,83023785366,B,46,321.9,yes,atlas,yes
+kicking-horse,Kicking Horse,BC,Canada,CA,biweekly,kickinghorseresort.com,17935919534,B,51,252.4,,atlas,yes
+panorama,Panorama,BC,Canada,CA,biweekly,panoramaresort.com,85585029554,A,44,178.2,,atlas,yes
+revelstoke,Revelstoke,BC,Canada,CA,biweekly,revelstokemountainresort.com,107301219336,B,11,782.0,yes,atlas,yes
+mount-washington,Mount Washington,BC,Canada,CA,biweekly,mountwashington.ca,154191255514,B,74,125.8,yes,atlas,yes
+apex,Apex,BC,Canada,CA,biweekly,apexresort.com,174266675935706,A,147,18.6,,atlas,yes
+grouse-mountain,Grouse Mountain,BC,Canada,CA,biweekly,grousemountain.com,19494168080,B,59,204.8,yes,atlas,yes
+cypress-mountain,Cypress Mountain,BC,Canada,CA,biweekly,cypressmountain.com,20385874976,B,49,370.0,yes,atlas,yes
+mt-seymour,Mt. Seymour,BC,Canada,CA,biweekly,mtseymour.ca,27538634860,A,65,99.5,yes,atlas,yes
+banff-sunshine,Banff Sunshine,AB,Canada,CA,biweekly,skibanff.com,173626496022064,A,4,979.2,yes,atlas,yes
+lake-louise,Lake Louise,AB,Canada,CA,biweekly,skilouise.com,141971746081,A,5,1632.0,yes,atlas,yes
+mt-norquay,Mt. Norquay,AB,Canada,CA,biweekly,banffnorquay.com,168436703179992,A,101,52.6,,atlas,yes
+marmot-basin,Marmot Basin,AB,Canada,CA,biweekly,skimarmot.com,176260874114,A,38,214.6,yes,atlas,yes
+castle-mountain,Castle Mountain,AB,Canada,CA,biweekly,skicastle.ca,91967124023,A,90,58.5,yes,atlas,yes
+tremblant,Tremblant,QC,Canada,CA,weekly,tremblant.ca,305002358114,D,,2475.2,,atlas,yes
+le-massif-de-charlevoix,Le Massif de Charlevoix,QC,Canada,CA,biweekly,lemassif.com,135161319890,A,31,252.4,yes,atlas,yes
+mont-sainte-anne,Mont-Sainte-Anne,QC,Canada,CA,biweekly,mont-sainte-anne.com,124331497598528,B,47,321.9,yes,atlas,yes
+mont-sutton,Mont Sutton,QC,Canada,CA,biweekly,montsutton.com,35550657989,A,82,70.2,,atlas,yes
+bromont,Bromont,QC,Canada,CA,biweekly,bromontmontagne.com,184432300594,A,18,351.0,yes,atlas,yes
+owls-head,Owl's Head,QC,Canada,CA,biweekly,owlshead.com,,A,102,52.6,,atlas,yes
+sommets,Sommets (Saint-Sauveur group),QC,Canada,CA,biweekly,sommets.com,,B,32,468.0,,atlas,yes
+blue-mountain-on,Blue Mountain (ON),ON,Canada,CA,biweekly,bluemountain.ca,,D,,409.5,,atlas,yes
+horseshoe-resort,Horseshoe Resort,ON,Canada,CA,biweekly,horseshoeresort.com,64668461034,B,77,124.3,yes,atlas,yes
+mount-st-louis-moonstone,Mount St. Louis Moonstone,ON,Canada,CA,biweekly,mountstlouis.com,240321052703598,A,60,122.8,,atlas,yes
