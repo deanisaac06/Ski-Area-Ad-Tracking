@@ -100,7 +100,7 @@ node({t:'live'},'Live now',cnt({t:'live'}),ico.live)+
 node({t:'new'},'New this week',cnt({t:'new'}),ico.newi)+
 node({t:'stand'},'Standouts',cnt({t:'stand'}),ico.spark)+
 node({t:'saved'},'Saved',saved.size,ico.star)+
-node({t:'gone'},'Unavailable',ADS.filter(a=>a.gone).length,ico.warn);
+node({t:'gone'},'Unavailable',ADS.filter(a=>a.gone).length,ico.warn)+(window.PEERS&&PEERS.ok?`<button class="node" data-rank="1" title="Resorts ranked by estimated ad spend, in budget classes">${ico.all}<span class="lab">Resort rankings</span><span class="c">${PEERS.n}</span></button>`:'');
 if(L.reports.length){
 h+=`<div class="sh">Weekly reports</div>`+L.reports.slice(0,8).map(r=>`<a class="node" href="${esc(r.file)}">${ico.doc}<span class="lab">${esc(fmtDate(r.date))}</span><span class="c">${r.new} new</span></a>`).join('');
 }
@@ -202,7 +202,7 @@ catch(e){ console.error(e); el.innerHTML='<p class="note">The timeline could not
 }
 } else $('#playbook').innerHTML='';
 const list=b.filter(inCamp);
-const by={perf:(x,y)=>(y.ws??-1)-(x.ws??-1)||(y.days-x.days),new:(x,y)=>(y.start||'').localeCompare(x.start||''),long:(x,y)=>y.days-x.days,resort:(x,y)=>x.n.localeCompare(y.n)||(y.start||'').localeCompare(x.start||'')};
+const by={perf:(x,y)=>(y.ws??-1)-(x.ws??-1)||(y.days-x.days),new:(x,y)=>(y.start||'').localeCompare(x.start||''),long:(x,y)=>y.days-x.days,peer:(x,y)=>(y.pr??-1)-(x.pr??-1)||(y.days-x.days),resort:(x,y)=>x.n.localeCompare(y.n)||(y.start||'').localeCompare(x.start||'')};
 list.sort(by[st.sort]);
 const resorts=new Set(list.map(a=>a.n)).size, live=list.filter(a=>a.live).length;
 const ds=list.map(a=>a.start).filter(Boolean).sort();
@@ -215,7 +215,7 @@ if(st.view==='grid'){
 $('#results').innerHTML=`<div class="grid">`+shown.map(a=>`<button class="card${a.gone?' gone':a.live?'':' ended'}" data-id="${a.key}">
 <div class="thumb">${visual(a)}${pbadge(a)}${a.gone?'<span class="badge tr warn">Unavailable</span>':a.isnew?'<span class="badge tr new">New</span>':!a.live?'<span class="badge tr">Stopped</span>':''}${a.stand?'<span class="badge bl stand">Standout</span>':''}${saved.has(a.key)?'<span class="badge br">★</span>':''}</div>
 <div class="cbody"><div class="cname">${esc(a.n)}</div>${campLine(a)}${tagLine(a)}
-${a.offer?`<div class="coffer">${esc(a.offer)}</div>`:''}${qline(a)}
+${a.offer?`<div class="coffer">${esc(a.offer)}</div>`:''}${qline(a)}${window.PEERS&&PEERS.ok?PEERS.card(a):''}
 <div class="crow"><span>${shortDate(a.start)} · ${a.days}d ${a.live?'live':'ran'}</span>${perf(a)}</div></div></button>`).join('')+`</div>`;
 } else {
 $('#results').innerHTML=`<div class="tblwrap"><table><thead><tr><th></th><th>Resort</th><th>Campaign</th><th>Funnel</th><th>Platform</th><th>Format</th><th>Launched</th><th>Days</th><th>Score</th></tr></thead><tbody>`+
@@ -277,7 +277,7 @@ return `<section class="pb" aria-label="Resort playbook">
 <div><span>New this week</span><b>${A.filter(a=>a.isnew).length}</b></div>
 <div><span>Unavailable</span><b>${X}</b><small>${X?'<button type="button" class="lnk" data-go="gone">Show them</button>':'every ad loaded'}</small></div>
 </div>
-<div class="pbtl"><h3>Timeline · follows the campaign tabs and filters below</h3><div id="tlx"></div></div>
+${window.PEERS&&PEERS.ok?PEERS.resort(n):''}<div class="pbtl"><h3>Timeline · follows the campaign tabs and filters below</h3><div id="tlx"></div></div>
 <div class="pbgrid">
 <div class="pbcol">
 <h3>Campaign mix</h3>
@@ -327,7 +327,7 @@ ${(a.themes.length||a.prices.length)?`<div class="chips">${a.themes.map(t=>`<spa
 ${a.deadline?(a.deadline<TODAY&&a.live?`<dt>Deadline</dt><dd><b>Still running past its stated deadline (${shortDate(a.deadline)}).</b> The offer was probably extended.</dd>`:`<dt>Deadline</dt><dd>${shortDate(a.deadline)}</dd>`):''}
 </dl>
 </div></div>
-${a.gone?'':scoreBlock(a)}
+${a.gone?'':scoreBlock(a)}${!a.gone&&window.PEERS&&PEERS.ok?PEERS.block(a):''}
 ${a.stand?`<div class="why"><b>Why it stands out</b><span>${esc(a.stand)}</span></div>`:''}
 ${labels(a)}
 <div class="sec"><h3>Ad copy</h3>${a.title?`<p class="copyhead">${esc(a.title)}</p>`:''}${a.body?`<p class="copyblk">${esc(a.body)}</p>`:''}${a.desc?`<p class="note">${esc(a.desc)}</p>`:''}
@@ -402,6 +402,8 @@ const t=e.target.closest('.tagbtn'); if(t){ $('#drawer').close(); setF(t.dataset
 });
 $('#browseBtn').addEventListener('click',()=>{const o=!$('#side').classList.contains('open'); $('#side').classList.toggle('open',o); $('#scrim').classList.toggle('on',o); $('#browseBtn').setAttribute('aria-expanded',o);});
 $('#scrim').addEventListener('click',closeSide);
+window.RAL={go,openAd,render};
+document.addEventListener('peers-ready',()=>render());
 render();
 })();
 
