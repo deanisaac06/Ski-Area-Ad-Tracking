@@ -318,6 +318,10 @@ def build(now=None):
                 "meta_page_id": r.get("meta_page_id", ""),
                 "checked_meta": latest_run.get(("meta", r["slug"]), ""),
                 "checked_google": latest_run.get(("google", r["slug"]), ""), "stats": rstats.get(r["slug"], {})} for r in load_resorts()]
+    try:  # who buys each resort's media now; emails a switch the moment it shows up
+        print("  agency:", __import__("agency").apply(lst, resorts, today))
+    except Exception as e:
+        print("  agency skipped:", str(e)[:200])
     lib = {"generated": now.strftime("%Y-%m-%d %H:%M UTC"), "today": today.isoformat(),
            "last_check": max(latest_run.values(), default=""), "health": __import__("archive").health(), "campaigns": CAMPAIGNS, "tax": __import__("taxonomy").LISTS,
            "resorts": resorts, "reports": reports, "ads": out}
