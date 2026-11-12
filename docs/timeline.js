@@ -79,7 +79,7 @@ function tip(){ if (!TIP) { TIP = document.createElement('div'); TIP.className =
 
 function mount(el, ads, o){
   if (!el) return;
-  const s = S[o.key] || (S[o.key] = {ppd: null, day: null, color: 'camp'});
+  const s = S[o.key] || (S[o.key] = {ppd: null, day: null, color: 'camp', compact: true});
   const today = t(o.today);
   const items = ads.filter(a => a.start).map(a => {
     const a0 = t(a.start); let a1 = a.live ? today : t(a.end || a.last_shown || a.start); if (a1 < a0) a1 = a0;
@@ -127,7 +127,7 @@ function mount(el, ads, o){
 
   function draw(){
     const p = s.ppd, W = Math.ceil((max - min) * p), x = n => (n - min) * p;
-    const rich = p >= 5, rowH = rich ? 26 : 9, gap = rich ? 4 : 3, head = 21;
+    const rich = !s.compact && p >= 5, rowH = rich ? 26 : 9, gap = rich ? 4 : 3, head = 21;
     let grid = '', ax = '';
     const monthPx = 30.4 * p, every = monthPx >= 46 ? 1 : monthPx >= 22 ? 2 : monthPx >= 11 ? 3 : 6;
     let d = new Date(ds(min).slice(0, 8) + '01T00:00:00Z');
@@ -149,7 +149,7 @@ function mount(el, ads, o){
     ax += `<span class="td" style="left:${x(today)}px">Today</span>`;
     // Overview: the broad launch chart. One dot per ad at its launch date, stacked when launches land close together.
 if (MODE === 'ov') {
-const D = p >= 10 ? 22 : p >= 3 ? 12 : 8, bd = Math.max(1, Math.ceil((D + 2) / p)), cols = {};
+const D = s.compact ? 8 : p >= 10 ? 22 : p >= 3 ? 12 : 8, bd = Math.max(1, Math.ceil((D + 2) / p)), cols = {};
 let mx = 1;
 [...items].sort((a, b) => a.s - b.s || (a.a.p < b.a.p ? -1 : 1)).forEach(i => { i.k = Math.floor((i.s - min) / bd); i.h = cols[i.k] = (cols[i.k] || 0) + 1; if (i.h > mx) mx = i.h; });
 const step = Math.max(3, Math.min(D + 2, 240 / mx)), H = Math.max(110, Math.ceil(D + 30 + (mx - 1) * step)), by = H - D - 10, cx = k => x(min + k * bd) + bd * p / 2;
@@ -195,9 +195,9 @@ else if (s.color === 'fmt') h = [...new Set(items.map(i => i.a.kind))].map(k => 
   function zoomTo(np, px){
     if (px == null) px = vw() / 2;
     const day = min + (vp.scrollLeft + px) / s.ppd;
-    s.ppd = clamp(np); s.day = day - px / s.ppd; draw();
+    s.compact = false; s.ppd = clamp(np); s.day = day - px / s.ppd; draw();
   }
-  function range(a, b){ s.ppd = clamp(vw() / Math.max(3, b - a)); s.day = a; draw(); }
+  function range(a, b, det){ s.compact = !det; s.ppd = clamp(vw() / Math.max(3, b - a)); s.day = a; draw(); }
   draw();
 
   vp.addEventListener('scroll', () => { s.day = min + vp.scrollLeft / s.ppd; });
@@ -241,7 +241,7 @@ vp.addEventListener('touchcancel', pinchEnd);
     else range(max - Number(r), max);
   });
   sel.onchange = () => { s.color = sel.value; draw(); };
-el.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { if (MODE === b.dataset.m) return; MODE = b.dataset.m; try { localStorage.setItem('ral-tlmode', MODE); } catch (_) {} if (MODE === 'ov') s.ppd = null; if (TIP) TIP.hidden = true; mount(el, ads, o); });
+el.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { if (MODE === b.dataset.m) return; MODE = b.dataset.m; try { localStorage.setItem('ral-tlmode', MODE); } catch (_) {} if (MODE === 'ov') { s.ppd = null; s.compact = true; } if (TIP) TIP.hidden = true; mount(el, ads, o); });
 
   const hl = w => { C.classList.add('dim'); C.querySelectorAll(`[data-w="${w}"]`).forEach(n => n.classList.add('hl')); };
   const unhl = () => { C.classList.remove('dim'); C.querySelectorAll('.hl').forEach(n => n.classList.remove('hl')); };
@@ -266,7 +266,7 @@ if (MODE === 'ov') { const r = C.querySelector('.orun'); if (r) { r.hidden = fal
     const w = e.target.closest('.tw');
     if (w) {
       const [li, wi] = w.dataset.w.split('-').map(Number), W = lanes[li].waves[wi];
-      range(W.s - 3, Math.min(W.end, W.s + 120) + 4);
+      range(W.s - 3, Math.min(W.end, W.s + 120) + 4, true);
       const top = w.closest('.tl-lane'); if (top) vp.scrollTop = Math.max(0, top.offsetTop - 40);
       return;
     }
