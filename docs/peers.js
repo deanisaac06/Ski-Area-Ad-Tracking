@@ -14,7 +14,7 @@ const med=v=>{const s=[...v].sort((x,y)=>x-y),m=s.length>>1;return s.length?(s.l
 const pct=(v,arr)=>{let b=0,e=0;arr.forEach(x=>{if(x<v)b++;else if(x===v)e++;});return Math.round((b+e/2)/arr.length*100);};
 const tierC=v=>v>=70?'hi':v>=45?'mid':'lo';
 const css=document.createElement('style');
-css.textContent='.cpeer{font-size:11.5px;color:var(--muted);margin-top:2px}.cpeer b{color:var(--ink)}.pbpeer{margin:10px 0 4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;line-height:1.5}.rkh{margin:18px 0 6px;font-size:15px}.rkh span{font-weight:400;color:var(--muted);font-size:12.5px;margin-left:6px}.rkt td,.rkt th{white-space:nowrap}.rkt tr.off td{color:var(--muted)}.lnk2{border:0;background:none;padding:0;color:var(--accent);cursor:pointer;font:inherit;font-weight:600;text-align:left;text-decoration:underline}';
+css.textContent='.cpeer{font-size:11.5px;color:var(--muted);margin-top:2px}.cpeer b{color:var(--ink)}.pbpeer{margin:10px 0 4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;line-height:1.5}.rkh{margin:18px 0 6px;font-size:15px}.rkh span{font-weight:400;color:var(--muted);font-size:12.5px;margin-left:6px}.rkt{min-width:0!important}.rkt td,.rkt th{white-space:nowrap;padding:7px 8px}.rkt tr.off td{color:var(--muted)}.lnk2{border:0;background:none;padding:0;color:var(--accent);cursor:pointer;font:inherit;font-weight:600;text-align:left;text-decoration:underline}';
 document.head.appendChild(css);
 function build(rows){
 const idx={},idn={};
@@ -51,7 +51,7 @@ T.forEach(q=>{const cc=T.filter(z=>z.c===q.c); q.ci=cc.indexOf(q)+1; q.cn=cc.len
 P.R=R; P.rows=rows.filter(r=>r.mm!=null); P.n=Object.keys(R).length; P.ok=true;
 document.dispatchEvent(new Event('peers-ready'));
 }
-P.card=a=>a.pr==null?'':`<div class="cpeer" title="Ran longer than ${a.pr}% of ${esc(fl(a))} from ${esc(a.pg.lab)}">vs peers: beats <b>${a.pr}%</b></div>`;
+P.card=a=>a.pr==null?'':`<div class="cpeer" title="Ran longer than ${a.pr}% of ${esc(fl(a))} from ${esc(a.pg.lab)}">vs peers: beats <b>${a.pr}%</b>${a.live?' so far':''}</div>`;
 P.block=a=>{
 if(a.pr==null) return '';
 const q=P.R[a.n]||{};
