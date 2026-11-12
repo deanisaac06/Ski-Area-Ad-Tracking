@@ -42,7 +42,8 @@ to capture the ad. For EACH image return one JSON object:
 - "k": the label shown before the image, copied exactly
 - "v": ONE of
   "ad": a real ad - a photo, a designed graphic, a video frame, or a search / text ad with real words
-  "error": an error page or message (500, 404, "That's an error", "Something went wrong", "not available")
+  "error": an error page or message (500, 404, "That's an error", "Something went wrong", "not available", "try again", "couldn't load",
+or any other wording about something failing to load)
   "blank": empty or nearly empty - a flat colour, a white page, only a spinner or a broken-image icon
   "template": an unfilled template - placeholders in angle brackets like <Rating (Reviews)>, <Category>,
     <Open Hours>, <Distance>, or grey bars where the words should be
@@ -53,10 +54,20 @@ If unsure whether it is a real ad, answer "ad".
 Return JSON only: {"items": [ ... ]}"""
 
 OCR_SECONDS = 600
+# any error message, or wording that sits next to one: a failed preview, never a real creative
+ERROR_WORDS = (r"\berr?or\b|\boops\b|went wrong|try again|that.?s all we know|\bsorry\b|"
+               r"not (?:be )?(?:found|available|loaded|supported|displayed)|unavailable|no longer (?:available|exists|active)|"
+               r"(?:could|can).?n.?t (?:be )?(?:load|display|show|find|play|reach|connect)|cannot (?:be )?(?:load|display|show|find|play)|"
+               r"unable to (?:load|display|show|find|play|connect)|failed to (?:load|fetch|play)|"
+               r"forbidden|access denied|bad gateway|bad request|internal server|server error|service unavailable|gateway time|"
+               r"timed out|request timeout|too many requests|rate limit|has been (?:removed|deleted|disabled)|been taken down|"
+               r"(?:link|page|session|content) (?:has )?expired|refresh (?:the|this) page|reload (?:the|this) page|"
+               r"enable (?:javascript|cookies)|verify (?:you are|you.?re) (?:a )?human|checking your browser|captcha|loading(?:\.\.\.|…)|"
+               r"(?<![$\d,.])\b(?:40[0134]|408|429|50[0234])\b(?=\s*[.:|]|\s+(?:error|not|bad|internal|service|forbidden|gateway|unauthori|too))")
 OCR_RULES = (
-    ("error", re.compile(r"that.?s an error|server error|something went wrong|error (?:404|500|502|503)\b|\b(?:404|500|502|503)\W+(?:that|error|not found)|page (?:not found|isn.?t available)|content (?:isn.?t|is not) available|try again later")),
-    ("template", re.compile(r"[<«(\[{]\s*(?:rating|reviews|category|open hours|distance|business name|address)\b")),
-    ("broken", re.compile(r"(?:^|\| )\W*photo of\b")),
+    ("error", re.compile(ERROR_WORDS + r"|that.?s an error|server error|something went wrong|error (?:404|500|502|503)\b|\b(?:404|500|502|503)\W+(?:that|error|not found)|page (?:not found|isn.?t available)|content (?:isn.?t|is not) available|try again later")),
+    ("template", re.compile(r"[<«(\[{]\s*(?:rating|reviews|category|open hours|distance|business name|address|headline|description)\b|collapsed ad on|expanded ad\b")),
+    ("broken", re.compile(r"(?:^|\| )\W*photo of\b|productimage|more_vert|arrow_forward|arrow_back|chevron_(?:left|right)|play_arrow|expand_more|image (?:not available|unavailable|missing)|no image")),
 )
 TEMPLATE_WORDS = ("rating", "reviews", "category", "open hours", "distance")
 
@@ -81,6 +92,8 @@ def ocr_verdict(text):
     for v, rx in OCR_RULES:
         if rx.search(t):
             return v
+    if re.search(r"right arrow|left arrow", t) and len(re.findall(r"[a-z]{3,}", re.sub(r"sponsored|right arrow|left arrow|learn more|visit site|shop now|book now", " ", t))) < 3:
+        return "broken"  # only the video player's labels came through, no creative
     return "template" if sum(w in t for w in TEMPLATE_WORDS) >= 3 else ""
 
 _POOL = None
