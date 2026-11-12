@@ -111,7 +111,7 @@ def run(st, now, platforms=("meta", "google"), force=False):
         return
     cap, used = apify_limits(token)
     budget = min(BUDGET, cap) if cap else BUDGET
-    spent = max(month_spend(now.date()), used or 0)
+    spent = used if used is not None else month_spend(now.date())  # Apify's own figure for this billing period
     left, picked = budget - spent, []
     for _, p, r, d in jobs:
         est = EST["google_first" if p == "google" and not d else p]
