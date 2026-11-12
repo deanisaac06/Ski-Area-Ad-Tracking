@@ -277,7 +277,7 @@ return `<section class="pb" aria-label="Resort playbook">
 <div><span>New this week</span><b>${A.filter(a=>a.isnew).length}</b></div>
 <div><span>Unavailable</span><b>${X}</b><small>${X?'<button type="button" class="lnk" data-go="gone">Show them</button>':'every ad loaded'}</small></div>
 </div>
-${window.PEERS&&PEERS.ok?PEERS.resort(n):''}<div class="pbtl"><h3>Timeline · follows the campaign tabs and filters below</h3><div id="tlx"></div></div>
+${window.BUYER?BUYER(n):''}${window.PEERS&&PEERS.ok?PEERS.resort(n):''}<div class="pbtl"><h3>Timeline · follows the campaign tabs and filters below</h3><div id="tlx"></div></div>
 <div class="pbgrid">
 <div class="pbcol">
 <h3>Campaign mix</h3>
