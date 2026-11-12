@@ -108,7 +108,7 @@ def meta_ad(a, resort):
         "versions": a.get("collation_count") or 1, "group": str(a.get("collation_id") or ""),
         "title": pick("title"), "body": body, "desc": pick("link_description"),
         "cta": pick("cta_text"), "link": pick("link_url"), "n_cards": len(cards),
-        "img_src": img, "video_src": vid,
+        "img_src": img, "video_src": vid, "cards_src": __import__("archive").meta_cards(s, cards),
         "url": a.get("ad_library_url") or f"https://www.facebook.com/ads/library/?id={a.get('ad_archive_id')}",
         "dynamic": fmt == "DCO",
     }
@@ -133,7 +133,7 @@ def google_ad(a, resort):
         "title": heads[0] if heads else "", "headlines": heads,
         "body": first("body") or first("description"), "desc": first("description") if first("body") else "",
         "cta": first("cta"), "link": first("clickUrl"),
-        "img_src": a.get("previewUrl") or first("imageUrl"), "video_src": first("videoUrl"),
+        "img_src": a.get("previewUrl") or first("imageUrl"), "video_src": first("videoUrl"), "yt": __import__("archive").yt_id(a) if fmt == "VIDEO" else "", "cards_src": __import__("archive").google_cards(vars_),
         "regions": a.get("creativeRegions") or [], "surfaces": surfaces,
         "url": a.get("adLibraryUrl") or "",
     }
@@ -268,7 +268,7 @@ def compact(a, tags, media):
     t = tags.get(a["key"]) or rule_tags(a)
     keep = ["id", "p", "slug", "n", "s", "rg", "start", "end", "live", "kind", "fmt", "versions", "title", "body",
             "desc", "cta", "link", "url", "days", "norm", "ws", "parts", "first_seen", "last_seen", "plats",
-            "advertiser", "headlines", "regions", "surfaces", "served_days", "video_src", "vid", "img_l", "sig", "conf", "evergreen"]
+            "advertiser", "headlines", "regions", "surfaces", "served_days", "video_src", "vid", "img_l", "sig", "conf", "evergreen", "yt", "arc"]
     out = {k: a[k] for k in keep if k in a and a[k] not in ("", None, [], 0) or k in ("live", "ws")}
     if a["p"] == "meta":
         out.pop("video_src", None)                  # Meta video links expire within days; the ad library link stays
@@ -296,7 +296,7 @@ def build(now=None):
     for k, a in ads.items():
         a["key"] = k
     lst = list(ads.values())
-    rstats = __import__("scoring").score_all(lst, today)
+    rstats = __import__("scoring").score_all(lst, today); __import__("archive").attach(lst)
     tags, media = load_json(TAGS, {}), load_json(MEDIA, {})
     out = [compact(a, tags, media) for a in lst]
     out.sort(key=lambda a: (a.get("start") or ""), reverse=True)
@@ -314,7 +314,7 @@ def build(now=None):
                 "checked_meta": latest_run.get(("meta", r["slug"]), ""),
                 "checked_google": latest_run.get(("google", r["slug"]), ""), "stats": rstats.get(r["slug"], {})} for r in load_resorts()]
     lib = {"generated": now.strftime("%Y-%m-%d %H:%M UTC"), "today": today.isoformat(),
-           "last_check": max(latest_run.values(), default=""), "campaigns": CAMPAIGNS,
+           "last_check": max(latest_run.values(), default=""), "health": __import__("archive").health(), "campaigns": CAMPAIGNS,
            "resorts": resorts, "reports": reports, "ads": out}
     os.makedirs(DOCS, exist_ok=True)
     with open(os.path.join(DOCS, "data.js"), "w", encoding="utf-8") as f:
