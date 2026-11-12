@@ -218,9 +218,23 @@
   "changes": []
  },
  "mt-bachelor": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15823024762482851841": "MT. BACHELOR LLC"
+  },
+  "current": "AR15823024762482851841",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "MT. BACHELOR LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2022-11-15",
+    "url": "https://adstransparency.google.com/advertiser/AR15823024762482851841/creative/CR08556466763720556545",
+    "still": false
+   }
+  ]
  },
  "mt-hood-skibowl": {
   "known": {},
@@ -263,9 +277,23 @@
   "changes": []
  },
  "sun-valley": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR18111415464147025921": "Love Communications"
+  },
+  "current": "AR18111415464147025921",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Love Communications",
+    "to_kind": "agency",
+    "ads": 30,
+    "first": "2023-04-19",
+    "url": "https://adstransparency.google.com/advertiser/AR18111415464147025921/creative/CR04209308786076155905",
+    "still": false
+   }
+  ]
  },
  "schweitzer": {
   "known": {},
@@ -343,9 +371,23 @@
   "changes": []
  },
  "big-sky": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15156210473935831041": "Gale Partners LLC"
+  },
+  "current": "AR15156210473935831041",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Gale Partners LLC",
+    "to_kind": "agency",
+    "ads": 30,
+    "first": "2026-04-15",
+    "url": "https://adstransparency.google.com/advertiser/AR15156210473935831041/creative/CR14189458080575520769",
+    "still": false
+   }
+  ]
  },
  "bridger-bowl": {
   "known": {},
@@ -478,14 +520,42 @@
   "changes": []
  },
  "aspen-snowmass": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08713035106391949313": "ASPEN SKIING COMPANY LLC"
+  },
+  "current": "AR08713035106391949313",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "ASPEN SKIING COMPANY LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-08-21",
+    "url": "https://adstransparency.google.com/advertiser/AR08713035106391949313/creative/CR05315477853679124481",
+    "still": false
+   }
+  ]
  },
  "steamboat": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 29,
+    "first": "2025-08-08",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR14439081682898255873",
+    "still": false
+   }
+  ]
  },
  "winter-park": {
   "known": {},
@@ -493,9 +563,23 @@
   "changes": []
  },
  "copper-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR12428135277166329857": "Powdr - Copper Mountain LLC"
+  },
+  "current": "AR12428135277166329857",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Powdr - Copper Mountain LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2021-12-10",
+    "url": "https://adstransparency.google.com/advertiser/AR12428135277166329857/creative/CR03374693423809298433",
+    "still": false
+   }
+  ]
  },
  "arapahoe-basin": {
   "known": {},
@@ -508,9 +592,24 @@
   "changes": []
  },
  "purgatory": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08523298861597327361": "Adswerve, Inc.",
+   "AR16804627649514176513": "Purgatory Resort"
+  },
+  "current": "AR16804627649514176513",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Purgatory Resort",
+    "to_kind": "resort",
+    "ads": 23,
+    "first": "2025-10-21",
+    "url": "https://adstransparency.google.com/advertiser/AR16804627649514176513/creative/CR09225347627321655297",
+    "still": false
+   }
+  ]
  },
  "monarch": {
   "known": {},
@@ -573,9 +672,23 @@
   "changes": []
  },
  "park-city": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2025-11-13",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR16115706073372950529",
+    "still": false
+   }
+  ]
  },
  "deer-valley": {
   "known": {},
@@ -583,19 +696,61 @@
   "changes": []
  },
  "snowbird": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR06464544736806961153": "SNOWBIRD RESORT LLC"
+  },
+  "current": "AR06464544736806961153",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "SNOWBIRD RESORT LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2022-01-04",
+    "url": "https://adstransparency.google.com/advertiser/AR06464544736806961153/creative/CR05023396240482631681",
+    "still": false
+   }
+  ]
  },
  "brighton": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15156210473935831041": "Gale Partners LLC"
+  },
+  "current": "AR15156210473935831041",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Gale Partners LLC",
+    "to_kind": "agency",
+    "ads": 30,
+    "first": "2025-06-27",
+    "url": "https://adstransparency.google.com/advertiser/AR15156210473935831041/creative/CR04252484408675663873",
+    "still": false
+   }
+  ]
  },
  "snowbasin": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR18111415464147025921": "Love Communications"
+  },
+  "current": "AR18111415464147025921",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Love Communications",
+    "to_kind": "agency",
+    "ads": 30,
+    "first": "2024-11-18",
+    "url": "https://adstransparency.google.com/advertiser/AR18111415464147025921/creative/CR09007453834632495105",
+    "still": false
+   }
+  ]
  },
  "solitude": {
   "known": {},
@@ -603,9 +758,24 @@
   "changes": []
  },
  "brian-head": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR07696747592486486017": "Adswerve, Inc.",
+   "AR12525860386039136257": "Brian Head Recreation I LLC"
+  },
+  "current": "AR12525860386039136257",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Brian Head Recreation I LLC",
+    "to_kind": "resort",
+    "ads": 22,
+    "first": "2025-11-07",
+    "url": "https://adstransparency.google.com/advertiser/AR12525860386039136257/creative/CR04990167925349416961",
+    "still": false
+   }
+  ]
  },
  "nordic-valley": {
   "known": {},
@@ -638,9 +808,23 @@
   "changes": []
  },
  "angel-fire": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR12755030838702243841": "Cottonwood Advertising, llc."
+  },
+  "current": "AR12755030838702243841",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Cottonwood Advertising, llc.",
+    "to_kind": "agency",
+    "ads": 30,
+    "first": "2026-02-23",
+    "url": "https://adstransparency.google.com/advertiser/AR12755030838702243841/creative/CR11607771346532040705",
+    "still": false
+   }
+  ]
  },
  "red-river": {
   "known": {},
@@ -718,14 +902,42 @@
   "changes": []
  },
  "mammoth-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2026-09-22",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR06724800900038131713",
+    "still": false
+   }
+  ]
  },
  "palisades-tahoe": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2026-10-13",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR12553170751634538497",
+    "still": false
+   }
+  ]
  },
  "heavenly": {
   "known": {},
@@ -758,9 +970,24 @@
   "changes": []
  },
  "sierra-at-tahoe": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05285936441552011265": "Sierra-at-Tahoe",
+   "AR06654161839208792065": "Jeffrey Joyce"
+  },
+  "current": "AR06654161839208792065",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Jeffrey Joyce",
+    "to_kind": "person",
+    "ads": 15,
+    "first": "2024-09-26",
+    "url": "https://adstransparency.google.com/advertiser/AR06654161839208792065/creative/CR08061917239684628481",
+    "still": false
+   }
+  ]
  },
  "mountain-high": {
   "known": {},
@@ -993,9 +1220,23 @@
   "changes": []
  },
  "killington-pico": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR01060809144895799297": "Killington/Pico Ski Resort Partners, LLC"
+  },
+  "current": "AR01060809144895799297",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Killington/Pico Ski Resort Partners, LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2022-10-03",
+    "url": "https://adstransparency.google.com/advertiser/AR01060809144895799297/creative/CR08915336750457421825",
+    "still": false
+   }
+  ]
  },
  "stratton": {
   "known": {},
@@ -1073,14 +1314,30 @@
   "changes": []
  },
  "sunday-river": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR09760385473049526273": "Sunday River Skiway Corp"
+  },
+  "current": "AR09760385473049526273",
   "changes": []
  },
  "sugarloaf": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15156210473935831041": "Gale Partners LLC"
+  },
+  "current": "AR15156210473935831041",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Gale Partners LLC",
+    "to_kind": "agency",
+    "ads": 26,
+    "first": "2026-01-10",
+    "url": "https://adstransparency.google.com/advertiser/AR15156210473935831041/creative/CR13922953882389970945",
+    "still": false
+   }
+  ]
  },
  "saddleback": {
   "known": {},
@@ -1103,8 +1360,10 @@
   "changes": []
  },
  "wachusett": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR12490207106600796161": "WACHUSETT MOUNTAIN ASSOCIATES, INC."
+  },
+  "current": "AR12490207106600796161",
   "changes": []
  },
  "berkshire-east": {
@@ -1223,9 +1482,24 @@
   "changes": []
  },
  "boyne-mountain-the-highlands": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR02956004506963279873": "Boyne Mountain Recreation, LLC",
+   "AR15156210473935831041": "Gale Partners LLC"
+  },
+  "current": "AR15156210473935831041",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Gale Partners LLC",
+    "to_kind": "agency",
+    "ads": 21,
+    "first": "2025-05-02",
+    "url": "https://adstransparency.google.com/advertiser/AR15156210473935831041/creative/CR02620052654696431617",
+    "still": false
+   }
+  ]
  },
  "nubs-nob": {
   "known": {},
@@ -1268,29 +1542,102 @@
   "changes": []
  },
  "whistler-blackcomb": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-08-06",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR16321229260738002945",
+    "still": false
+   }
+  ]
  },
  "big-white": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR09852337252523311105": "Peter Charles Plimmer"
+  },
+  "current": "AR09852337252523311105",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Peter Charles Plimmer",
+    "to_kind": "person",
+    "ads": 30,
+    "first": "2024-08-26",
+    "url": "https://adstransparency.google.com/advertiser/AR09852337252523311105/creative/CR11070404726586605569",
+    "still": false
+   }
+  ]
  },
  "silverstar": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR09708001586596282369": "Silverstar Mountain Resort"
+  },
+  "current": "AR09708001586596282369",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Silverstar Mountain Resort",
+    "to_kind": "resort",
+    "ads": 20,
+    "first": "2025-12-23",
+    "url": "https://adstransparency.google.com/advertiser/AR09708001586596282369/creative/CR14520825665139245057",
+    "still": false
+   }
+  ]
  },
  "sun-peaks": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR11931810952384610305": "Brainlabs Canada Ltd.",
+   "AR12735843020767756289": "War Room Inc."
+  },
+  "current": "AR12735843020767756289",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "War Room Inc.",
+    "to_kind": "other",
+    "ads": 28,
+    "first": "2024-05-21",
+    "url": "https://adstransparency.google.com/advertiser/AR12735843020767756289/creative/CR00612888440115036161",
+    "still": false
+   }
+  ]
  },
  "red-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR03358777434651492353": "Western Media Group Solutions Company Inc.",
+   "AR05205949616331161601": "Mightyhive Holdings Ltd",
+   "AR09708061862167314433": "RED RESORT LIMITED PARTNERSHIР"
+  },
+  "current": "AR09708061862167314433",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "RED RESORT LIMITED PARTNERSHIР",
+    "to_kind": "resort",
+    "ads": 8,
+    "first": "2025-10-07",
+    "url": "https://adstransparency.google.com/advertiser/AR09708061862167314433/creative/CR18032423671179509761",
+    "still": false
+   }
+  ]
  },
  "whitewater": {
   "known": {},
@@ -1298,24 +1645,81 @@
   "changes": []
  },
  "fernie": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR12278852831116525569": "Mightyhive Holdings Ltd",
+   "AR01301277045174566913": "Resorts of the Canadian Rockies"
+  },
+  "current": "AR01301277045174566913",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Resorts of the Canadian Rockies",
+    "to_kind": "resort",
+    "ads": 15,
+    "first": "2025-02-20",
+    "url": "https://adstransparency.google.com/advertiser/AR01301277045174566913/creative/CR06315509663693537281",
+    "still": false
+   }
+  ]
  },
  "kicking-horse": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR01500508552127578113": "Resorts of the Canadian Rockies"
+  },
+  "current": "AR01500508552127578113",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Resorts of the Canadian Rockies",
+    "to_kind": "resort",
+    "ads": 16,
+    "first": "2026-01-19",
+    "url": "https://adstransparency.google.com/advertiser/AR01500508552127578113/creative/CR02609252186336526337",
+    "still": false
+   }
+  ]
  },
  "panorama": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR06292147343705767937": "Panorama Mountain Village Inc."
+  },
+  "current": "AR06292147343705767937",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Panorama Mountain Village Inc.",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-10-01",
+    "url": "https://adstransparency.google.com/advertiser/AR06292147343705767937/creative/CR12802378635482759169",
+    "still": false
+   }
+  ]
  },
  "revelstoke": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR02265457139671629825": "Revelstoke Mountain Resort"
+  },
+  "current": "AR02265457139671629825",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Revelstoke Mountain Resort",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2025-05-12",
+    "url": "https://adstransparency.google.com/advertiser/AR02265457139671629825/creative/CR04110482756826300417",
+    "still": false
+   }
+  ]
  },
  "mount-washington": {
   "known": {},
@@ -1333,9 +1737,23 @@
   "changes": []
  },
  "cypress-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR00200990639658106881": "Wasserman & Partners"
+  },
+  "current": "AR00200990639658106881",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Wasserman & Partners",
+    "to_kind": "agency",
+    "ads": 30,
+    "first": "2026-10-14",
+    "url": "https://adstransparency.google.com/advertiser/AR00200990639658106881/creative/CR10527398642782830593",
+    "still": false
+   }
+  ]
  },
  "mt-seymour": {
   "known": {},
@@ -1343,14 +1761,43 @@
   "changes": []
  },
  "banff-sunshine": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR12369256549758009345": "Sunshine Village Corporation",
+   "AR16029311663752609793": "Sunshine Village Corporation"
+  },
+  "current": "AR16029311663752609793",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Sunshine Village Corporation",
+    "to_kind": "resort",
+    "ads": 16,
+    "first": "2026-03-02",
+    "url": "https://adstransparency.google.com/advertiser/AR12369256549758009345/creative/CR06602530534105022465",
+    "still": false
+   }
+  ]
  },
  "lake-louise": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR17904221689122652161": "The Lake Louise Ski Area LTD"
+  },
+  "current": "AR17904221689122652161",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "The Lake Louise Ski Area LTD",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-06-01",
+    "url": "https://adstransparency.google.com/advertiser/AR17904221689122652161/creative/CR02518693934771732481",
+    "still": false
+   }
+  ]
  },
  "mt-norquay": {
   "known": {},
@@ -1358,8 +1805,10 @@
   "changes": []
  },
  "marmot-basin": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR00606564848095985665": "Brainlabs Canada Ltd."
+  },
+  "current": "AR00606564848095985665",
   "changes": []
  },
  "castle-mountain": {
@@ -1368,19 +1817,85 @@
   "changes": []
  },
  "tremblant": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR01217566328689262593": "Association De Villégiature De La Station Mont Tremblant",
+   "AR14555343862030663681": "Eighty Five Sixty, Inc.",
+   "AR11566713512176648193": "MightyHive, INC."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Association De Villégiature De La Station Mont Tremblant",
+    "to_kind": "resort",
+    "ads": 8,
+    "first": "2023-04-20",
+    "url": "https://adstransparency.google.com/advertiser/AR01217566328689262593/creative/CR00066690379566546945",
+    "still": false
+   },
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 21,
+    "first": "2026-10-09",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR18239836094398988289",
+    "still": false
+   },
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "MightyHive, INC.",
+    "to_kind": "other",
+    "ads": 1,
+    "first": "2024-10-25",
+    "url": "https://adstransparency.google.com/advertiser/AR11566713512176648193/creative/CR05924103418493796353",
+    "still": false
+   }
+  ]
  },
  "le-massif-de-charlevoix": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR01409554046880055297": "Le Massif S.E.C."
+  },
+  "current": "AR01409554046880055297",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Le Massif S.E.C.",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2024-04-16",
+    "url": "https://adstransparency.google.com/advertiser/AR01409554046880055297/creative/CR02270069616719953921",
+    "still": false
+   }
+  ]
  },
  "mont-sainte-anne": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05190003553812348929": "Mont-Sainte-Anne"
+  },
+  "current": "AR05190003553812348929",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Mont-Sainte-Anne",
+    "to_kind": "resort",
+    "ads": 3,
+    "first": "2026-01-06",
+    "url": "https://adstransparency.google.com/advertiser/AR05190003553812348929/creative/CR15264539178457628673",
+    "still": false
+   }
+  ]
  },
  "mont-sutton": {
   "known": {},
@@ -1388,9 +1903,23 @@
   "changes": []
  },
  "bromont": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR17742179152934469633": "Skibromont.com s.e.c"
+  },
+  "current": "AR17742179152934469633",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Skibromont.com s.e.c",
+    "to_kind": "person",
+    "ads": 30,
+    "first": "2026-09-18",
+    "url": "https://adstransparency.google.com/advertiser/AR17742179152934469633/creative/CR06416356277487665153",
+    "still": false
+   }
+  ]
  },
  "owls-head": {
   "known": {},
@@ -1398,9 +1927,24 @@
   "changes": []
  },
  "sommets": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08857243057171464193": "Conversio Marketing Inc.",
+   "AR10037422064916234241": "CONVERSIO MARKETING INC."
+  },
+  "current": "AR08857243057171464193",
+  "changes": [
+   {
+    "date": "2026-11-12",
+    "from": "",
+    "from_kind": "",
+    "to": "Conversio Marketing Inc.",
+    "to_kind": "agency",
+    "ads": 15,
+    "first": "2026-10-15",
+    "url": "https://adstransparency.google.com/advertiser/AR08857243057171464193/creative/CR03547797235951468545",
+    "still": false
+   }
+  ]
  },
  "blue-mountain-on": {
   "known": {},
