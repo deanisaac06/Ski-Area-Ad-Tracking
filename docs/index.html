@@ -253,6 +253,40 @@ svg.tl{width:100%;height:auto;display:block}
 .copyhead{font-weight:600;margin:0 0 6px}
 .copyblk{white-space:pre-wrap}
 a.node{text-decoration:none;color:inherit}
+/* agency labels, active filters, unavailable ads */
+.controls.facets{border-bottom:0;padding-bottom:0;margin-bottom:0}
+.facets .ctl select{max-width:210px}
+.active{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-4px 0 14px;font-size:12.5px}
+.active:empty{display:none}
+.active .chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--surface);cursor:pointer;padding:2px 9px;color:var(--ink)}
+.active .chip:hover{border-color:var(--accent);color:var(--accent)}
+.active .chip b{font-weight:600}
+.active .clr{border:0;background:none;color:var(--accent);cursor:pointer;padding:2px 4px;text-decoration:underline;font-size:12.5px}
+.ctag{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.art.gone{width:80%!important;aspect-ratio:4/5;background:repeating-linear-gradient(135deg,var(--sunken) 0 8px,var(--bg) 8px 16px);box-shadow:none;border:1px dashed var(--muted)}
+.art.gone .g{color:var(--muted);text-shadow:none;padding:10px;text-align:center}
+.art.gone .g b{font-size:26px}
+.badge.warn{background:#FDECEC;color:#B42318;border-color:transparent}
+.card.gone{border-style:dashed}
+.card.gone .thumb{opacity:1}
+.qnote{font-size:11.5px;color:#B42318}
+.qbox{border-radius:var(--r);padding:10px 12px;display:grid;gap:4px;font-size:13px;background:var(--sunken);border-left:4px solid var(--muted)}
+.qbox b{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.qbox.gone{background:#FDECEC;border-left-color:#B42318;color:#5C1A14}
+.qbox.text{background:var(--gold-soft);border-left-color:var(--gold)}
+.qbox.fixed{background:var(--accent-soft);border-left-color:var(--accent)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .qbox.gone,:root:not([data-theme="light"]) .badge.warn{background:#3A1717;color:#F3C5C0}:root:not([data-theme="light"]) .qnote{color:#F3A59C}}
+.tags{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;margin:0}
+.tags dt{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.tags dd{margin:3px 0 0;display:flex;flex-wrap:wrap;gap:4px}
+.tagbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:1px 9px;font-size:12px;cursor:pointer}
+.tagbtn:hover{border-color:var(--accent);color:var(--accent)}
+.pbtl{display:grid;gap:6px;min-width:0}
+.pbtl h3,.pbcol h3{font-family:var(--mono);font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0}
+.pbstats{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.pbstats .lnk{border:0;background:none;padding:0;color:var(--accent);cursor:pointer;font-size:11.5px;text-align:left;text-decoration:underline}
+.dhead .acts{flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:620px){.controls{gap:8px 10px}.facets .ctl{flex:1 1 45%}.facets .ctl select{max-width:none;width:100%}.tags{grid-template-columns:1fr}.pb{padding:12px 10px}.fhead h1{font-size:28px}}
 footer.foot{color:var(--muted);font-size:12px;margin-top:34px;max-width:80ch}
 </style></head>
 <body>
@@ -273,9 +307,10 @@ footer.foot{color:var(--muted);font-size:12px;margin-top:34px;max-width:80ch}
     <div class="fhead"><h1 id="ftitle"></h1><div class="fstats" id="fstats"></div></div>
     <div id="playbook"></div>
     <div class="tabs" id="tabs" role="group" aria-label="Campaign type"></div>
-    <div class="controls">
+    <div class="controls facets" id="facets" aria-label="Agency labels"></div>
+<div class="controls">
       <div class="ctl">Platform<div class="seg" id="plats"><button data-p="all" aria-pressed="true">Both</button><button data-p="meta">Meta</button><button data-p="google">Google</button></div></div>
-      <div class="ctl">Status<div class="seg" id="status"><button data-s="all" aria-pressed="true">All</button><button data-s="live">Live</button><button data-s="ended">Stopped</button></div></div>
+      <div class="ctl">Status<div class="seg" id="status"><button data-s="all" aria-pressed="true">All</button><button data-s="live">Live</button><button data-s="ended">Stopped</button><button data-s="gone" title="Ads we know ran, but whose content came back broken (error page, blank or empty)">Unavailable</button></div></div>
       <div class="ctl">Launched<div class="seg" id="dates"><button data-d="all" aria-pressed="true">Any time</button><button data-d="7">7 days</button><button data-d="30">30 days</button><button data-d="season">This season</button><button data-d="custom">Custom</button></div></div>
       <div class="ctl" id="custom" hidden><input type="date" id="dfrom" aria-label="From date"> to <input type="date" id="dto" aria-label="To date"></div>
       <div class="ctl">Format<div class="seg" id="kinds"><button data-k="all" aria-pressed="true">All</button><button data-k="Video">Video</button><button data-k="Static">Static</button><button data-k="Carousel">Carousel</button><button data-k="Dynamic">Dynamic</button><button data-k="Text">Text</button></div></div>
@@ -284,7 +319,8 @@ footer.foot{color:var(--muted);font-size:12px;margin-top:34px;max-width:80ch}
       <button class="help" id="helpBtn" aria-expanded="false" aria-label="How the winner score works">?</button>
       <div class="seg" id="views" aria-label="View"><button data-v="grid" aria-pressed="true">Grid</button><button data-v="list">List</button></div>
     </div>
-    <div class="helpbox" id="helpbox" hidden><b>Winner score (0–100).</b> Neither Meta nor Google shows spend or results, so the score reads what resorts reveal by their behavior — they keep paying for ads that work:
+    <div class="active" id="active"></div>
+<div class="helpbox" id="helpbox" hidden><b>Winner score (0–100).</b> Neither Meta nor Google shows spend or results, so the score reads what resorts reveal by their behavior — they keep paying for ads that work:
 <ul><li><b>Run length compared with the resort's normal (60 pts).</b> 40 days means more at a resort whose ads usually last 10 days. Ads still running only count their days so far.</li><li><b>Staying power (20 pts).</b> Full points at 90+ days. Google uses days actually served.</li><li><b>Multiple versions (20 pts).</b> Several versions or dynamic creative running together.</li></ul>
 Ads under a week old show “Too early.” Meta shows US ads only while they run, so Meta history starts when tracking began (Nov 10, 2026); Google history goes back years.</div>
     <div id="results"></div>
@@ -293,5 +329,5 @@ Ads under a week old show “Too early.” Meta shows US ads only while they run
 </div>
 <dialog class="drawer" id="drawer" aria-labelledby="dtitle"></dialog>
 <script src="data.js"></script>
-<script src="extra.js"></script><script src="app.js"></script>
+<script src="extra.js"></script><script src="timeline.js"></script><script src="app.js"></script>
 </body></html>
