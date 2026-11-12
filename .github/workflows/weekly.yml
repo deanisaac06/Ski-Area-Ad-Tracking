@@ -21,6 +21,8 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+      - name: Install Tesseract OCR (reads the words on saved ad pictures)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr || echo "Tesseract not installed - OCR will be skipped"
       - run: pip install -r requirements.txt
       - name: Collect, save images, tag, report, rebuild the site
         env:
