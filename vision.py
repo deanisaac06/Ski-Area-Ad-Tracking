@@ -7,7 +7,9 @@ Runs at the start of every ad health check (quality.run), so new ads are checked
    shared  the identical picture is filed under ads from two or more resorts: a Google error page or
            empty template, never a real creative
    known   the same picture as an ad already confirmed broken
-2. An AI look (same Gemini / Groq / Cloudflare keys as the tags) at each distinct picture not looked at yet,
+2. OCR (Tesseract, free, offline) reads the words on each distinct picture: error pages ("That's an error"),
+   unfilled Google templates (<Rating (Reviews)>, <Category>) and missing photos ("Photo of ...").
+3. An AI look (same Gemini / Groq / Cloudflare keys as the tags) at each distinct picture not looked at yet,
    suspects first: no copy, no button or landing page, Google Maps placements, thin or tiny pictures, little
    detail. Results are kept by picture fingerprint, so a placeholder seen 20 times costs one look.
 quality.py then repairs the ad, shows it as copy only, or sets it aside as unavailable, as before.
@@ -17,6 +19,10 @@ data/vision.json {"fp": {fingerprint: {"v": verdict, "t": words seen}}, "bad": {
 Run: python vision.py
 """
 import base64
+import re
+import shutil
+import subprocess
+import tempfile
 import os
 import time
 from collections import defaultdict
@@ -45,6 +51,37 @@ to capture the ad. For EACH image return one JSON object:
 - "t": the main words on the image, under 15 words
 If unsure whether it is a real ad, answer "ad".
 Return JSON only: {"items": [ ... ]}"""
+
+OCR_SECONDS = 600
+OCR_RULES = (
+    ("error", re.compile(r"that.?s an error|server error|something went wrong|error (?:404|500|502|503)\b|\b(?:404|500|502|503)\W+(?:that|error|not found)|page (?:not found|isn.?t available)|content (?:isn.?t|is not) available|try again later")),
+    ("template", re.compile(r"[<«(\[{]\s*(?:rating|reviews|category|open hours|distance|business name|address)\b")),
+    ("broken", re.compile(r"(?:^|\| )\W*photo of\b")),
+)
+TEMPLATE_WORDS = ("rating", "reviews", "category", "open hours", "distance")
+
+def read(im):
+    """The words on the picture, read for free by Tesseract OCR; '' if Tesseract isn't installed."""
+    if not shutil.which("tesseract"):
+        return ""
+    w, h = im.size
+    f = min(3.0, max(1.0, 1000.0 / w))
+    g = im.convert("L").resize((round(w * f), max(1, round(h * f))))
+    with tempfile.NamedTemporaryFile(suffix=".png") as t:
+        g.save(t.name)
+        try:
+            out = subprocess.run(["tesseract", t.name, "stdout"], capture_output=True, text=True, timeout=30).stdout
+        except Exception:
+            return ""
+    return " | ".join(x.strip() for x in out.splitlines() if x.strip())[:400]
+
+def ocr_verdict(text):
+    """error / template / broken when the words on the picture give it away, else ''."""
+    t = (text or "").lower()
+    for v, rx in OCR_RULES:
+        if rx.search(t):
+            return v
+    return "template" if sum(w in t for w in TEMPLATE_WORDS) >= 3 else ""
 
 _POOL = None
 
@@ -89,7 +126,7 @@ def bad_picture(im):
     if _POOL is None:
         _POOL = library.load_json(VISION, {}).get("bad") or {}
     v, _ = local(im)
-    return v or near(media.dhash(im), _POOL)
+    return v or near(media.dhash(im), _POOL) or ocr_verdict(read(im))
 
 def suspicion(a, w, h, size):
     """How likely the picture isn't the real ad, from the ad's other data points (higher = look first)."""
@@ -162,6 +199,25 @@ def run(max_calls=MAX_CALLS, max_seconds=MAX_SECONDS):
     # an AI look at each distinct picture not looked at yet: shared pictures and suspects first, then newest
     rows.sort(key=lambda r: r["a"].get("start") or "", reverse=True)
     rows.sort(key=lambda r: (len(resorts[r["fp"]]) < 2, -suspicion(r["a"], r["w"], r["h"], r["size"])))
+    # read the words on each distinct picture (free, kept by fingerprint): catches error pages and empty templates
+    ocr, read_n, stop = vs.get("ocr") or {}, 0, time.time() + OCR_SECONDS
+    if shutil.which("tesseract"):
+        for r in rows:
+            if r["v"] or r["fp"] in ocr or time.time() > stop:
+                continue
+            try:
+                with Image.open(r["path"]) as im:
+                    ocr[r["fp"]] = read(media.to_rgb(im))
+                read_n += 1
+            except Exception:
+                ocr[r["fp"]] = ""
+    else:
+        print(" content check: Tesseract not installed, OCR skipped")
+    for r in rows:
+        ov = "" if r["v"] else ocr_verdict(ocr.get(r["fp"]))
+        if ov:
+            r["v"], r["how"] = ov, "words on the picture: " + ocr[r["fp"]][:80]
+            bad.setdefault(r["fp"], ov)
     todo, queued = [], set()
     for r in rows:
         if not r["v"] and r["fp"] not in fpv and r["fp"] not in queued:
@@ -207,9 +263,9 @@ def run(max_calls=MAX_CALLS, max_seconds=MAX_SECONDS):
         if v:
             out[r["k"]] = {"v": v, "how": how, "fp": fp}
             n[v] += 1
-    vs.update({"fp": fpv, "bad": bad, "ads": out, "checked": date.today().isoformat()})
+    vs.update({"ocr": ocr, "fp": fpv, "bad": bad, "ads": out, "checked": date.today().isoformat()})
     library.save_json(VISION, vs)
-    line = (f"Content check: {len(rows)} pictures, {looked} looked at by AI this run ({len(todo)} waiting), "
+    line = (f"Content check: {len(rows)} pictures, {read_n} read by OCR, {looked} looked at by AI this run ({len(todo)} waiting), "
             f"{len(out)} are not the real ad: " + (", ".join(f"{c} {v}" for v, c in sorted(n.items())) or "none"))
     print(line)
     sm = os.environ.get("GITHUB_STEP_SUMMARY")
