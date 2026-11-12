@@ -103,9 +103,13 @@ def main():
     if args.collect:
         platforms = ["meta", "google"] if args.collect == "both" else [args.collect]
     elif args.auto:
-        platforms = due_collections(st, now)
+        platforms = ["meta", "google"]  # cadence.py decides which resorts are due
     if platforms:
-        do_collect(st, platforms, now)
+        try:  # each resort weekly or every 2 weeks, inside the monthly Apify budget (cadence.py)
+            __import__("cadence").run(st, now, tuple(platforms), force=bool(args.collect))
+        except Exception as e:
+            print("Collection failed:", str(e)[:300])
+        library.save_json(STATUS, st, indent=1)
     else:
         print("No collection due")
 
