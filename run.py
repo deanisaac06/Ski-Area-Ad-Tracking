@@ -110,7 +110,7 @@ def main():
         print("No collection due")
 
     media.run()                      # before tagging: image-only ads are tagged from their saved image
-    ai.tag_new_ads()
+    ai.tag_new_ads(); __import__("archive").run()  # frames, every card/version, AI video notes, landing pages
 
     if args.report:
         do_report(st, now, (now.date() - timedelta(days=now.weekday())).isoformat(), force_send=True)
