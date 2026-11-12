@@ -20,7 +20,7 @@ REPORTS = os.path.join(library.DOCS, "reports")
 INDEX = os.path.join(REPORTS, "index.json")
 MAX_NEW_CARDS, MAX_TOP_CARDS = 24, 12
 
-PROMPT = """Below is this week's activity in the paid ads of {n_resorts} US ski resorts we track (Meta = Facebook/Instagram ads, Google = Search/YouTube/Display ads from Google's Ads Transparency Center). Week: {since} to {today}.
+PROMPT = """Below is this week's activity in the paid ads of {n_resorts} US and Canadian ski resorts we track (Meta = Facebook/Instagram ads, Google = Search/YouTube/Display ads from Google's Ads Transparency Center). Week: {since} to {today}.
 
 Numbers: {n_new} new ads launched ({n_new_meta} Meta, {n_new_google} Google). {n_ended} ads stopped. {n_live_meta} Meta ads are live right now.
 Campaign mix of new ads: {mix}.
@@ -153,7 +153,8 @@ def render(g, summary, img_for, notice=None, for_site=False):
     resorts = "".join(f"<tr><td style='padding:4px 8px;border-bottom:1px solid #eee;font:13px Arial'>{escape(n)}</td>"
                       + "".join(f"<td style='padding:4px 8px;border-bottom:1px solid #eee;font:13px Arial;text-align:right'>{c[k] or '&ndash;'}</td>"
                                 for k in ("new", "ended", "meta_live", "google_live")) + "</tr>"
-                      for n, c in sorted(g["by_resort"].items(), key=lambda x: (-x[1]["new"], -x[1]["meta_live"], x[0])))
+                      for n, c in sorted(((n, c) for n, c in g["by_resort"].items() if c["new"] or c["ended"]),
+                           key=lambda x: (-x[1]["new"], -x[1]["ended"], x[0]))[:40])  # only resorts with changes
     stand = "".join(f"<li style='margin:4px 0'><b>{escape(a['n'])}</b> ({PLAT[a['p']][0]}): {escape(a['stand'])}</li>" for a in g["standouts"])
     new_cards = sorted(g["new"], key=lambda a: (not img_for(a), -(a.get("versions") or 1)))[:MAX_NEW_CARDS]
     paras = "".join(f"<p style='margin:0 0 10px'>{escape(p.strip())}</p>" for p in (summary or "").split("\n") if p.strip())
@@ -181,7 +182,7 @@ def render(g, summary, img_for, notice=None, for_site=False):
 <div style="font-size:12px;color:#5B6B7B;margin-bottom:6px">Winner score 0&ndash;100: adjusted for budget. Whether an ad outlasted the others its resort launched the same week, how long it ran vs that resort's own ads, extra versions, steady serving and reuse. Resorts keep paying for what works.</div>
 {grid(g['top'], img_for) if g['top'] else '<p style="color:#5B6B7B">Not enough history yet.</p>'}
 {(h2('Stands out') + '<ul style="padding-left:18px;margin:0">' + stand + '</ul>') if stand else ''}
-{h2('By resort')}
+{h2('Resorts with changes this week')}
 <table width="100%" style="border-collapse:collapse;background:#fff"><tr style="background:#E8EDF2">
 <th style="padding:5px 8px;text-align:left;font:10px Arial;text-transform:uppercase">Resort</th><th style="padding:5px 8px;text-align:right;font:10px Arial;text-transform:uppercase">New</th>
 <th style="padding:5px 8px;text-align:right;font:10px Arial;text-transform:uppercase">Stopped</th><th style="padding:5px 8px;text-align:right;font:10px Arial;text-transform:uppercase">Meta live</th>
