@@ -135,9 +135,10 @@ def apply(ads, resorts, today):
                 if k in known:
                     continue
                 known[k] = v["name"]
-                if v["last"] >= fresh and k != prev:  # a brand-new advertiser with ads shown recently
+                renamed = sum(nk(x) == nk(v["name"]) for x in known.values()) > 1  # same company, another Google account
+                if v["last"] >= fresh and k != prev and not renamed:  # a brand-new advertiser with ads shown recently
                     switch(v, bool(old and old["last"] >= fresh))
-            if (cur and prev and cur["id"] != prev and cur["id"] not in told and cur["last"] >= fresh
+            if (cur and prev and cur["id"] != prev and cur["id"] not in told and nk(cur["name"]) != nk(known.get(prev, "")) and cur["last"] >= fresh
                     and not (old and old["last"] >= fresh)):  # a known advertiser took over and the old one went quiet
                 switch(cur, False)
             if cur:
