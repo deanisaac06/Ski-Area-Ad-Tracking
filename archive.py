@@ -41,7 +41,7 @@ LP_W, LP_MAX_H = 1280, 2400  # browser width, longest part of a page kept (px, b
 LP_IMG = (720, 1350, 64)
 LP_TEXT = 4000  # characters of page text kept
 YT_FRAMES = ["maxresdefault", "hq1", "hq2", "hq3"]  # cover, then frames at about 25%, 50%, 75%
-NOTE_MODELS = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-flash-lite-latest"]
+NOTE_MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest", "gemini-3.8-flash-lite"]  # lite first: bigger free quota
 SKIP_HOSTS = ("facebook.com", "fb.com", "fb.me", "instagram.com", "apps.apple.com", "play.google.com",
               "messenger.com", "wa.me", "whatsapp.com")
 YT = re.compile(r"(?:ytimg\.com/vi(?:_webp)?/|youtube(?:-nocookie)?\.com/(?:watch\?(?:[^\"\s]*?&)?v=|embed/|shorts/|v/)"
@@ -153,7 +153,7 @@ def save_cards(ads, arc, fails, ph, until):
                 continue
             tried += 1
             try:
-                im = grab(u)
+                im = grab(u, 12)
             except Exception:
                 bad += 1
                 continue
