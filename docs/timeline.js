@@ -53,6 +53,13 @@ const css = `
 .tl-tip .note{font-size:11.5px}
 .tb.x{background:repeating-linear-gradient(135deg,var(--sunken) 0 4px,transparent 4px 8px)!important;outline:1px dashed var(--muted);outline-offset:-1px;color:var(--muted)}
 .tl-c{transform-origin:0 0}
+.tb.od{border-radius:50%;box-shadow:0 0 0 1.5px var(--surface);transition:opacity .12s,box-shadow .12s,transform .12s}
+.tb.od::after{display:none}
+.tb.od.g{background-image:none;box-shadow:inset 0 0 0 2px var(--ink),0 0 0 1px var(--surface)}
+.tb.od:hover,.tb.od:focus-visible{box-shadow:0 0 0 2px var(--ink);transform:scale(1.4);z-index:3}
+.tb.od img{width:100%;height:100%;border-radius:50%}
+.orun{position:absolute;bottom:3px;height:5px;border-radius:3px;pointer-events:none;opacity:.9}
+.oc{position:absolute;font-family:var(--mono);font-size:10px;color:var(--muted);transform:translateX(-50%);pointer-events:none}
 @media (max-width:600px){.tl-count{margin-left:0;width:100%}.tl-tools{gap:6px 8px}}
 `;
 const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
@@ -67,6 +74,7 @@ const FNC = {Awareness:'#7A5CC2', Consideration:'#2A9BA0', Conversion:'#D9622B'}
 const MINP = 0.25, MAXP = 60, WAVE_GAP = 10;
 const S = {};
 let TIP = null;
+let MODE = 'bars'; try { MODE = localStorage.getItem('ral-tlmode') || 'bars'; } catch (_) {}
 function tip(){ if (!TIP) { TIP = document.createElement('div'); TIP.className = 'tl-tip'; TIP.hidden = true; document.body.appendChild(TIP); } return TIP; }
 
 function mount(el, ads, o){
@@ -99,19 +107,20 @@ function mount(el, ads, o){
 <div class="tl-tools">
 <div class="seg" aria-label="Zoom"><button type="button" data-z="0.5" title="Zoom out">−</button><button type="button" data-z="2" title="Zoom in">+</button></div>
 <div class="seg" aria-label="Range"><button type="button" data-r="all">All</button><button type="button" data-r="365">1 yr</button><button type="button" data-r="season">Season</button><button type="button" data-r="90">90 days</button><button type="button" data-r="30">30 days</button></div>
+<div class="seg" aria-label="Timeline view"><button type="button" data-m="ov" aria-pressed="${MODE === 'ov'}" title="Broad view: one dot per ad at its launch date">Overview</button><button type="button" data-m="bars" aria-pressed="${MODE !== 'ov'}" title="Granular view: one bar per ad from start to end date">Detailed</button></div>
 <label class="ctl">Color by <select class="tl-col"><option value="camp">Campaign</option><option value="plat">Platform</option><option value="fmt">Format</option><option value="obj">Funnel stage</option></select></label>
 <span class="tl-count"><b>${items.length}</b> ads${o.total && o.total !== items.length ? ` of ${o.total} (filters applied)` : ''}</span>
 </div>
 <div class="tl-vp" tabindex="0" aria-label="Ad timeline. Use + and − to zoom, arrow keys to scroll."><div class="tl-c"></div></div>
 <div class="tl-leg"></div>
-<div class="tl-hint">Each bar is one ad, from start to end date; a light fade at the end means it's still running. Labels above the bars are launch waves (flights): click one to zoom in. Pinch or Ctrl+scroll to zoom, drag or Shift+scroll to move, click a bar to open the ad, click a campaign name to filter.</div>
+<div class="tl-hint">${MODE === 'ov' ? 'Overview: one dot per ad at its launch date, stacked when several launch close together (numbers show how many). Hover a dot to preview the ad and see a line for how long it ran; click to open it. Pinch or Ctrl+scroll to zoom, drag or Shift+scroll to move, or pick a range above. Switch to Detailed for one bar per ad.' : `Each bar is one ad, from start to end date; a light fade at the end means it's still running. Labels above the bars are launch waves (flights): click one to zoom in. Pinch or Ctrl+scroll to zoom, drag or Shift+scroll to move, click a bar to open the ad, click a campaign name to filter.`}</div>
 </div>`;
   const vp = el.querySelector('.tl-vp'), C = el.querySelector('.tl-c'), sel = el.querySelector('.tl-col');
   sel.value = s.color;
   const vw = () => Math.max(200, vp.clientWidth - LABEL - 2);
   const clamp = p => Math.min(MAXP, Math.max(MINP, p));
   if (s.ppd == null) {
-    const span = Math.min(max - min, 200);
+    const span = Math.min(max - min, MODE === 'ov' ? 365 : 200);
     s.ppd = clamp(vw() / span); s.day = max - span;
   }
   const color = i => s.color === 'obj' ? (FNC[i.a.obj] || '#8895A3') : s.color === 'plat' ? PLC[i.a.p] : s.color === 'fmt' ? (FMC[i.a.kind] || '#888') : (o.CC[i.lane] || '#8895A3');
@@ -138,7 +147,21 @@ function mount(el, ads, o){
     }
     grid += `<i class="gt" style="left:${x(today)}px"></i>`;
     ax += `<span class="td" style="left:${x(today)}px">Today</span>`;
-    const lanesHtml = lanes.map((L, li) => {
+    // Overview: the broad launch chart. One dot per ad at its launch date, stacked when launches land close together.
+if (MODE === 'ov') {
+const D = p >= 10 ? 22 : p >= 3 ? 12 : 8, bd = Math.max(1, Math.ceil((D + 2) / p)), cols = {};
+let mx = 1;
+[...items].sort((a, b) => a.s - b.s || (a.a.p < b.a.p ? -1 : 1)).forEach(i => { i.k = Math.floor((i.s - min) / bd); i.h = cols[i.k] = (cols[i.k] || 0) + 1; if (i.h > mx) mx = i.h; });
+const step = Math.max(3, Math.min(D + 2, 420 / mx)), H = Math.max(110, Math.ceil(D + 30 + (mx - 1) * step)), by = H - D - 10, cx = k => x(min + k * bd) + bd * p / 2;
+const dots = items.map(i => { const a = i.a; return `<button type="button" class="tb od${a.gone ? ' x' : ''}${a.p === 'google' ? ' g' : ''}" data-id="${esc(a.key)}" data-w="${i.w}" style="left:${cx(i.k) - D / 2}px;top:${by - (i.h - 1) * step}px;width:${D}px;height:${D}px;--c:${color(i)}" aria-label="${esc(o.PN[a.p] + ' ' + a.kind + ', launched ' + mdy(i.s))}">${D >= 22 && a.img && !a.gone ? `<img src="${esc(a.img)}" alt="" loading="lazy">` : ''}</button>`; }).join('');
+const cnt = Object.entries(cols).filter(e => e[1] >= 3).map(([k, n]) => `<span class="oc" style="left:${cx(+k)}px;top:${by - (n - 1) * step - 14}px">${n}</span>`).join('');
+C.style.width = (LABEL + W) + 'px';
+C.innerHTML = `<div class="tl-grid" style="left:${LABEL}px;width:${W}px">${grid}</div><div class="tl-ax" style="width:${LABEL + W}px"><div class="tl-corner" style="width:${LABEL}px">Launches</div><div class="tl-axt" style="width:${W}px">${ax}</div></div><div class="tl-lane" style="height:${H}px;width:${LABEL + W}px"><div class="tl-lab" style="width:${LABEL}px;cursor:default"><span>${esc(o.selCamp || 'All campaigns')}<small>${items.length} ${items.length === 1 ? 'ad' : 'ads'}</small></span></div><div class="tl-trk" style="width:${W}px;height:${H}px"><i class="orun" hidden></i>${cnt}${dots}</div></div>`;
+vp.scrollLeft = (s.day - min) * p;
+legend();
+return;
+}
+const lanesHtml = lanes.map((L, li) => {
       const h = head + L.rows * (rowH + gap) + 6, lc = o.CC[L.c] || '#8895A3';
       const chips = L.waves.map((w, wi) => {
         const X = x(w.s), nx = L.waves[wi + 1], room = nx ? x(nx.s) - X - 3 : 1e6;
@@ -166,7 +189,7 @@ function mount(el, ads, o){
     else if (s.color === 'obj') h = Object.entries(FNC).map(([k, c]) => `<span><i style="background:${c}"></i>${k}</span>`).join('');
 else if (s.color === 'fmt') h = [...new Set(items.map(i => i.a.kind))].map(k => `<span><i style="background:${FMC[k] || '#888'}"></i>${esc(k)}</span>`).join('');
     else h = lanes.map(Lx => `<span><i style="background:${o.CC[Lx.c] || '#8895A3'}"></i>${esc(Lx.c)}</span>`).join('');
-    h += `<span><i style="background:#8895A3"></i>Meta = solid</span><span><i class="g" style="background-color:#8895A3"></i>Google = striped</span><span><i style="background:#E0485A;width:2px"></i>Today</span>`;
+    h += MODE === 'ov' ? `<span>One dot = one ad, at its launch date</span><span><i style="background:#8895A3;width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--ink)"></i>Google = dark ring</span><span><i style="background:#E0485A;width:2px"></i>Today</span>` : `<span><i style="background:#8895A3"></i>Meta = solid</span><span><i class="g" style="background-color:#8895A3"></i>Google = striped</span><span><i style="background:#E0485A;width:2px"></i>Today</span>`;
     L.innerHTML = h;
   }
   function zoomTo(np, px){
@@ -218,6 +241,7 @@ vp.addEventListener('touchcancel', pinchEnd);
     else range(max - Number(r), max);
   });
   sel.onchange = () => { s.color = sel.value; draw(); };
+el.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { if (MODE === b.dataset.m) return; MODE = b.dataset.m; try { localStorage.setItem('ral-tlmode', MODE); } catch (_) {} if (MODE === 'ov') s.ppd = null; if (TIP) TIP.hidden = true; mount(el, ads, o); });
 
   const hl = w => { C.classList.add('dim'); C.querySelectorAll(`[data-w="${w}"]`).forEach(n => n.classList.add('hl')); };
   const unhl = () => { C.classList.remove('dim'); C.querySelectorAll('.hl').forEach(n => n.classList.remove('hl')); };
@@ -231,10 +255,11 @@ vp.addEventListener('touchcancel', pinchEnd);
 <span class="note">${esc((o.place ? o.place(a).label : o.PN[a.p]) + ' · ' + a.kind)}</span>
 <span class="note">${mdy(i.s)} → ${a.live ? 'still active' : mdy(i.e)} · ${a.days || (i.e - i.s + 1)}d${a.ws != null ? ' · score ' + a.ws : ''}</span>`;
       T.hidden = false; place(e);
+if (MODE === 'ov') { const r = C.querySelector('.orun'); if (r) { r.hidden = false; r.style.left = (i.s - min) * s.ppd + 'px'; r.style.width = Math.max(3, (i.e - i.s + 1) * s.ppd) + 'px'; r.style.background = color(i); } }
     }
   });
   C.addEventListener('mousemove', e => { if (TIP && !TIP.hidden) place(e); });
-  C.addEventListener('mouseout', e => { const b = e.target.closest('.tb,.tw'); if (b && !b.contains(e.relatedTarget)) { unhl(); if (TIP) TIP.hidden = true; } });
+  C.addEventListener('mouseout', e => { const b = e.target.closest('.tb,.tw'); if (b && !b.contains(e.relatedTarget)) { unhl(); if (TIP) TIP.hidden = true; const r = C.querySelector('.orun'); if (r) r.hidden = true; } });
   function place(e){ const T = tip(), w = 292, h = T.offsetHeight || 90; let X = e.clientX + 14, Y = e.clientY + 14; if (X + w > innerWidth - 8) X = e.clientX - w - 14; if (Y + h > innerHeight - 8) Y = e.clientY - h - 14; T.style.left = X + 'px'; T.style.top = Y + 'px'; }
   C.addEventListener('click', e => {
     const b = e.target.closest('.tb'); if (b) { if (TIP) TIP.hidden = true; o.onOpen(b.dataset.id); return; }
