@@ -14,7 +14,7 @@ concurrency: collect
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -36,6 +36,7 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           REPORT_TO: ${{ secrets.REPORT_TO }}
           ALERT_TO: ${{ secrets.ALERT_TO }}
+          APIFY_MONTHLY_BUDGET: ${{ vars.APIFY_MONTHLY_BUDGET }}
           ACTION: ${{ inputs.action || 'auto' }}
         run: |
           case "$ACTION" in
