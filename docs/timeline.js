@@ -11,7 +11,7 @@ const css = `
 .tl-hint{font-size:11.5px;color:var(--muted)}
 .tl-count{font-size:12px;color:var(--muted);margin-left:auto}
 .tl-count b{color:var(--ink)}
-.tl-vp{position:relative;overflow:auto;max-height:560px;border:1px solid var(--line);border-radius:6px;background:var(--surface);overscroll-behavior-x:contain;cursor:grab}
+.tl-vp{position:relative;overflow:auto;max-height:min(560px,72vh);touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:6px;background:var(--surface);overscroll-behavior-x:contain;cursor:grab}
 .tl-vp.drag{cursor:grabbing;user-select:none}
 .tl-c{position:relative}
 .tl-grid{position:absolute;top:0;bottom:0;pointer-events:none;z-index:0}
@@ -51,6 +51,9 @@ const css = `
 .tl-tip img{width:64px;height:64px;object-fit:cover;border-radius:4px;grid-row:span 4;background:#fff}
 .tl-tip b{font-weight:600}
 .tl-tip .note{font-size:11.5px}
+.tb.x{background:repeating-linear-gradient(135deg,var(--sunken) 0 4px,transparent 4px 8px)!important;outline:1px dashed var(--muted);outline-offset:-1px;color:var(--muted)}
+.tl-c{transform-origin:0 0}
+@media (max-width:600px){.tl-count{margin-left:0;width:100%}.tl-tools{gap:6px 8px}}
 `;
 const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -60,6 +63,7 @@ const md = n => { const d = ds(n); return MON[+d.slice(5,7)-1]+' '+(+d.slice(8))
 const mdy = n => { const d = ds(n); return md(n)+', '+d.slice(0,4); };
 const PLC = {meta:'#3B7DD8', google:'#2E9B5F'};
 const FMC = {Video:'#D9622B', Static:'#2F6FB5', Carousel:'#8B5CF6', Dynamic:'#0E9F9A', Text:'#6B7A8A'};
+const FNC = {Awareness:'#7A5CC2', Consideration:'#2A9BA0', Conversion:'#D9622B'};
 const MINP = 0.25, MAXP = 60, WAVE_GAP = 10;
 const S = {};
 let TIP = null;
@@ -95,7 +99,7 @@ function mount(el, ads, o){
 <div class="tl-tools">
 <div class="seg" aria-label="Zoom"><button type="button" data-z="0.5" title="Zoom out">−</button><button type="button" data-z="2" title="Zoom in">+</button></div>
 <div class="seg" aria-label="Range"><button type="button" data-r="all">All</button><button type="button" data-r="365">1 yr</button><button type="button" data-r="season">Season</button><button type="button" data-r="90">90 days</button><button type="button" data-r="30">30 days</button></div>
-<label class="ctl">Color by <select class="tl-col"><option value="camp">Campaign</option><option value="plat">Platform</option><option value="fmt">Format</option></select></label>
+<label class="ctl">Color by <select class="tl-col"><option value="camp">Campaign</option><option value="plat">Platform</option><option value="fmt">Format</option><option value="obj">Funnel stage</option></select></label>
 <span class="tl-count"><b>${items.length}</b> ads${o.total && o.total !== items.length ? ` of ${o.total} (filters applied)` : ''}</span>
 </div>
 <div class="tl-vp" tabindex="0" aria-label="Ad timeline. Use + and − to zoom, arrow keys to scroll."><div class="tl-c"></div></div>
@@ -110,7 +114,7 @@ function mount(el, ads, o){
     const span = Math.min(max - min, 200);
     s.ppd = clamp(vw() / span); s.day = max - span;
   }
-  const color = i => s.color === 'plat' ? PLC[i.a.p] : s.color === 'fmt' ? (FMC[i.a.kind] || '#888') : (o.CC[i.lane] || '#8895A3');
+  const color = i => s.color === 'obj' ? (FNC[i.a.obj] || '#8895A3') : s.color === 'plat' ? PLC[i.a.p] : s.color === 'fmt' ? (FMC[i.a.kind] || '#888') : (o.CC[i.lane] || '#8895A3');
 
   function draw(){
     const p = s.ppd, W = Math.ceil((max - min) * p), x = n => (n - min) * p;
@@ -147,7 +151,7 @@ function mount(el, ads, o){
         const a = i.a, X = x(i.s), w = Math.max(rich ? 8 : 3, (i.e - i.s + 1) * p), y = head + i.row * (rowH + gap);
         const txt = a.offer || a.title || (a.headlines || [])[0] || (o.PN[a.p] + ' ' + a.kind);
         const inner = rich ? `${a.img && w > 40 ? `<img src="${esc(a.img)}" alt="" loading="lazy">` : ''}${w > 60 ? `<span>${esc(txt)}</span>` : ''}` : '';
-        return `<button type="button" class="tb${a.p === 'google' ? ' g' : ''}${a.live ? ' live' : ''}" data-id="${esc(a.key)}" data-w="${i.w}" style="left:${X}px;top:${y}px;width:${w}px;height:${rowH}px;--c:${color(i)}" aria-label="${esc(o.PN[a.p] + ' ' + a.kind + ', ' + txt + ', ' + mdy(i.s))}">${inner}</button>`;
+        return `<button type="button" class="tb${a.gone ? ' x' : ''}${a.p === 'google' ? ' g' : ''}${a.live ? ' live' : ''}" data-id="${esc(a.key)}" data-w="${i.w}" style="left:${X}px;top:${y}px;width:${w}px;height:${rowH}px;--c:${color(i)}" aria-label="${esc(o.PN[a.p] + ' ' + a.kind + ', ' + txt + ', ' + mdy(i.s))}">${inner}</button>`;
       }).join('');
       return `<div class="tl-lane" style="height:${h}px;width:${LABEL + W}px"><button type="button" class="tl-lab${o.selCamp === L.c ? ' sel' : ''}" data-c="${esc(L.c)}" style="width:${LABEL}px" title="${o.selCamp === L.c ? 'Show all campaigns' : 'Show only ' + esc(L.c)}"><i class="dot" style="background:${lc}"></i><span>${esc(L.c)}<small>${L.items.length} ads · ${L.waves.length} ${L.waves.length === 1 ? 'wave' : 'waves'}</small></span></button><div class="tl-trk" style="width:${W}px;height:${h}px">${chips}${bars}</div></div>`;
     }).join('');
@@ -159,7 +163,8 @@ function mount(el, ads, o){
   function legend(){
     const L = el.querySelector('.tl-leg'); let h = '';
     if (s.color === 'plat') h = Object.entries(PLC).map(([k, c]) => `<span><i style="background:${c}"></i>${o.PN[k]}</span>`).join('');
-    else if (s.color === 'fmt') h = [...new Set(items.map(i => i.a.kind))].map(k => `<span><i style="background:${FMC[k] || '#888'}"></i>${esc(k)}</span>`).join('');
+    else if (s.color === 'obj') h = Object.entries(FNC).map(([k, c]) => `<span><i style="background:${c}"></i>${k}</span>`).join('');
+else if (s.color === 'fmt') h = [...new Set(items.map(i => i.a.kind))].map(k => `<span><i style="background:${FMC[k] || '#888'}"></i>${esc(k)}</span>`).join('');
     else h = lanes.map(Lx => `<span><i style="background:${o.CC[Lx.c] || '#8895A3'}"></i>${esc(Lx.c)}</span>`).join('');
     h += `<span><i style="background:#8895A3"></i>Meta = solid</span><span><i class="g" style="background-color:#8895A3"></i>Google = striped</span><span><i style="background:#E0485A;width:2px"></i>Today</span>`;
     L.innerHTML = h;
@@ -185,7 +190,7 @@ function mount(el, ads, o){
   });
   let drag = null;
   vp.addEventListener('pointerdown', e => {
-    if (e.button !== 0 || e.target.closest('.tb,.tw,.tl-lab')) return;
+    if (e.button !== 0 || e.pointerType === 'touch' || e.target.closest('.tb,.tw,.tl-lab')) return;
     drag = {x: e.clientX, y: e.clientY, l: vp.scrollLeft, t: vp.scrollTop, id: e.pointerId, moved: false};
   });
   vp.addEventListener('pointermove', e => {
@@ -196,6 +201,14 @@ function mount(el, ads, o){
   });
   const end = () => { if (drag) { vp.classList.remove('drag'); drag = null; } };
   vp.addEventListener('pointerup', end); vp.addEventListener('pointercancel', end);
+// phones and tablets: pinch to zoom (previewed with a stretch, redrawn when the fingers lift); one finger scrolls
+let pinch = null;
+const gap2 = T => Math.hypot(T[0].clientX - T[1].clientX, T[0].clientY - T[1].clientY);
+vp.addEventListener('touchstart', e => { if (e.touches.length !== 2) return; const r = vp.getBoundingClientRect(); pinch = {d: gap2(e.touches) || 1, p: s.ppd, k: 1, x: Math.max(0, (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left - LABEL)}; }, {passive: true});
+vp.addEventListener('touchmove', e => { if (!pinch || e.touches.length !== 2) return; e.preventDefault(); pinch.k = clamp(pinch.p * gap2(e.touches) / pinch.d) / pinch.p; C.style.transformOrigin = (LABEL + vp.scrollLeft + pinch.x) + 'px 0'; C.style.transform = 'scaleX(' + pinch.k + ')'; }, {passive: false});
+const pinchEnd = () => { if (!pinch) return; const k = pinch.k, x = pinch.x; pinch = null; C.style.transform = ''; if (Math.abs(k - 1) > 0.02) zoomTo(s.ppd * k, x); };
+vp.addEventListener('touchend', e => { if (e.touches.length < 2) pinchEnd(); });
+vp.addEventListener('touchcancel', pinchEnd);
 
   el.querySelectorAll('[data-z]').forEach(b => b.onclick = () => zoomTo(s.ppd * Number(b.dataset.z)));
   el.querySelectorAll('[data-r]').forEach(b => b.onclick = () => {
@@ -214,7 +227,7 @@ function mount(el, ads, o){
     if (b.classList.contains('tb')) {
       const i = byKey[b.dataset.id]; if (!i) return; const a = i.a, T = tip();
       T.innerHTML = `${a.img ? `<img src="${esc(a.img)}" alt="">` : '<span></span>'}<b>${esc(a.offer || a.title || (a.headlines || [])[0] || a.camp[0])}</b>
-<span class="note">${esc(a.camp.join(', '))}</span>
+<span class="note">${esc(a.camp.join(', '))}${a.obj ? ' · ' + esc(a.obj) : ''}${a.gone ? ' · unavailable (content couldn’t be captured)' : ''}</span>
 <span class="note">${esc((o.place ? o.place(a).label : o.PN[a.p]) + ' · ' + a.kind)}</span>
 <span class="note">${mdy(i.s)} → ${a.live ? 'still active' : mdy(i.e)} · ${a.days || (i.e - i.s + 1)}d${a.ws != null ? ' · score ' + a.ws : ''}</span>`;
       T.hidden = false; place(e);
