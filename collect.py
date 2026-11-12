@@ -59,14 +59,14 @@ def run_actor(actor, payload, token, label, timeout_min=30):
 
 
 def meta_input(resort, limit):
-    url = ("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US"
-           f"&media_type=all&search_type=page&view_all_page_id={resort['meta_page_id']}")
+    url = ("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=" + (resort.get("country") or "US")
+           + f"&media_type=all&search_type=page&view_all_page_id={resort['meta_page_id']}")
     return {"urls": [{"url": url}], "count": limit, "limitPerSource": limit, "scrapeAdDetails": True,
-            "scrapePageAds.activeStatus": "active", "scrapePageAds.countryCode": "US"}
+            "scrapePageAds.activeStatus": "active", "scrapePageAds.countryCode": resort.get("country") or "US"}
 
 
 def google_input(resort, limit, since=None):
-    p = {"domains": [resort["domain"]], "region": "US", "resultsLimit": limit,
+    p = {"domains": [resort["domain"]], "region": resort.get("country") or "US", "resultsLimit": limit,
          "shouldDownloadAssets": False, "shouldDownloadPreviews": False, "skipDetails": False}
     if since:                     # only ads shown since then (new ads + updated last-shown dates for running ones)
         p["startDate"] = since
@@ -135,6 +135,11 @@ def append_runs(infos):
 
 # ------------------------------------------------------------------ main
 def load_resorts(only=None):
+    resorts = __import__("roster").load()  # resorts.csv + every ski area in the atlas
+    return [r for r in resorts if not only or r["slug"] == only]
+
+
+def _old_load_resorts(only=None):
     with open(os.path.join(HERE, "resorts.csv"), newline="", encoding="utf-8") as f:
         resorts = [r for r in csv.DictReader(f) if r.get("pilot", "").lower() == "yes"]
     return [r for r in resorts if not only or r["slug"] == only]
