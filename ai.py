@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 import requests
 
 import library
+import taxonomy as TX
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta"
 MODELS = ["gemini-3.8-flash", "gemini-flash-latest"]                 # the weekly summary
@@ -42,6 +43,9 @@ Fields:
 - "offer": the concrete offer in under 12 words (e.g. "Kids ski free with 2-night stay"), else ""
 - "text": for image ads only, the main words printed on the image (under 30 words), else ""
 - "stand": if the ad is markedly different from typical resort ads (unusual idea, format, partnership, tone), one short reason; else ""
+- "obj": the funnel stage, ONE of: Awareness (brand, inspiration, video with no direct ask), Consideration (explore, learn more, plan a trip), Conversion (buy, book, sign up, a price or a deadline)
+- "aud": 1-2 audiences the ad speaks to, ONLY from: {audiences}
+- "ot": 1-2 offer types, ONLY from: {offer_types} (use "No offer" when there is none)
 
 Return JSON only: an object of the form {{"ads": [ ...one object per ad... ]}}.
 
@@ -274,7 +278,8 @@ def keep(t, provider="gemini"):
             "prices": [str(p) for p in (t.get("prices") or [])][:4],
             "deadline": t.get("deadline") if re.fullmatch(r"\d{4}-\d\d-\d\d", str(t.get("deadline") or "")) else "",
             "offer": str(t.get("offer") or "")[:120], "text": str(t.get("text") or "")[:300],
-            "stand": str(t.get("stand") or "")[:160], "src": "ai", "ai": True, "by": provider}
+            "stand": str(t.get("stand") or "")[:160], "obj": t.get("obj") if t.get("obj") in TX.FUNNEL else "",
+            "aud": [x for x in (t.get("aud") or []) if x in TX.AUDIENCES][:3], "ot": [x for x in (t.get("ot") or []) if x in TX.OFFER_TYPES][:2], "src": "ai", "ai": True, "by": provider}
 
 
 def tag_new_ads(max_calls=60, max_seconds=1200):
@@ -297,7 +302,7 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
     print(f"AI tags: {len(todo)} ads to tag ({len(text_ads)} with copy, {len(img_ads)} image-only), {len(batches)} calls")
     year = int(time.strftime("%Y"))
     prompt = lambda lines: TAG_PROMPT.format(campaigns=", ".join(library.CAMPAIGNS), themes=", ".join(library.THEMES),
-                                             year=year, next_year=year + 1, ads="\n".join(lines))
+                                             year=year, next_year=year + 1, audiences=", ".join(TX.AUDIENCES), offer_types=", ".join(TX.OFFER_TYPES), ads="\n".join(lines))
     deadline = time.time() + max_seconds
     done, calls, fails = 0, 0, 0
     for kind, batch in batches:
