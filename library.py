@@ -299,10 +299,15 @@ def build(now=None):
     rstats = __import__("scoring").score_all(lst, today); __import__("archive").attach(lst)
     tags, media = load_json(TAGS, {}), load_json(MEDIA, {})
     out = [compact(a, tags, media) for a in lst]
+    for mod, args in (("quality", (out,)), ("taxonomy", (out, tags))):  # health flags, then agency labels
+        try:
+            print(f"  {mod}:", __import__(mod).apply(*args))
+        except Exception as e:
+            print(f"  {mod} skipped:", str(e)[:200])
     out.sort(key=lambda a: (a.get("start") or ""), reverse=True)
 
     cols_common = ["id", "n", "slug", "kind", "fmt", "start", "end", "live", "days", "ws", "camp", "themes", "prices",
-                   "deadline", "offer", "title", "body", "desc", "cta", "link", "url", "img", "first_seen", "last_seen"]
+                   "deadline", "offer", "title", "body", "desc", "cta", "link", "url", "img", "first_seen", "last_seen", "obj", "aud", "ot", "fl", "sn", "health"]
     write_csv(os.path.join(DATA, "ads_meta.csv"), [a for a in out if a["p"] == "meta"],
               cols_common + ["versions", "plats"])
     write_csv(os.path.join(DATA, "ads_google.csv"), [a for a in out if a["p"] == "google"],
@@ -314,7 +319,7 @@ def build(now=None):
                 "checked_meta": latest_run.get(("meta", r["slug"]), ""),
                 "checked_google": latest_run.get(("google", r["slug"]), ""), "stats": rstats.get(r["slug"], {})} for r in load_resorts()]
     lib = {"generated": now.strftime("%Y-%m-%d %H:%M UTC"), "today": today.isoformat(),
-           "last_check": max(latest_run.values(), default=""), "health": __import__("archive").health(), "campaigns": CAMPAIGNS,
+           "last_check": max(latest_run.values(), default=""), "health": __import__("archive").health(), "campaigns": CAMPAIGNS, "tax": __import__("taxonomy").LISTS,
            "resorts": resorts, "reports": reports, "ads": out}
     os.makedirs(DOCS, exist_ok=True)
     with open(os.path.join(DOCS, "data.js"), "w", encoding="utf-8") as f:
