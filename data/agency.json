@@ -1,0 +1,145 @@
+{
+ "jackson-hole": {
+  "known": {
+   "AR04857573961275277313": "Jackson Hole Mountain Resort"
+  },
+  "current": "AR04857573961275277313",
+  "changes": []
+ },
+ "taos-ski-valley": {
+  "known": {
+   "AR10706825840785620993": "TAOS SKI VALLEY, INC."
+  },
+  "current": "AR10706825840785620993",
+  "changes": []
+ },
+ "whitefish-mountain": {
+  "known": {
+   "AR13011153241939902465": "Nicholas A Polumbus"
+  },
+  "current": "AR13011153241939902465",
+  "changes": []
+ },
+ "smugglers-notch": {
+  "known": {
+   "AR12835356365044056065": "Smugglers' Notch Management Company, Ltd.",
+   "AR11974820110641659905": "Smugglers' Notch Management Company, Ltd."
+  },
+  "current": "AR11974820110641659905",
+  "changes": []
+ },
+ "powder-mountain": {
+  "known": {
+   "AR01250939066392772609": "Powder Mountain Resort"
+  },
+  "current": "AR01250939066392772609",
+  "changes": []
+ },
+ "timberline-lodge": {
+  "known": {
+   "AR06796765851631484929": "R.L.K. and Company dba Timberline Lodge"
+  },
+  "current": "AR06796765851631484929",
+  "changes": []
+ },
+ "camelback": {
+  "known": {
+   "AR13259198194673254401": "CMBK Resort Holdings, LLC",
+   "AR17695563502049034241": "Unified Enterprises Corp."
+  },
+  "current": "AR13259198194673254401",
+  "changes": []
+ },
+ "jay-peak": {
+  "known": {
+   "AR15988430704740401153": "Jay Peak Pacific LLC"
+  },
+  "current": "AR15988430704740401153",
+  "changes": []
+ },
+ "sundance": {
+  "known": {
+   "AR02685140607734644737": "Storyteller Canyon Operating Company LLC"
+  },
+  "current": "AR02685140607734644737",
+  "changes": []
+ },
+ "alta": {
+  "known": {},
+  "current": "",
+  "changes": []
+ },
+ "telluride": {
+  "known": {
+   "AR09449759453789290497": "Drive Brand Studio Inc."
+  },
+  "current": "AR09449759453789290497",
+  "changes": []
+ },
+ "holiday-valley": {
+  "known": {
+   "AR02381790623851085825": "WIN-SUM Ski Corp.",
+   "AR11042329315646636033": "Win-Sum Ski Corp."
+  },
+  "current": "AR02381790623851085825",
+  "changes": []
+ },
+ "sugar-bowl": {
+  "known": {
+   "AR17172954647430692865": "Sugar Bowl Corp"
+  },
+  "current": "AR17172954647430692865",
+  "changes": []
+ },
+ "alyeska": {
+  "known": {
+   "AR00490163211375476737": "Alyeska Resort",
+   "AR04713820048668491777": "EN.RICH.MENT LLC"
+  },
+  "current": "AR00490163211375476737",
+  "changes": []
+ },
+ "loveland": {
+  "known": {
+   "AR00435466527983009793": "Townsquare Media Inc",
+   "AR04216939353823248385": "Medianews Group Inc"
+  },
+  "current": "AR00435466527983009793",
+  "changes": []
+ },
+ "blue-mountain": {
+  "known": {
+   "AR04766400670393696257": "Blue Mountain Resort"
+  },
+  "current": "AR04766400670393696257",
+  "changes": []
+ },
+ "crystal-mountain-mi": {
+  "known": {
+   "AR02537976783152611329": "TwoSix Digital"
+  },
+  "current": "AR02537976783152611329",
+  "changes": []
+ },
+ "whiteface": {
+  "known": {
+   "AR05108031972664410113": "Olympic Regional Development Authority"
+  },
+  "current": "AR05108031972664410113",
+  "changes": []
+ },
+ "mt-hood-meadows": {
+  "known": {
+   "AR18356554089820585985": "Mt. Hood Meadows Oreg., LLC"
+  },
+  "current": "AR18356554089820585985",
+  "changes": []
+ },
+ "grand-targhee": {
+  "known": {
+   "AR07068575021622362113": "Grand Targhee Resort"
+  },
+  "current": "AR07068575021622362113",
+  "changes": []
+ }
+}
