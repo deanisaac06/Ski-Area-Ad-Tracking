@@ -149,8 +149,11 @@ def candidates(a):
             out.append(("YouTube cover frame", f"https://i.ytimg.com/vi/{a['yt']}/{n}.jpg"))
     v = VIDS.get(a.get("key"))
     if isinstance(v, str):
+        vsrc = os.path.join(library.DOCS, v)
+        if not os.path.exists(vsrc):
+            vsrc = __import__("r2").url(v)  # moved to Cloudflare R2: ffmpeg reads it from there
         for t in (1, 3, 6, 0):
-            out.append(("frame from the ad's video", ("frame", os.path.join(library.DOCS, v), t)))
+            out.append(("frame from the ad's video", ("frame", vsrc, t)))
     elif a.get("video_src"):
         out.append(("frame from the ad's video", ("frame", a["video_src"], 1)))
     for rel in arc.get("cards") or []:
