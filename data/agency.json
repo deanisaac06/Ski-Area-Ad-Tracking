@@ -175,9 +175,23 @@
   "changes": []
  },
  "49-degrees-north": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR11866328918917120001": "49 DEGREES NORTH MOUNTAIN RESORT"
+  },
+  "current": "AR11866328918917120001",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "49 DEGREES NORTH MOUNTAIN RESORT",
+    "to_kind": "resort",
+    "ads": 3,
+    "first": "2026-03-09",
+    "url": "https://adstransparency.google.com/advertiser/AR11866328918917120001/creative/CR13759704443211743233",
+    "still": false
+   }
+  ]
  },
  "mt-spokane": {
   "known": {},
@@ -239,8 +253,10 @@
   ]
  },
  "mt-hood-skibowl": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR02946349429071806465": "Mt Hood Skibowl"
+  },
+  "current": "AR02946349429071806465",
   "changes": []
  },
  "hoodoo": {
@@ -342,8 +358,11 @@
   ]
  },
  "brundage": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR03407588466660212737": "Jellyfish US Limited",
+   "AR04707582020987912193": "Brundage Mountain Resort"
+  },
+  "current": "AR04707582020987912193",
   "changes": []
  },
  "silver-mountain": {
@@ -681,9 +700,23 @@
   "changes": []
  },
  "powderhorn": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR00341870944265961473": "Powderhorn Pacific LLC"
+  },
+  "current": "AR00341870944265961473",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Powderhorn Pacific LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2023-01-09",
+    "url": "https://adstransparency.google.com/advertiser/AR00341870944265961473/creative/CR06472727414010019841",
+    "still": false
+   }
+  ]
  },
  "sunlight": {
   "known": {},
@@ -862,9 +895,23 @@
   "changes": []
  },
  "ski-santa-fe": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR03279111769905168385": "Santa Fe Ski Company"
+  },
+  "current": "AR03279111769905168385",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Santa Fe Ski Company",
+    "to_kind": "resort",
+    "ads": 16,
+    "first": "2022-10-12",
+    "url": "https://adstransparency.google.com/advertiser/AR03279111769905168385/creative/CR14419477940330823681",
+    "still": false
+   }
+  ]
  },
  "angel-fire": {
   "known": {
@@ -886,8 +933,10 @@
   ]
  },
  "red-river": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR08767544924347301889": "Propeller Media Works, Inc."
+  },
+  "current": "AR08767544924347301889",
   "changes": []
  },
  "ski-apache": {
@@ -960,19 +1009,49 @@
   "changes": []
  },
  "mt-rose": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR03604055114186227713": "Creative Concepts Media"
+  },
+  "current": "AR03604055114186227713",
   "changes": []
  },
  "lee-canyon": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR00299061424678764545": "Lee Canyon Recreation, LP"
+  },
+  "current": "AR00299061424678764545",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Lee Canyon Recreation, LP",
+    "to_kind": "resort",
+    "ads": 23,
+    "first": "2025-09-08",
+    "url": "https://adstransparency.google.com/advertiser/AR00299061424678764545/creative/CR17590855953173970945",
+    "still": false
+   }
+  ]
  },
  "diamond-peak": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR07809412985616596993": "Incline Village General Improvement District"
+  },
+  "current": "AR07809412985616596993",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Incline Village General Improvement District",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2025-10-15",
+    "url": "https://adstransparency.google.com/advertiser/AR07809412985616596993/creative/CR03123486902699687937",
+    "still": false
+   }
+  ]
  },
  "sky-tavern": {
   "known": {},
@@ -1092,9 +1171,23 @@
   ]
  },
  "bear-valley": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15619662699581931521": "GENIUS MONKEY"
+  },
+  "current": "AR15619662699581931521",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "GENIUS MONKEY",
+    "to_kind": "person",
+    "ads": 30,
+    "first": "2026-10-06",
+    "url": "https://adstransparency.google.com/advertiser/AR15619662699581931521/creative/CR01741053066032971777",
+    "still": false
+   }
+  ]
  },
  "dodge-ridge": {
   "known": {},
@@ -1295,9 +1388,24 @@
   "changes": []
  },
  "giants-ridge": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR04249537674563551233": "Adcellerant LLC",
+   "AR12626251123414532097": "Guest Services Management, LLC"
+  },
+  "current": "AR12626251123414532097",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Guest Services Management, LLC",
+    "to_kind": "resort",
+    "ads": 29,
+    "first": "2025-01-16",
+    "url": "https://adstransparency.google.com/advertiser/AR12626251123414532097/creative/CR03851740732775727105",
+    "still": false
+   }
+  ]
  },
  "hyland-hills": {
   "known": {},
@@ -1374,19 +1482,61 @@
   "changes": []
  },
  "bolton-valley": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14208343026006228993": "Bolton Valley Resort"
+  },
+  "current": "AR14208343026006228993",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Bolton Valley Resort",
+    "to_kind": "resort",
+    "ads": 14,
+    "first": "2025-01-31",
+    "url": "https://adstransparency.google.com/advertiser/AR14208343026006228993/creative/CR00747992314357481473",
+    "still": false
+   }
+  ]
  },
  "burke-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR04904164065695236097": "Bear Den Operations Company LLC"
+  },
+  "current": "AR04904164065695236097",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Bear Den Operations Company LLC",
+    "to_kind": "resort",
+    "ads": 15,
+    "first": "2025-12-09",
+    "url": "https://adstransparency.google.com/advertiser/AR04904164065695236097/creative/CR10996890932476903425",
+    "still": false
+   }
+  ]
  },
  "bromley": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR03917777529988972545": "Ski Bromley, LLC"
+  },
+  "current": "AR03917777529988972545",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Ski Bromley, LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2025-10-24",
+    "url": "https://adstransparency.google.com/advertiser/AR03917777529988972545/creative/CR05400179419119616001",
+    "still": false
+   }
+  ]
  },
  "mad-river-glen": {
   "known": {},
@@ -1468,9 +1618,23 @@
   "changes": []
  },
  "pats-peak": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR04966141800986181633": "TransMountain Media"
+  },
+  "current": "AR04966141800986181633",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "TransMountain Media",
+    "to_kind": "agency",
+    "ads": 9,
+    "first": "2024-01-24",
+    "url": "https://adstransparency.google.com/advertiser/AR04966141800986181633/creative/CR15608201742561312769",
+    "still": false
+   }
+  ]
  },
  "ragged-mountain": {
   "known": {
@@ -1523,8 +1687,10 @@
   ]
  },
  "saddleback": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR01254828537236422657": "FANOUT MEDIA LLC"
+  },
+  "current": "AR01254828537236422657",
   "changes": []
  },
  "pleasant-mountain": {
@@ -1578,9 +1744,23 @@
   "changes": []
  },
  "berkshire-east": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08778056702185439233": "Berkshire East Ski Resort, LLC"
+  },
+  "current": "AR08778056702185439233",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Berkshire East Ski Resort, LLC",
+    "to_kind": "resort",
+    "ads": 5,
+    "first": "2025-02-07",
+    "url": "https://adstransparency.google.com/advertiser/AR08778056702185439233/creative/CR14099711655139082241",
+    "still": false
+   }
+  ]
  },
  "bousquet": {
   "known": {},
@@ -1588,9 +1768,23 @@
   "changes": []
  },
  "gore-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05108031972664410113": "Olympic Regional Development Authority"
+  },
+  "current": "AR05108031972664410113",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Olympic Regional Development Authority",
+    "to_kind": "person",
+    "ads": 30,
+    "first": "2024-10-29",
+    "url": "https://adstransparency.google.com/advertiser/AR05108031972664410113/creative/CR15648380096463503361",
+    "still": false
+   }
+  ]
  },
  "belleayre": {
   "known": {
@@ -1838,9 +2032,23 @@
   "changes": []
  },
  "snow-trails": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR11706005125561581569": "Ohio Ski Slopes, Inc."
+  },
+  "current": "AR11706005125561581569",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Ohio Ski Slopes, Inc.",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-02-01",
+    "url": "https://adstransparency.google.com/advertiser/AR11706005125561581569/creative/CR13674974427907883009",
+    "still": false
+   }
+  ]
  },
  "whistler-blackcomb": {
   "known": {
@@ -2143,9 +2351,23 @@
   ]
  },
  "mt-norquay": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR07441323035535081473": "NORQUAY MYSTIC RIDGE LTD."
+  },
+  "current": "AR07441323035535081473",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "NORQUAY MYSTIC RIDGE LTD.",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-09-05",
+    "url": "https://adstransparency.google.com/advertiser/AR07441323035535081473/creative/CR11296236168594587649",
+    "still": false
+   }
+  ]
  },
  "marmot-basin": {
   "known": {
@@ -2155,9 +2377,23 @@
   "changes": []
  },
  "castle-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14454129040690249729": "Castle Mountain Resort Inc."
+  },
+  "current": "AR14454129040690249729",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Castle Mountain Resort Inc.",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2025-09-19",
+    "url": "https://adstransparency.google.com/advertiser/AR14454129040690249729/creative/CR02768623922881495041",
+    "still": false
+   }
+  ]
  },
  "tremblant": {
   "known": {
@@ -2279,8 +2515,10 @@
   ]
  },
  "owls-head": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR10745536312304992257": "Destination Owl's Head inc."
+  },
+  "current": "AR10745536312304992257",
   "changes": []
  },
  "sommets": {
@@ -2328,6 +2566,25 @@
   "changes": []
  },
  "mount-st-louis-moonstone": {
+  "known": {},
+  "current": "",
+  "changes": []
+ },
+ "ikon-pass": {
+  "known": {
+   "AR03789125014452699137": "IKON Pass, Inc."
+  },
+  "current": "AR03789125014452699137",
+  "changes": []
+ },
+ "epic-pass": {
+  "known": {
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": []
+ },
+ "indy-pass": {
   "known": {},
   "current": "",
   "changes": []
