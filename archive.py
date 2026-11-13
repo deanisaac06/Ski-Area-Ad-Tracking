@@ -233,6 +233,8 @@ def save_notes(ads, arc, fails, until, max_calls=30):
             parts = [{"file_data": {"file_uri": f"https://www.youtube.com/watch?v={a['yt']}"}}, {"text": prompt}]
         else:
             path = os.path.join(library.DOCS, vids[k])
+            if not os.path.exists(path):  # already moved to Cloudflare R2: borrow a copy
+                path = __import__("r2").fetch(vids[k]) or path
             if not os.path.exists(path) or os.path.getsize(path) > 15e6:
                 continue
             with open(path, "rb") as f:
