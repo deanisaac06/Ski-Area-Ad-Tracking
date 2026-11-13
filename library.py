@@ -152,16 +152,43 @@ def google_ad(a, resort):
     }
 
 
+FIRST = {}  # (platform, slug) -> date of its first saved check (the site shows where Meta history starts)
+
+
+def check_gaps(runs, resorts):
+    """{(platform, slug): date of the check before} for resorts whose latest check looks incomplete: it came back
+    full (hit the scraper's cap, so some running ads weren't listed) or, for Meta, with under half the ads of the
+    check before (a half-blocked scrape). Ads from that earlier check stay live until a normal check shows they
+    stopped, instead of being ended by mistake."""
+    shaky = {}
+    for k, L in runs.items():
+        FIRST[k] = L[0][0]
+        if len(L) < 2:
+            continue
+        (pd, pn), (ld, ln) = L[-2], L[-1]
+        if ln < 0:
+            continue  # Meta came back empty three days running: the resort really has no ads now
+        if k[0] == "meta":
+            cap = 500 if (resorts.get(k[1]) or {}).get("state") == "PASS" else 150
+            if ln >= cap - 2 or (pn >= 10 and ln < pn * 0.5):
+                shaky[k] = pd
+        elif ln in (50, 100):
+            shaky[k] = pd
+    return shaky
+
+
 def build_ads():
     """All ads across every download, with first/last seen and whether they're still live."""
     resorts = {r["slug"]: r for r in load_resorts()}
-    ads, latest_run = {}, {}
+    ads, latest_run, runs = {}, {}, {}
     for platform, reader in (("meta", meta_ad), ("google", google_ad)):
         for d, slug, path in raw_files(platform):
             if slug not in resorts:
                 continue
             latest_run[(platform, slug)] = max(latest_run.get((platform, slug), ""), d)
-            for a in read_raw(path):
+            items = read_raw(path)
+            runs.setdefault((platform, slug), []).append((d, -1 if any(a.get("checked_empty") for a in items) else len(items)))
+            for a in items:
                 ad = reader(a, resorts[slug])
                 if not ad["id"]:
                     continue
@@ -171,14 +198,16 @@ def build_ads():
                 ad["last_seen"] = d
                 ad["seen"] = (old["seen"] if old else 0) + 1; ad["v_first"] = old.get("v_first", old.get("versions")) if old else ad.get("versions")
                 ads[key] = ad
+    shaky = check_gaps(runs, resorts)
     for ad in ads.values():
         last_run = latest_run.get((ad["p"], ad["slug"]), "")
+        prev = shaky.get((ad["p"], ad["slug"]))  # latest check looked incomplete: the one before still counts
         if ad["p"] == "meta":
-            ad["live"] = ad["last_seen"] == last_run           # still in the most recent check of that resort
+            ad["live"] = ad["last_seen"] in (last_run, prev)           # still in the most recent check of that resort
             ad["end"] = "" if ad["live"] else ad["last_seen"]
         else:
             ad["live"] = bool(ad["last_shown"]) and ad["last_shown"] >= (
-                date.fromisoformat(last_run) - timedelta(days=3)).isoformat()
+                date.fromisoformat(prev or last_run) - timedelta(days=3)).isoformat()
             ad["end"] = "" if ad["live"] else ad["last_shown"]
     return ads, latest_run
 
@@ -330,7 +359,7 @@ def build(now=None):
     resorts = [{"slug": r["slug"], "n": r["resort"], "s": r["state"], "rg": r["region"], "domain": r["domain"],
                 "meta_page_id": r.get("meta_page_id", ""), "tier": r.get("tier", ""),
                 "checked_meta": latest_run.get(("meta", r["slug"]), ""),
-                "checked_google": latest_run.get(("google", r["slug"]), ""), "stats": rstats.get(r["slug"], {})} for r in load_resorts()]
+                "checked_google": latest_run.get(("google", r["slug"]), ""), "since_meta": FIRST.get(("meta", r["slug"]), ""), "stats": rstats.get(r["slug"], {})} for r in load_resorts()]
     try:  # who buys each resort's media now; emails a switch the moment it shows up
         print("  agency:", __import__("agency").apply(lst, resorts, today))
     except Exception as e:
