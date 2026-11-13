@@ -57,10 +57,19 @@ def _old_load_resorts():
 
 
 # ------------------------------------------------------------------ reading raw downloads
+def _empty(path):
+    try:
+        with gzip.open(path, "rt", encoding="utf-8") as f:
+            return f.read().strip() == "[]"
+    except Exception:
+        return False
+
 def raw_files(platform):
     """[(date, slug, path)] oldest first."""
     out = []
     for p in glob.glob(os.path.join(DATA, "raw", platform, "*", "*.json.gz")):
+        if platform == "meta" and os.path.getsize(p) < 64 and _empty(p):
+            continue  # a Meta check that came back empty (usually Facebook blocking the scraper): not a real check
         out.append((os.path.basename(os.path.dirname(p)), os.path.basename(p)[:-8], p))
     return sorted(out)
 
