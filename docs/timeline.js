@@ -19,6 +19,9 @@ const css = `
 .tl-grid i.gw{opacity:.45}
 .tl-grid i.gy{background:var(--muted);opacity:.6}
 .tl-grid i.gt{background:#E0485A;width:2px;z-index:1}
+.tl-nm{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--muted) 14%,transparent) 0 5px,transparent 5px 11px);border-right:2px dashed #3B7DD8}
+.tl-nm span{position:absolute;right:6px;top:42px;font-family:var(--mono);font-size:10px;color:#3B7DD8;white-space:nowrap;background:var(--surface);padding:0 4px;border-radius:3px}
+.tl-gap{font-size:12px;line-height:1.45;color:var(--ink);background:var(--accent-soft);border-left:3px solid #3B7DD8;border-radius:4px;padding:6px 9px}
 .tl-ax{position:sticky;top:0;z-index:4;display:flex;height:38px;background:var(--surface);border-bottom:1px solid var(--line)}
 .tl-corner{position:sticky;left:0;z-index:5;flex:none;background:var(--surface);border-right:1px solid var(--line);font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:4px 8px;display:flex;align-items:flex-end}
 .tl-axt{position:relative;flex:none}
@@ -87,6 +90,11 @@ function mount(el, ads, o){
   });
   if (!items.length) { el.innerHTML = '<p class="note">No ads match the current filters, so the timeline is empty. Try “All campaigns” or a wider date range.</p>'; return; }
   const byKey = Object.fromEntries(items.map(i => [i.a.key, i]));
+// Where Meta history starts: Facebook only lists ads while they run, so nothing before each resort's first Meta check
+const RS = (window.LIB && window.LIB.resorts) || [], NM = new Set(ads.map(a => a.n));
+const SM = RS.filter(r => NM.has(r.n) && r.since_meta).map(r => r.since_meta).sort();
+const ms = SM.length ? t(SM[0]) : null, msMany = SM.length > 1 && SM[0] !== SM[SM.length - 1];
+const gapNote = ms == null ? '' : `<div class="tl-gap"><b>Missing data:</b> Facebook only shows ads while they run, so Meta history starts when tracking began (${mdy(ms)}${msMany ? ', later for some resorts' : ''}). Meta ads that started and stopped before then aren't here; ones still running then are, with their real start dates. Google history goes back years. The striped area marks the gap.</div>`;
   const min = Math.min(...items.map(i => i.s)) - 4, max = today + 12;
   const order = o.camps.concat(['Unknown']);
   const lanes = [...new Set(items.map(i => i.lane))].sort((x, y) => order.indexOf(x) - order.indexOf(y)).map((c, li) => {
@@ -111,7 +119,7 @@ function mount(el, ads, o){
 <label class="ctl">Color by <select class="tl-col"><option value="camp">Campaign</option><option value="plat">Platform</option><option value="fmt">Format</option><option value="obj">Funnel stage</option></select></label>
 <span class="tl-count"><b>${items.length}</b> ads${o.total && o.total !== items.length ? ` of ${o.total} (filters applied)` : ''}</span>
 </div>
-<div class="tl-vp" tabindex="0" aria-label="Ad timeline. Use + and − to zoom, arrow keys to scroll."><div class="tl-c"></div></div>
+${gapNote}<div class="tl-vp" tabindex="0" aria-label="Ad timeline. Use + and − to zoom, arrow keys to scroll."><div class="tl-c"></div></div>
 <div class="tl-leg"></div>
 <div class="tl-hint">${MODE === 'ov' ? 'Overview: one dot per ad at its launch date, stacked when several launch close together (numbers show how many). Hover a dot to preview the ad and see a line for how long it ran; click to open it. Pinch or Ctrl+scroll to zoom, drag or Shift+scroll to move, or pick a range above. Switch to Detailed for one bar per ad.' : `Each bar is one ad, from start to end date; a light fade at the end means it's still running. Labels above the bars are launch waves (flights): click one to zoom in. Pinch or Ctrl+scroll to zoom, drag or Shift+scroll to move, click a bar to open the ad, click a campaign name to filter.`}</div>
 </div>`;
@@ -145,7 +153,8 @@ function mount(el, ads, o){
       for (; n <= max; n += 7) { grid += `<i class="gw" style="left:${x(n)}px"></i>`; if (lab) ax += `<span class="w" style="left:${x(n)}px">${md(n)}</span>`; }
       if (p >= 26) for (let k = min; k <= max; k++) if ((((k % 7) + 7) % 7) !== 4) ax += `<span class="w" style="left:${x(k)}px;border-left-color:transparent">${+ds(k).slice(8)}</span>`;
     }
-    grid += `<i class="gt" style="left:${x(today)}px"></i>`;
+    if (ms != null && ms > min) grid += `<div class="tl-nm" style="left:0;width:${x(ms)}px"><span>No Meta data before ${md(ms)}</span></div>`;
+grid += `<i class="gt" style="left:${x(today)}px"></i>`;
     ax += `<span class="td" style="left:${x(today)}px">Today</span>`;
     // Overview: the broad launch chart. One dot per ad at its launch date, stacked when launches land close together.
 if (MODE === 'ov') {
@@ -190,7 +199,8 @@ const lanesHtml = lanes.map((L, li) => {
 else if (s.color === 'fmt') h = [...new Set(items.map(i => i.a.kind))].map(k => `<span><i style="background:${FMC[k] || '#888'}"></i>${esc(k)}</span>`).join('');
     else h = lanes.map(Lx => `<span><i style="background:${o.CC[Lx.c] || '#8895A3'}"></i>${esc(Lx.c)}</span>`).join('');
     h += MODE === 'ov' ? `<span>One dot = one ad, at its launch date</span><span><i style="background:#8895A3;width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--ink)"></i>Google = dark ring</span><span><i style="background:#E0485A;width:2px"></i>Today</span>` : `<span><i style="background:#8895A3"></i>Meta = solid</span><span><i class="g" style="background-color:#8895A3"></i>Google = striped</span><span><i style="background:#E0485A;width:2px"></i>Today</span>`;
-    L.innerHTML = h;
+    if (ms != null && ms > min) h += `<span><i style="background:repeating-linear-gradient(135deg,#8895A3 0 2px,transparent 2px 5px);border-right:2px dashed #3B7DD8"></i>Before Meta tracking began</span>`;
+L.innerHTML = h;
   }
   function zoomTo(np, px){
     if (px == null) px = vw() / 2;
