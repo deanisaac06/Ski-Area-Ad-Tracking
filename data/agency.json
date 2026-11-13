@@ -148,8 +148,10 @@
   "changes": []
  },
  "summit-at-snoqualmie": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR16613107292484665345": "The Summit at Snoqualmie"
+  },
+  "current": "AR16613107292484665345",
   "changes": []
  },
  "stevens-pass": {
@@ -301,14 +303,43 @@
   "changes": []
  },
  "bogus-basin": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08620835859492503553": "COMMITTEE TO ELECT JIM TOOMEY",
+   "AR00435466527983009793": "Townsquare Media Inc"
+  },
+  "current": "AR00435466527983009793",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Townsquare Media Inc",
+    "to_kind": "agency",
+    "ads": 8,
+    "first": "2025-02-28",
+    "url": "https://adstransparency.google.com/advertiser/AR00435466527983009793/creative/CR07203576091527610369",
+    "still": false
+   }
+  ]
  },
  "tamarack": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08257298239737298945": "Virtual Marketing, Inc."
+  },
+  "current": "AR08257298239737298945",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Virtual Marketing, Inc.",
+    "to_kind": "agency",
+    "ads": 30,
+    "first": "2023-02-15",
+    "url": "https://adstransparency.google.com/advertiser/AR08257298239737298945/creative/CR10351395805025271809",
+    "still": false
+   }
+  ]
  },
  "brundage": {
   "known": {},
@@ -316,9 +347,23 @@
   "changes": []
  },
  "silver-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR07689550464248971265": "SILVER MOUNTAIN RESORT"
+  },
+  "current": "AR07689550464248971265",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "SILVER MOUNTAIN RESORT",
+    "to_kind": "resort",
+    "ads": 11,
+    "first": "2025-10-19",
+    "url": "https://adstransparency.google.com/advertiser/AR07689550464248971265/creative/CR02250571427268788225",
+    "still": false
+   }
+  ]
  },
  "lookout-pass": {
   "known": {},
@@ -587,9 +632,23 @@
   "changes": []
  },
  "eldora": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR10168897817074991105": "ELDORA ENTERPRISES LLC"
+  },
+  "current": "AR10168897817074991105",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "ELDORA ENTERPRISES LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2022-08-16",
+    "url": "https://adstransparency.google.com/advertiser/AR10168897817074991105/creative/CR08191000377231933441",
+    "still": false
+   }
+  ]
  },
  "purgatory": {
   "known": {
@@ -832,9 +891,23 @@
   "changes": []
  },
  "ski-apache": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR06114049377951547393": "Inn of the Mountain Gods Resort and Casino"
+  },
+  "current": "AR06114049377951547393",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Inn of the Mountain Gods Resort and Casino",
+    "to_kind": "other",
+    "ads": 19,
+    "first": "2025-09-05",
+    "url": "https://adstransparency.google.com/advertiser/AR06114049377951547393/creative/CR13824238354058706945",
+    "still": false
+   }
+  ]
  },
  "sipapu": {
   "known": {},
@@ -857,8 +930,18 @@
   "changes": []
  },
  "arizona-snowbowl": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR06985377811426967553": "于双平",
+   "AR06865509225565519873": "HAMPTON RENEE",
+   "AR05074721546346430465": "合肥市包河区徐琥贸易商行（个体工商户）",
+   "AR16392189499221737473": "上海星谷信息科技有限公司",
+   "AR05307642398812143617": "凌婷",
+   "AR10085212320637648897": "BELL EBONY",
+   "AR06085124491199905793": "海口龙华隗嘉瑞电子商务商行",
+   "AR11133654742859776001": "Click Tech Limited",
+   "AR00803445513289465857": "Arizona Snowbowl Resort LTD PRTNSHP"
+  },
+  "current": "AR00803445513289465857",
   "changes": []
  },
  "sunrise-park": {
@@ -990,9 +1073,23 @@
   ]
  },
  "mountain-high": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15619662699581931521": "GENIUS MONKEY"
+  },
+  "current": "AR15619662699581931521",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "GENIUS MONKEY",
+    "to_kind": "person",
+    "ads": 30,
+    "first": "2026-11-06",
+    "url": "https://adstransparency.google.com/advertiser/AR15619662699581931521/creative/CR14124923173296144385",
+    "still": false
+   }
+  ]
  },
  "bear-valley": {
   "known": {},
@@ -1010,9 +1107,23 @@
   "changes": []
  },
  "boreal": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR07054215021806485505": "BOREAL RIDGE CORPORATION"
+  },
+  "current": "AR07054215021806485505",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "BOREAL RIDGE CORPORATION",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2023-03-13",
+    "url": "https://adstransparency.google.com/advertiser/AR07054215021806485505/creative/CR11834285696930021377",
+    "still": false
+   }
+  ]
  },
  "soda-springs": {
   "known": {},
@@ -1150,9 +1261,23 @@
   "changes": []
  },
  "lutsen-mountains": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR06844804339282739201": "Granite Peak Corporation"
+  },
+  "current": "AR06844804339282739201",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Granite Peak Corporation",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2026-02-23",
+    "url": "https://adstransparency.google.com/advertiser/AR06844804339282739201/creative/CR10836750637304119297",
+    "still": false
+   }
+  ]
  },
  "afton-alps": {
   "known": {},
@@ -1269,8 +1394,10 @@
   "changes": []
  },
  "loon-mountain": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR11805796027804418049": "LOON MOUNTAIN RECREATION CORPORATION"
+  },
+  "current": "AR11805796027804418049",
   "changes": []
  },
  "bretton-woods": {
@@ -1279,19 +1406,61 @@
   "changes": []
  },
  "cannon-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR06136912914797297665": "Drive Brand Studio, Inc."
+  },
+  "current": "AR06136912914797297665",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Drive Brand Studio, Inc.",
+    "to_kind": "agency",
+    "ads": 8,
+    "first": "2023-12-13",
+    "url": "https://adstransparency.google.com/advertiser/AR06136912914797297665/creative/CR10547032347042119681",
+    "still": false
+   }
+  ]
  },
  "waterville-valley": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR16333077726887936001": "WVSR, LLC"
+  },
+  "current": "AR16333077726887936001",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "WVSR, LLC",
+    "to_kind": "other",
+    "ads": 22,
+    "first": "2022-12-27",
+    "url": "https://adstransparency.google.com/advertiser/AR16333077726887936001/creative/CR04828086382268252161",
+    "still": false
+   }
+  ]
  },
  "cranmore": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR07757815962941784065": "Drive Brand Studio"
+  },
+  "current": "AR07757815962941784065",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Drive Brand Studio",
+    "to_kind": "agency",
+    "ads": 29,
+    "first": "2024-11-21",
+    "url": "https://adstransparency.google.com/advertiser/AR07757815962941784065/creative/CR08041567229369647105",
+    "still": false
+   }
+  ]
  },
  "gunstock": {
   "known": {},
@@ -1304,9 +1473,23 @@
   "changes": []
  },
  "ragged-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR02315555854415298561": "RM Management and Operations LLC"
+  },
+  "current": "AR02315555854415298561",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "RM Management and Operations LLC",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2023-08-14",
+    "url": "https://adstransparency.google.com/advertiser/AR02315555854415298561/creative/CR08910725664978501633",
+    "still": false
+   }
+  ]
  },
  "attitash-wildcat-sunapee": {
   "known": {},
@@ -1345,9 +1528,23 @@
   "changes": []
  },
  "pleasant-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15156210473935831041": "Gale Partners LLC"
+  },
+  "current": "AR15156210473935831041",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Gale Partners LLC",
+    "to_kind": "agency",
+    "ads": 16,
+    "first": "2026-04-06",
+    "url": "https://adstransparency.google.com/advertiser/AR15156210473935831041/creative/CR05814594113361674241",
+    "still": false
+   }
+  ]
  },
  "mt-abram": {
   "known": {},
@@ -1355,9 +1552,23 @@
   "changes": []
  },
  "jiminy-peak": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR06122930983772618753": "Jiminy Peak Mountain Resort, LLC"
+  },
+  "current": "AR06122930983772618753",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Jiminy Peak Mountain Resort, LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2025-12-17",
+    "url": "https://adstransparency.google.com/advertiser/AR06122930983772618753/creative/CR09763443670152904705",
+    "still": false
+   }
+  ]
  },
  "wachusett": {
   "known": {
@@ -1382,9 +1593,23 @@
   "changes": []
  },
  "belleayre": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05108031972664410113": "Olympic Regional Development Authority"
+  },
+  "current": "AR05108031972664410113",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Olympic Regional Development Authority",
+    "to_kind": "person",
+    "ads": 30,
+    "first": "2024-10-29",
+    "url": "https://adstransparency.google.com/advertiser/AR05108031972664410113/creative/CR09783919325441163265",
+    "still": false
+   }
+  ]
  },
  "hunter-mountain": {
   "known": {},
@@ -1392,8 +1617,10 @@
   "changes": []
  },
  "windham-mountain-club": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR00496966405212602369": "Ski Windham Operating Corp"
+  },
+  "current": "AR00496966405212602369",
   "changes": []
  },
  "greek-peak": {
@@ -1427,9 +1654,24 @@
   "changes": []
  },
  "bear-creek": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR11991896462523891713": "Bear creek Management compant LLC",
+   "AR05051481632926597121": "Bear Creek Management Company LLC"
+  },
+  "current": "AR05051481632926597121",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Bear Creek Management Company LLC",
+    "to_kind": "resort",
+    "ads": 16,
+    "first": "2024-11-18",
+    "url": "https://adstransparency.google.com/advertiser/AR05051481632926597121/creative/CR13778290690846883841",
+    "still": false
+   }
+  ]
  },
  "montage-mountain": {
   "known": {},
@@ -1442,14 +1684,42 @@
   "changes": []
  },
  "massanutten": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05039021348685348865": "Massanutten Resort"
+  },
+  "current": "AR05039021348685348865",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Massanutten Resort",
+    "to_kind": "resort",
+    "ads": 24,
+    "first": "2023-07-12",
+    "url": "https://adstransparency.google.com/advertiser/AR05039021348685348865/creative/CR15628667193007276033",
+    "still": false
+   }
+  ]
  },
  "wintergreen": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15528732091532443649": "Wintergreen Pacific LLC"
+  },
+  "current": "AR15528732091532443649",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Wintergreen Pacific LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2021-11-08",
+    "url": "https://adstransparency.google.com/advertiser/AR15528732091532443649/creative/CR01174898061986496513",
+    "still": false
+   }
+  ]
  },
  "bryce-resort": {
   "known": {},
@@ -1462,9 +1732,23 @@
   "changes": []
  },
  "winterplace": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR10600137358504361985": "NW ACQUISITION LLC"
+  },
+  "current": "AR10600137358504361985",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "NW ACQUISITION LLC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-01-30",
+    "url": "https://adstransparency.google.com/advertiser/AR10600137358504361985/creative/CR11893681478271238145",
+    "still": false
+   }
+  ]
  },
  "sugar-mountain": {
   "known": {},
@@ -1517,13 +1801,30 @@
   "changes": []
  },
  "granite-peak": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR06844804339282739201": "Granite Peak Corporation"
+  },
+  "current": "AR06844804339282739201",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Granite Peak Corporation",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2025-09-23",
+    "url": "https://adstransparency.google.com/advertiser/AR06844804339282739201/creative/CR09795146816629506049",
+    "still": false
+   }
+  ]
  },
  "cascade-mountain": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR00435466527983009793": "Townsquare Media Inc",
+   "AR08620835859492503553": "COMMITTEE TO ELECT JIM TOOMEY"
+  },
+  "current": "AR00435466527983009793",
   "changes": []
  },
  "trollhaugen": {
@@ -1722,9 +2023,23 @@
   ]
  },
  "mount-washington": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR18337433307735654401": "Mount Washington Pacific, ULC"
+  },
+  "current": "AR18337433307735654401",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Mount Washington Pacific, ULC",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2022-08-13",
+    "url": "https://adstransparency.google.com/advertiser/AR18337433307735654401/creative/CR14056140689389912065",
+    "still": false
+   }
+  ]
  },
  "apex": {
   "known": {},
@@ -1732,9 +2047,23 @@
   "changes": []
  },
  "grouse-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR16056842026162847745": "Northland at Grouse, Limited Partnership"
+  },
+  "current": "AR16056842026162847745",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Northland at Grouse, Limited Partnership",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-02-10",
+    "url": "https://adstransparency.google.com/advertiser/AR16056842026162847745/creative/CR17688227912655831041",
+    "still": false
+   }
+  ]
  },
  "cypress-mountain": {
   "known": {
@@ -1756,9 +2085,23 @@
   ]
  },
  "mt-seymour": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR17346959389092741121": "Mt Seymour Resorts Ltd."
+  },
+  "current": "AR17346959389092741121",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Mt Seymour Resorts Ltd.",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2024-11-08",
+    "url": "https://adstransparency.google.com/advertiser/AR17346959389092741121/creative/CR06159249502105501697",
+    "still": false
+   }
+  ]
  },
  "banff-sunshine": {
   "known": {
@@ -1898,9 +2241,23 @@
   ]
  },
  "mont-sutton": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15454630505378480129": "SKI SUTTON INC."
+  },
+  "current": "AR15454630505378480129",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "SKI SUTTON INC.",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2023-12-22",
+    "url": "https://adstransparency.google.com/advertiser/AR15454630505378480129/creative/CR04046953524729217025",
+    "still": false
+   }
+  ]
  },
  "bromont": {
   "known": {
@@ -1964,8 +2321,10 @@
   "changes": []
  },
  "horseshoe-resort": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR04040413346099363841": "HSV Limited Partnership"
+  },
+  "current": "AR04040413346099363841",
   "changes": []
  },
  "mount-st-louis-moonstone": {
