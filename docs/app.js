@@ -218,12 +218,12 @@ $('#results').innerHTML=`<div class="grid">`+shown.map(a=>`<button class="card${
 <div class="thumb">${visual(a)}${pbadge(a)}${a.gone?'<span class="badge tr warn">Unavailable</span>':a.isnew?'<span class="badge tr new">New</span>':!a.live?'<span class="badge tr">Stopped</span>':''}${a.stand?'<span class="badge bl stand">Standout</span>':''}${saved.has(a.key)?'<span class="badge br">★</span>':''}</div>
 <div class="cbody"><div class="cname">${esc(a.n)}</div>${campLine(a)}${tagLine(a)}
 ${a.offer?`<div class="coffer">${esc(a.offer)}</div>`:''}${qline(a)}${window.PEERS&&PEERS.ok?PEERS.card(a):''}
-<div class="crow"><span>${shortDate(a.start)} · ${a.days}d ${a.live?'live':'ran'}</span>${perf(a)}</div></div></button>`).join('')+`</div>`;
+<div class="crow"><span>${shortDate(a.start)} · ${a.days||0}d ${a.live?'live':'ran'}</span>${perf(a)}</div></div></button>`).join('')+`</div>`;
 } else {
 $('#results').innerHTML=`<div class="tblwrap"><table><thead><tr><th></th><th>Resort</th><th>Campaign</th><th>Funnel</th><th>Platform</th><th>Format</th><th>Launched</th><th>Days</th><th>Score</th></tr></thead><tbody>`+
 shown.map(a=>`<tr data-id="${a.key}"><td><div class="mini">${a.img?`<img src="${esc(a.img)}" alt="" loading="lazy">`:''}</div></td>
 <td><div style="font-weight:600">${esc(a.n)}${a.stand?' <span class="badge stand" style="position:static">Standout</span>':''}${a.gone?' <span class="badge warn" style="position:static">Unavailable</span>':''}</div><div class="copyline">${esc(a.gone?'Content unavailable: '+why(a):(a.offer||a.copy||'No copy captured'))}</div>${tagLine(a)}</td>
-<td>${campLine(a)}</td><td class="num">${esc(a.obj||'—')}</td><td class="num">${PN[a.p]}</td><td class="num">${esc(a.kind)}</td><td class="num">${fmtDate(a.start)}</td><td class="num">${a.days}d ${a.live?'':'(stopped)'}</td>
+<td>${campLine(a)}</td><td class="num">${esc(a.obj||'—')}</td><td class="num">${PN[a.p]}</td><td class="num">${esc(a.kind)}</td><td class="num">${fmtDate(a.start)}</td><td class="num">${a.days||0}d ${a.live?'':'(stopped)'}</td>
 <td>${perf(a)}</td></tr>`).join('')+`</tbody></table></div>`;
 }
 if(list.length>shown.length) $('#results').insertAdjacentHTML('beforeend',`<div style="text-align:center;margin:18px 0"><button class="btn" id="more">Show ${Math.min(240,list.length-shown.length)} more of ${list.length-shown.length}</button></div>`);
@@ -232,7 +232,7 @@ if(list.length>shown.length) $('#results').insertAdjacentHTML('beforeend',`<div 
 function scoreBlock(a){if(window.scoreBlock2)return window.scoreBlock2(a,{esc,tier,PN});
 const pp=a.parts||[null,null,null];
 const rows=[
-['Run length vs this resort’s normal',pp[0],60,`${a.days}d ${a.live?'live so far':'total'} vs this resort’s typical ${a.norm||'—'}d on ${PN[a.p]}.${a.live?' Still running, so this is a minimum.':''}`],
+['Run length vs this resort’s normal',pp[0],60,`${a.days||0}d ${a.live?'live so far':'total'} vs this resort’s typical ${a.norm||'—'}d on ${PN[a.p]}.${a.live?' Still running, so this is a minimum.':''}`],
 ['Staying power',pp[1],20,`${a.days} days. Full points at 90+ days.`],
 ['Multiple versions',pp[2],20,(a.versions>1?`${a.versions} versions run together.`:a.kind==='Dynamic'?'Dynamic creative (Meta mixes several versions).':'Runs a single version.')],
 ];
@@ -289,7 +289,7 @@ ${window.PASSBOX?PASSBOX(n):''}${window.BUYER?BUYER(n):''}${window.PEERS&&PEERS.
 </div>
 <div class="pbcol">
 <h3>What it does</h3><ul class="reads">${reads.map(x=>`<li>${x}</li>`).join('')}</ul>
-${top?`<h3>Top-scoring live ad</h3><button class="topad" data-id="${top.key}"><div class="mini">${top.img?`<img src="${esc(top.img)}" alt="">`:''}</div><div style="min-width:0"><div style="font-weight:600">${esc(top.camp[0])} · ${PN[top.p]} ${esc(top.kind)}</div><div class="note">${shortDate(top.start)} · ${top.days}d live${top.offer?' · '+esc(top.offer):''}</div></div>${perf(top)}</button>`:''}
+${top?`<h3>Top-scoring live ad</h3><button class="topad" data-id="${top.key}"><div class="mini">${top.img?`<img src="${esc(top.img)}" alt="">`:''}</div><div style="min-width:0"><div style="font-weight:600">${esc(top.camp[0])} · ${PN[top.p]} ${esc(top.kind)}</div><div class="note">${shortDate(top.start)} · ${top.days||0}d live${top.offer?' · '+esc(top.offer):''}</div></div>${perf(top)}</button>`:''}
 ${r.domain?`<h3>Links</h3><div class="legend"><a href="https://${esc(r.domain)}" target="_blank" rel="noopener">${esc(r.domain)}</a>${r.meta_page_id?` · <a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id=${esc(r.meta_page_id)}" target="_blank" rel="noopener">Meta Ad Library</a>`:''} · <a href="https://adstransparency.google.com/?domain=${esc(r.domain)}&region=US" target="_blank" rel="noopener">Google Transparency</a></div>`:''}
 </div>
 </div></section>`;
