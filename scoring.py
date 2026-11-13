@@ -277,7 +277,7 @@ def score_all(ads, today):
     videos = library.load_json(os.path.join(library.DATA, "videos.json"), {})
     large = library.load_json(os.path.join(library.DATA, "media_large.json"), {})
     for a in ads:
-        a["vid"] = videos.get(a["key"]) or ""
+        a["vid"] = __import__("r2").url(videos.get(a["key"]) or "")  # R2 address once the video has moved off GitHub
         a["img_l"] = large.get(a["key"]) or ""
 
     def deadline(a):
