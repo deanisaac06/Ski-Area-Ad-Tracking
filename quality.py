@@ -22,6 +22,8 @@ Run: python quality.py
 import io
 import os
 import re
+import subprocess
+import tempfile
 from collections import Counter
 from datetime import date
 
@@ -89,6 +91,7 @@ def check_file(rel):
     except Exception:
         return "missing", 0, 0
 
+VIDS = {}  # saved Meta videos (media.py), so a blank preview can be swapped for a frame of the video
 VIS = {}  # vision.py's content check for this run: {ad key: {"v": verdict, "how": ..., "fp": ...}}
 
 def seen(k):
@@ -144,6 +147,12 @@ def candidates(a):
     if a.get("yt"):
         for n in ("maxresdefault", "sddefault", "hqdefault"):
             out.append(("YouTube cover frame", f"https://i.ytimg.com/vi/{a['yt']}/{n}.jpg"))
+    v = VIDS.get(a.get("key"))
+    if isinstance(v, str):
+        for t in (1, 3, 6, 0):
+            out.append(("frame from the ad's video", ("frame", os.path.join(library.DOCS, v), t)))
+    elif a.get("video_src"):
+        out.append(("frame from the ad's video", ("frame", a["video_src"], 1)))
     for rel in arc.get("cards") or []:
         out.append(("saved card / version", ("local", rel)))
     for u in a.get("cards_src") or []:
@@ -153,7 +162,22 @@ def candidates(a):
         out.append(("original link, second try", a["img_src"]))
     return out
 
+def video_frame(src, at):
+    """One still frame from a video file or link, `at` seconds in."""
+    exe = media.ffmpeg_bin()
+    if not exe:
+        raise RuntimeError("no ffmpeg")
+    with tempfile.TemporaryDirectory() as td:
+        out = os.path.join(td, "f.jpg")
+        subprocess.run([exe, "-y", "-loglevel", "error", "-ss", str(at), "-i", src, "-frames:v", "1", "-q:v", "2", out],
+                       capture_output=True, timeout=90)
+        with Image.open(out) as im:
+            return media.to_rgb(im)
+
+
 def fetch(src):
+    if isinstance(src, tuple) and src[0] == "frame":
+        return video_frame(src[1], src[2])
     if isinstance(src, tuple):
         with Image.open(os.path.join(library.DOCS, src[1])) as im:
             return media.to_rgb(im)
@@ -183,7 +207,7 @@ def repair(k, a, media_map, large, ph):
     return ""
 
 def run(max_fix=200):
-    global VIS
+    global VIS, VIDS
     try:
         VIS = __import__("vision").run() or {}  # is each saved picture really the ad? (checks new ads as they come in)
     except Exception as e:
@@ -200,6 +224,7 @@ def run(max_fix=200):
     large = library.load_json(media.LARGES, {})
     ph = library.load_json(media.PHASH, {})
     vids = library.load_json(media.VIDEOS, {})
+    VIDS = vids
     tags = library.load_json(library.TAGS, {})
     q = library.load_json(QUAL, {})
     today = date.today().isoformat()
