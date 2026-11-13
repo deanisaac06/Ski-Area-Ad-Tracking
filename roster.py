@@ -19,7 +19,7 @@ OUT = os.path.join(HERE, "data", "roster.csv")
 TOP_SPENDERS = 10
 PROVINCES = {"AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK", "YT", "NT"}
 COLS = ["slug", "resort", "state", "region", "country", "tier", "domain", "meta_page_id", "opportunity",
-        "atlas_rank", "mm", "google_known", "source", "pilot"]
+        "atlas_rank", "mm", "google_known", "source", "pilot", "owner", "pass"]
 _cache = []
 
 
@@ -89,12 +89,22 @@ def load():
                 by_dom[d] = r
         gc = num(x.get("gc"))
         r["region"] = r.get("region") or str(x.get("rg") or "")
+        r["owner"] = r.get("owner") or str(x.get("o") or "")
         r["mm"] = x.get("mm") if x.get("mm") is not None else r.get("mm", "")
         r["google_known"] = "no" if gc == 0 else ("yes" if gc else r.get("google_known", ""))
         if not r.get("meta_page_id") and x.get("mp"):
             r["meta_page_id"] = str(x["mp"]).strip()
         if not r.get("domain") and d:
             r["domain"] = d
+    try:  # Ikon, Epic and Indy's own ad accounts (passes.py), checked weekly like a top resort
+        for acc in __import__("passes").ACCOUNTS:
+            if not any(r.get("slug") == acc["slug"] for r in out):
+                out.append({"slug": acc["slug"], "resort": acc["resort"], "state": "PASS", "region": "Passes",
+                            "domain": acc["domain"], "meta_page_id": acc["meta_page_id"], "pilot": "yes",
+                            "tier": "weekly", "source": "pass account", "google_known": "yes", "mm": "",
+                            "opportunity": "", "atlas_rank": ""})
+    except Exception as e:
+        print(" roster: pass accounts not added:", str(e)[:120])
     names, seen = {}, set()
     for r in out:
         names[nk(r["resort"])] = names.get(nk(r["resort"]), 0) + 1
