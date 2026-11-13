@@ -28,6 +28,7 @@ BUDGET = float(os.environ.get("APIFY_MONTHLY_BUDGET") or 18)
 MAX_JOBS = int(os.environ.get("MAX_JOBS_PER_RUN") or 60)
 BIWEEKLY, NO_GOOGLE_EVERY = 14, 56
 FIRST_DAYS, FIRST_GOOGLE, GOOGLE_CAP, META_CAP = 120, 30, 50, 150
+PASS_META_CAP = 500  # Ikon / Epic run ~300 live Meta ads; ~$0.25 a check at $0.50 per 1,000
 EST = {"meta": 0.03, "google": 0.06, "google_first": 0.07}  # a job's likely worst cost, for the budget check
 FAILS = os.path.join(library.DATA, "collect_fails.json")
 EMPTY = os.path.join(library.DATA, "meta_empty.json")  # {meta:slug: [days its Meta check came back empty]}
@@ -130,7 +131,7 @@ def run(st, now, platforms=("meta", "google"), force=False):
         p, r, d = job
         label = f"{p}:{r['slug']}"
         if p == "meta":
-            actor, payload = collect.META_ACTOR, collect.meta_input(r, META_CAP)
+            actor, payload = collect.META_ACTOR, collect.meta_input(r, PASS_META_CAP if r.get("state") == "PASS" else META_CAP)
         else:
             since = (date.fromisoformat(d) - timedelta(days=3)) if d else (now.date() - timedelta(days=FIRST_DAYS))
             actor, payload = collect.GOOGLE_ACTOR, collect.google_input(r, GOOGLE_CAP if d else FIRST_GOOGLE, since.isoformat())
