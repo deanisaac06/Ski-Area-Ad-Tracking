@@ -21,17 +21,19 @@ from datetime import date, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "docs")
-PASSES = ["Epic", "Ikon", "Indy"]
+PASSES = ["Epic", "Ikon", "Indy", "Mountain Collective"]
 ACCOUNTS = [
     {"slug": "ikon-pass", "resort": "Ikon Pass", "pass": "Ikon", "domain": "ikonpass.com", "meta_page_id": "1633142560076426"},
     {"slug": "epic-pass", "resort": "Epic Pass", "pass": "Epic", "domain": "epicpass.com", "meta_page_id": "1301903316522062"},
     {"slug": "indy-pass", "resort": "Indy Pass", "pass": "Indy", "domain": "indyskipass.com", "meta_page_id": "363269227836987"},
+    {"slug": "mountain-collective", "resort": "Mountain Collective", "pass": "Mountain Collective", "domain": "mountaincollective.com", "meta_page_id": "403226889740629"},
 ]
 ACCOUNT_OF = {a["slug"]: a["pass"] for a in ACCOUNTS}
-SITE = {"Ikon": "ikonpass.com", "Epic": "epicpass.com", "Indy": "indyskipass.com"}
+SITE = {"Ikon": "ikonpass.com", "Epic": "epicpass.com", "Indy": "indyskipass.com", "Mountain Collective": "mountaincollective.com"}
 NAME = {
     "Ikon": re.compile(r"\bikon\b|ikonpass", re.I),
     "Epic": re.compile(r"\bepic ?pass|epicpass|\bepic (?:day|local|military|nordic|college|kids|mountain rewards|mountain express|australia)\b|\bmy ?epic\b", re.I),
+    "Mountain Collective": re.compile(r"mountain ?collective", re.I),
     "Indy": re.compile(r"\bindy ?(?:ski ?)?pass|indyskipass|\bindy ?\+|\bindy (?:base|plus|xc)\b", re.I),
 }
 BUY = re.compile(r"\bbuy|purchase|price|\$ ?\d|deadline|last chance|on sale|lock in|renew|starting at|before|"
@@ -49,13 +51,16 @@ LINEUP = {
             "fernie kickinghorse kimberley nakiska mtsainteanne stoneham",
     "Ikon": "steamboat winterpark palisadestahoe palisades mammoth june|CA bigbear bearmountain snowsummit "
             "snowshoe|WV stratton sugarbush tremblant mttremblant blue|ON solitude crystal|WA deervalley aspen "
-            "aspensnowmass aspenhighlands snowmass jacksonhole bigsky alta|UT snowbird brighton|UT taos|NM "
+            "aspensnowmass aspenhighlands snowmass jacksonhole bigsky alta|UT snowbird brighton|UT taos|NM taosskivalley "
             "arapahoebasin abasin copper eldora revelstoke banffsunshine sunshinevillage lakelouise norquay "
             "mtnorquay red|BC cypress mtbachelor schweitzer summitatsnoqualmie snoqualmie boyne highlands|MI "
             "boynemountainthehighlands boynemountainandthehighlands killington pico sundayriver sugarloaf "
             "loon|NH windham camelback mthoodmeadows lemassif lemassifdecharlevoix sunvalley snowbasin",
     "Indy": "andestowerhills antelopebutte apex|BC arcticvalley baldy|BC bearcreek|PA bearvalley|CA beaver|UT belleayre berkshireeast bigmoose bigpowderhorn bigrock|ME bigwhite blackmountainofmaine black|NH blackmountain|NH blueknob boltonvalley bottineau bousquet brucemound brundage bryce|VA buffaloskiclub burke|VT calabogie camdensnowbowl camp10 campfortune canaanvalley cannon cataloochee catamount|MA catamount|NY castle|AB centrevorlage cherrypeak chestnut|IL chinapeak christie|WI coffeemill cooperspur crystal|MI cuchara dartmouthskiway owlshead|QC destinationowlshead detroit|MN dodgeridge donnerskiranch dryhill eaglepoint eaglecrest echo|CO fairmonthotsprings frostfire gore|NY granbyranch greatbear greekpeak hatleypointe hilltop|AK hockleyvalley hoodoo howelsenhill hudsonbay huffhills hunthollow hurricaneridge hylandhills jaypeak kellycanyon kendall|CO kingpine lerelais lochlomond losttrail lostvalley|ME louploup loveland magic|VT magic|ID mapleskiridge marble|NL marquette massanutten massifdusud mcintyre middleburysnowbowl mohawk|CT mtdouard mtrigaud mtripley mtsutton mtkanasuta montage montanasnowbowl snowbowl|MT moose|AK mtbaldy|ON mtcain mtkato mountainhigh mtlacrosse mtabram mtholiday mthoodmeadows mtpisgah mtshasta mtwashington|BC manningpark murrayridge norway|MI nubsnob nutthill ober|TN obergatlinburg peeknpeak pebblecreek pomerelle powderridge powderhorn|CO passpowderkeg patspeak paulbunyan phoenix|BC pine|MI ragged|NH redlodge saddleback saskadena sasquatch schuss shames shawnee|PA showdown silver|ID skeetawk bigbear|PA bluewood skiland|AK saintbruno sawmill|PA vallebleue valdirne smugglersnotch smokey|NL snowking snowridge snowstar soldier|ID spirit|MN springmountain|PA sunburst|WI sundown|IA sunlight swain tamarack|ID tenney terrypeak thrillhills titus treetops trollhaugen tussey tyrolbasin veterans|NH watervillevalley westmountain|NY whaleback whitepass whitepine|WY whitecap whiteface winter4kids wintergreen winterplace wisp "
             "",  # Indy: indyskipass.com/our-resorts as of Nov 2026, North American alpine areas ("Allied" partners included)
+    "Mountain Collective": "alta|UT aspensnowmass aspen bigsky grandtarghee jacksonhole snowbasin snowbird sugarbowl "
+        "sugarloaf sunvalley sundayriver taos|NM taosskivalley whiteface banffsunshine sunshinevillage lakelouise bromont "
+        "lemassif lemassifdecharlevoix marmotbasin panorama|BC revelstoke sunpeaks",  # mountaincollective.com, 26/27 season
 }
 
 def norm(n):
@@ -171,7 +176,7 @@ def decide(r, table, ev):
         return known, "2024-25 pass line-up" + (", confirmed by its ads and site" if any(ev[k] for k in known) else "")
     if strong:
         return [strong], "seen in its ads and site"
-    return [], "no sign of Epic, Ikon or Indy in its ads or site"
+    return [], "no sign of Epic, Ikon, Indy or Mountain Collective in its ads or site"
 
 def apply(out, resorts):
     """Adds pp (pass push) and rp (resort's pass) to every ad, and a pass summary to every resort."""
@@ -198,12 +203,12 @@ def apply(out, resorts):
                 a["rp"] = ["Pass account"]
             continue
         ev = site_votes(ads_of)
-        ev.update(x.split()[0] for a in ads_of for x in a.get("pp", []))
+        ev.update(x.rsplit(" ", 1)[0] for a in ads_of for x in a.get("pp", []))
         on, src = decide(full.get(r["slug"], r), table, ev)
         pushed = [a for a in ads_of if is_push(a)]
         r["pass"] = {"on": on, "src": src, "ads": len(ads_of),
-                     "push": dict(Counter(x.split()[0] for a in ads_of for x in a.get("pp", []) if x.endswith("push"))),
-                     "mention": dict(Counter(x.split()[0] for a in ads_of for x in a.get("pp", []) if x.endswith("mention"))),
+                     "push": dict(Counter(x.rsplit(" ", 1)[0] for a in ads_of for x in a.get("pp", []) if x.endswith("push"))),
+                     "mention": dict(Counter(x.rsplit(" ", 1)[0] for a in ads_of for x in a.get("pp", []) if x.endswith("mention"))),
                      "live": sum(1 for a in pushed if a.get("live")),
                      "last": max((a.get("start") or "" for a in pushed), default="")}
         for p in on:
@@ -236,4 +241,4 @@ def apply(out, resorts):
                      "amp": amp[:15], "amp_n": len(amp), "on_n": on_count[acc]}
     n = sum(1 for a in out if is_push(a) and not ACCOUNT_OF.get(a.get("slug")))
     return (f"{n} resort ads push a pass; resorts on Epic {on_count['Epic']}, Ikon {on_count['Ikon']}, "
-            f"Indy {on_count['Indy']}")
+            f"Indy {on_count['Indy']}, Mountain Collective {on_count['Mountain Collective']}")
