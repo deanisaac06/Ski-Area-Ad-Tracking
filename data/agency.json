@@ -562,7 +562,7 @@
     "to_kind": "person",
     "ads": 30,
     "first": "2021-10-25",
-    "url": "https://adstransparency.google.com/advertiser/AR12205390164297515009/creative/CR01867019070935662593",
+    "url": "https://adstransparency.google.com/advertiser/AR12205390164297515009/creative/CR16694502815438995457",
     "still": false
    }
   ]
@@ -820,7 +820,7 @@
     "to_kind": "person",
     "ads": 14,
     "first": "2023-12-09",
-    "url": "https://adstransparency.google.com/advertiser/AR09345450915965960193/creative/CR12291005647238987777",
+    "url": "https://adstransparency.google.com/advertiser/AR09345450915965960193/creative/CR03224210036184055809",
     "still": false
    }
   ]
@@ -965,7 +965,7 @@
     "to_kind": "agency",
     "ads": 24,
     "first": "2024-11-15",
-    "url": "https://adstransparency.google.com/advertiser/AR10963103498501095425/creative/CR02871424411787853825",
+    "url": "https://adstransparency.google.com/advertiser/AR10963103498501095425/creative/CR01143639470394834945",
     "still": false
    }
   ]
@@ -1291,7 +1291,7 @@
     "to_kind": "person",
     "ads": 30,
     "first": "2026-10-06",
-    "url": "https://adstransparency.google.com/advertiser/AR15619662699581931521/creative/CR12776336702578884609",
+    "url": "https://adstransparency.google.com/advertiser/AR15619662699581931521/creative/CR16848144919582212097",
     "still": false
    }
   ]
@@ -1310,7 +1310,7 @@
     "to_kind": "person",
     "ads": 28,
     "first": "2026-10-06",
-    "url": "https://adstransparency.google.com/advertiser/AR15619662699581931521/creative/CR08305119891669647361",
+    "url": "https://adstransparency.google.com/advertiser/AR15619662699581931521/creative/CR06958166470597541889",
     "still": false
    }
   ]
@@ -1377,7 +1377,7 @@
     "to_kind": "resort",
     "ads": 11,
     "first": "2025-11-07",
-    "url": "https://adstransparency.google.com/advertiser/AR08983282024978579457/creative/CR15591174877292265473",
+    "url": "https://adstransparency.google.com/advertiser/AR08983282024978579457/creative/CR17960536673242578945",
     "still": false
    }
   ]
@@ -1481,7 +1481,7 @@
     "to_kind": "agency",
     "ads": 23,
     "first": "2024-01-02",
-    "url": "https://adstransparency.google.com/advertiser/AR00435466527983009793/creative/CR12123320425966993409",
+    "url": "https://adstransparency.google.com/advertiser/AR00435466527983009793/creative/CR03721929813020114945",
     "still": false
    }
   ]
@@ -2208,7 +2208,7 @@
     "to_kind": "agency",
     "ads": 9,
     "first": "2025-11-10",
-    "url": "https://adstransparency.google.com/advertiser/AR17278794152116486145/creative/CR00369747876177248257",
+    "url": "https://adstransparency.google.com/advertiser/AR17278794152116486145/creative/CR02039307139939303425",
     "still": false
    }
   ]
@@ -2806,6 +2806,13 @@
  "indy-pass": {
   "known": {},
   "current": "",
+  "changes": []
+ },
+ "mountain-collective": {
+  "known": {
+   "AR18295392741913264129": "ASPEN SKIING COMPANY, LLC"
+  },
+  "current": "AR18295392741913264129",
   "changes": []
  }
 }
