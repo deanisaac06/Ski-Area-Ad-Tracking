@@ -326,6 +326,10 @@ def build(now=None):
         print("  agency:", __import__("agency").apply(lst, resorts, today))
     except Exception as e:
         print("  agency skipped:", str(e)[:200])
+    try:  # Ikon / Epic / Indy: pass push on every ad, each resort's pass, what each pass account pushes
+        print("  passes:", __import__("passes").apply(out, resorts))
+    except Exception as e:
+        print("  passes skipped:", str(e)[:200])
     lib = {"generated": now.strftime("%Y-%m-%d %H:%M UTC"), "today": today.isoformat(),
            "last_check": max(latest_run.values(), default=""), "health": __import__("archive").health(), "campaigns": CAMPAIGNS, "tax": __import__("taxonomy").LISTS,
            "resorts": resorts, "reports": reports, "ads": out}
