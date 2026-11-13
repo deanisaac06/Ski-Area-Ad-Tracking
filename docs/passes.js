@@ -6,7 +6,7 @@ const L=window.LIB; if(!L) return;
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const d=s=>s?MON[+s.slice(5,7)-1]+' '+(+s.slice(8,10)):'—';
-const COL={Ikon:'#111827',Epic:'#D9480F',Indy:'#B42318'};
+const COL={Ikon:'#111827',Epic:'#D9480F',Indy:'#B42318','Mountain Collective':'#0F766E'};
 const chip=p=>`<span class="pchip" style="background:${COL[p]||'#667085'}">${esc(p)}</span>`;
 const css=document.createElement('style');
 css.textContent='.passbox{margin:10px 0 4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;line-height:1.5}.passbox h4{margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.passbox .pnow{font-size:15px}.pchip{display:inline-block;color:#fff;font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 8px;margin-right:5px;vertical-align:1px}.passbox ul{margin:6px 0 0;padding-left:18px}.passbox li{margin:2px 0}.passbox .pf{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;color:var(--muted);font-size:12.5px}.passbox .pf b{color:var(--ink);font-weight:600}.passbox .lnk{border:0;background:none;padding:0;color:var(--accent);cursor:pointer;text-decoration:underline;font:inherit}';
@@ -14,7 +14,7 @@ document.head.appendChild(css);
 const filt=(k,v,label,all)=>`<button type="button" class="lnk" data-pk="${k}" data-pv="${esc(v)}"${all?' data-pall="1"':''}>${label}</button>`;
 window.PASSBOX=n=>{
   const r=(L.resorts||[]).find(x=>x.n===n), P=r&&r.pass; if(!P) return '';
-  let h='<div class="passbox"><h4>Ikon · Epic · Indy</h4>';
+  let h='<div class="passbox"><h4>Ikon · Epic · Indy · Mountain Collective</h4>';
   if(P.account){
     const a=P.account;
     h+=`<div class="pnow">${chip(a)}<b>${esc(n)}</b> corporate account · <b>${P.live||0}</b> live ads${P.new7?' · <b>'+P.new7+'</b> new this week':''}</div>`;
@@ -27,12 +27,12 @@ window.PASSBOX=n=>{
     return h+'</div>';
   }
   const on=P.on||[], pu=P.push||{}, me=P.mention||{}, tot=P.ads||0;
-  h+=`<div class="pnow">${on.length?'On '+on.map(chip).join(''):'Not on Epic, Ikon or Indy'}</div><div class="note">${esc(P.src||'')}</div>`;
+  h+=`<div class="pnow">${on.length?'On '+on.map(chip).join(''):'Not on Epic, Ikon, Indy or Mountain Collective'}</div><div class="note">${esc(P.src||'')}</div>`;
   const ks=[...new Set(Object.keys(pu).concat(Object.keys(me)))];
   if(ks.length){
     h+='<ul>'+ks.map(p=>{const c=pu[p]||0, m=me[p]||0; return `<li>${chip(p)}${c?`<b>${c}</b> ad${c>1?'s':''} push ${esc(p)}${tot?' ('+Math.round(c/tot*100)+'% of its ads)':''} · ${filt('pp',p+' push','show them')}`:''}${c&&m?' · ':''}${m?`${m} mention ${esc(p)} in passing`:''}</li>`;}).join('')+'</ul>';
     if(P.live) h+=`<div class="note"><b>${P.live}</b> pass-push ad${P.live>1?'s':''} live now · latest launched ${d(P.last)}</div>`;
-  } else h+='<div class="note">None of its ads push Epic, Ikon or Indy so far.</div>';
+  } else h+='<div class="note">None of its ads push Epic, Ikon, Indy or Mountain Collective so far.</div>';
   return h+'</div>';
 };
 document.addEventListener('click',e=>{
