@@ -194,9 +194,23 @@
   ]
  },
  "mt-spokane": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR12096492024421679105": "Mt. Spokane Ski & Snowboard Park"
+  },
+  "current": "AR12096492024421679105",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Mt. Spokane Ski & Snowboard Park",
+    "to_kind": "resort",
+    "ads": 8,
+    "first": "2023-09-14",
+    "url": "https://adstransparency.google.com/advertiser/AR12096492024421679105/creative/CR00626927803442397185",
+    "still": false
+   }
+  ]
  },
  "ski-bluewood": {
   "known": {},
@@ -459,8 +473,10 @@
   "changes": []
  },
  "red-lodge-mountain": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR07394411323963998209": "RED LODGE MOUNTAIN"
+  },
+  "current": "AR07394411323963998209",
   "changes": []
  },
  "discovery": {
@@ -484,9 +500,23 @@
   "changes": []
  },
  "showdown": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08620835859492503553": "COMMITTEE TO ELECT JIM TOOMEY"
+  },
+  "current": "AR08620835859492503553",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "COMMITTEE TO ELECT JIM TOOMEY",
+    "to_kind": "other",
+    "ads": 1,
+    "first": "2026-01-29",
+    "url": "https://adstransparency.google.com/advertiser/AR08620835859492503553/creative/CR17170116799329468417",
+    "still": false
+   }
+  ]
  },
  "blacktail-mountain": {
   "known": {},
@@ -519,9 +549,23 @@
   "changes": []
  },
  "snow-king": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR12205390164297515009": "Ryan Stanley"
+  },
+  "current": "AR12205390164297515009",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Ryan Stanley",
+    "to_kind": "person",
+    "ads": 30,
+    "first": "2021-10-25",
+    "url": "https://adstransparency.google.com/advertiser/AR12205390164297515009/creative/CR01867019070935662593",
+    "still": false
+   }
+  ]
  },
  "snowy-range": {
   "known": {},
@@ -729,9 +773,23 @@
   "changes": []
  },
  "granby-ranch": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR10027766067901759489": "Granby Ranch"
+  },
+  "current": "AR10027766067901759489",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Granby Ranch",
+    "to_kind": "resort",
+    "ads": 19,
+    "first": "2025-08-22",
+    "url": "https://adstransparency.google.com/advertiser/AR10027766067901759489/creative/CR02772025536979927041",
+    "still": false
+   }
+  ]
  },
  "echo-mountain": {
   "known": {},
@@ -749,9 +807,23 @@
   "changes": []
  },
  "silverton-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR09345450915965960193": "Ethan Fischer"
+  },
+  "current": "AR09345450915965960193",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Ethan Fischer",
+    "to_kind": "person",
+    "ads": 14,
+    "first": "2023-12-09",
+    "url": "https://adstransparency.google.com/advertiser/AR09345450915965960193/creative/CR12291005647238987777",
+    "still": false
+   }
+  ]
  },
  "kendall-mountain": {
   "known": {},
@@ -880,13 +952,29 @@
   "changes": []
  },
  "woodward-park-city": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR10963103498501095425": "Parleys Recreation Partners, L.L.C."
+  },
+  "current": "AR10963103498501095425",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Parleys Recreation Partners, L.L.C.",
+    "to_kind": "agency",
+    "ads": 24,
+    "first": "2024-11-15",
+    "url": "https://adstransparency.google.com/advertiser/AR10963103498501095425/creative/CR02871424411787853825",
+    "still": false
+   }
+  ]
  },
  "eagle-point": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR11077122957380681729": "Eagle Point Resort"
+  },
+  "current": "AR11077122957380681729",
   "changes": []
  },
  "cherry-peak": {
@@ -1190,14 +1278,42 @@
   ]
  },
  "dodge-ridge": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15619662699581931521": "GENIUS MONKEY"
+  },
+  "current": "AR15619662699581931521",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "GENIUS MONKEY",
+    "to_kind": "person",
+    "ads": 30,
+    "first": "2026-10-06",
+    "url": "https://adstransparency.google.com/advertiser/AR15619662699581931521/creative/CR12776336702578884609",
+    "still": false
+   }
+  ]
  },
  "china-peak": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15619662699581931521": "GENIUS MONKEY"
+  },
+  "current": "AR15619662699581931521",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "GENIUS MONKEY",
+    "to_kind": "person",
+    "ads": 28,
+    "first": "2026-10-06",
+    "url": "https://adstransparency.google.com/advertiser/AR15619662699581931521/creative/CR08305119891669647361",
+    "still": false
+   }
+  ]
  },
  "boreal": {
   "known": {
@@ -1224,9 +1340,23 @@
   "changes": []
  },
  "mt-shasta-ski-park": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR03986622883626483713": "Brendan Hickey"
+  },
+  "current": "AR03986622883626483713",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Brendan Hickey",
+    "to_kind": "person",
+    "ads": 1,
+    "first": "2022-02-06",
+    "url": "https://adstransparency.google.com/advertiser/AR03986622883626483713/creative/CR00537560752467214337",
+    "still": false
+   }
+  ]
  },
  "mt-baldy": {
   "known": {},
@@ -1234,9 +1364,23 @@
   "changes": []
  },
  "tahoe-donner-downhill": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08983282024978579457": "Tahoe Donner Association"
+  },
+  "current": "AR08983282024978579457",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Tahoe Donner Association",
+    "to_kind": "resort",
+    "ads": 11,
+    "first": "2025-11-07",
+    "url": "https://adstransparency.google.com/advertiser/AR08983282024978579457/creative/CR15591174877292265473",
+    "still": false
+   }
+  ]
  },
  "donner-ski-ranch": {
   "known": {},
@@ -1324,9 +1468,23 @@
   "changes": []
  },
  "sundown-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR00435466527983009793": "Townsquare Media Inc"
+  },
+  "current": "AR00435466527983009793",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Townsquare Media Inc",
+    "to_kind": "agency",
+    "ads": 23,
+    "first": "2024-01-02",
+    "url": "https://adstransparency.google.com/advertiser/AR00435466527983009793/creative/CR12123320425966993409",
+    "still": false
+   }
+  ]
  },
  "seven-oaks": {
   "known": {},
@@ -1418,8 +1576,10 @@
   "changes": []
  },
  "wild-mountain": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR03155117816416305153": "Wild Mountain Inc"
+  },
+  "current": "AR03155117816416305153",
   "changes": []
  },
  "mount-kato": {
@@ -1713,8 +1873,10 @@
   ]
  },
  "mt-abram": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR15959807530851368961": "MY ABRAM, LLC"
+  },
+  "current": "AR15959807530851368961",
   "changes": []
  },
  "jiminy-peak": {
@@ -1763,9 +1925,23 @@
   ]
  },
  "bousquet": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR18108455372686622721": "Fresh Powder LLC"
+  },
+  "current": "AR18108455372686622721",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Fresh Powder LLC",
+    "to_kind": "other",
+    "ads": 13,
+    "first": "2025-08-21",
+    "url": "https://adstransparency.google.com/advertiser/AR18108455372686622721/creative/CR15469337899329126401",
+    "still": false
+   }
+  ]
  },
  "gore-mountain": {
   "known": {
@@ -1999,14 +2175,43 @@
   "changes": []
  },
  "mount-bohemia": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR07952943285046083585": "Greenlight Marketing"
+  },
+  "current": "AR07952943285046083585",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Greenlight Marketing",
+    "to_kind": "agency",
+    "ads": 22,
+    "first": "2024-05-31",
+    "url": "https://adstransparency.google.com/advertiser/AR07952943285046083585/creative/CR13349515687551303681",
+    "still": false
+   }
+  ]
  },
  "shanty-creek": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR04386346144016367617": "DQ&A Technology NL BV",
+   "AR17278794152116486145": "Flight Path Creative"
+  },
+  "current": "AR17278794152116486145",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Flight Path Creative",
+    "to_kind": "agency",
+    "ads": 9,
+    "first": "2025-11-10",
+    "url": "https://adstransparency.google.com/advertiser/AR17278794152116486145/creative/CR00369747876177248257",
+    "still": false
+   }
+  ]
  },
  "granite-peak": {
   "known": {
