@@ -26,7 +26,7 @@ import requests
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 API = "https://api.apify.com/v2"
-META_ACTOR = "curious_coder~facebook-ads-library-scraper"
+META_ACTOR = "automation-lab~facebook-ads-library"  # curious_coder~facebook-ads-library-scraper got blocked by Facebook (Nov 2026)
 GOOGLE_ACTOR = "silva95gustavo~google-ads-scraper"
 
 
@@ -51,6 +51,7 @@ def run_actor(actor, payload, token, label, timeout_min=30):
             if len(page) < 1000:
                 break
             offset += 1000
+    items = [meta_to_old(x) for x in items] if actor == META_ACTOR else items
     info = {"label": label, "actor": actor, "run_id": run["id"], "status": run["status"],
             "items": len(items), "cost_usd": round(run.get("usageTotalUsd") or 0, 4),
             "started": run.get("startedAt"), "finished": run.get("finishedAt")}
@@ -58,11 +59,36 @@ def run_actor(actor, payload, token, label, timeout_min=30):
     return items, info
 
 
+def meta_to_old(x):
+    """automation-lab output -> the curious_coder shape library.py reads (old downloads keep working)."""
+    if not isinstance(x, dict) or "snapshot" in x or x.get("error"):
+        return x
+    fmt = str(x.get("displayFormat") or "").upper()
+    imgs = [u for u in (x.get("imageUrls") or []) if u]
+    vids = [v for v in (x.get("videoUrls") or []) if v]
+    prev = x.get("videoPreviewUrls") or []
+    snap = {"body": {"text": x.get("bodyText") or ""}, "title": x.get("title") or "",
+            "link_url": x.get("linkUrl") or "", "link_description": x.get("linkDescription") or "",
+            "caption": x.get("linkCaption") or "", "cta_text": x.get("ctaText") or "", "cta_type": x.get("ctaType") or "",
+            "display_format": fmt, "page_name": x.get("pageName") or "",
+            "images": [{"original_image_url": u} for u in imgs],
+            "videos": [{"video_hd_url": v, "video_preview_image_url": prev[i] if i < len(prev) else ""} for i, v in enumerate(vids)],
+            "cards": []}
+    if fmt in ("CAROUSEL", "MULTI_IMAGES") and len(imgs) > 1:
+        snap["cards"] = [{"original_image_url": u, "title": snap["title"], "link_url": snap["link_url"]} for u in imgs]
+    return {"ad_archive_id": str(x.get("adArchiveId") or ""), "page_id": str(x.get("pageId") or ""),
+            "page_name": x.get("pageName") or "", "is_active": x.get("isActive"),
+            "start_date": x.get("startDate") or "", "end_date": x.get("endDate") or "",
+            "publisher_platform": [str(p).upper() for p in (x.get("platforms") or [])],
+            "collation_count": x.get("collationCount") or 1, "collation_id": str(x.get("collationId") or ""),
+            "ad_library_url": x.get("adLibraryUrl") or "", "contains_ai_media": x.get("containsAiMedia"),
+            "snapshot": snap, "source": "automation-lab"}
+
 def meta_input(resort, limit):
     url = ("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=" + (resort.get("country") or "US")
            + f"&media_type=all&search_type=page&view_all_page_id={resort['meta_page_id']}")
-    return {"urls": [{"url": url}], "count": limit, "limitPerSource": limit, "scrapeAdDetails": True,
-            "scrapePageAds.activeStatus": "active", "scrapePageAds.countryCode": resort.get("country") or "US"}
+    return {"adsLibraryUrls": [url], "maxAds": limit, "activeStatus": "active", "country": resort.get("country") or "US",
+            "mediaType": "all", "includeAdDetails": False}
 
 
 def google_input(resort, limit, since=None):
@@ -99,13 +125,14 @@ def reuse_runs(since, resorts, token):
         resort, platform = None, None
         if inp.get("domains"):
             platform, resort = "google", by_domain.get(inp["domains"][0])
-        elif inp.get("urls"):
-            page_id = str(inp["urls"][0].get("url", "")).split("view_all_page_id=")[-1]
+        elif inp.get("urls") or inp.get("adsLibraryUrls"):
+            page_id = str((inp.get("adsLibraryUrls") or [None])[0] or (inp.get("urls") or [{}])[0].get("url", "")).split("view_all_page_id=")[-1]
             platform, resort = "meta", by_page.get(page_id)
         if not resort or (platform, resort["slug"]) in found:
             continue                                 # newest run per resort/platform wins
         full = requests.get(f"{API}/actor-runs/{run['id']}", params={"token": token}, timeout=60).json()["data"]
         items = fetch_items(run["defaultDatasetId"], token)
+        items = [meta_to_old(x) for x in items] if platform == "meta" else items
         info = {"label": f"{platform}:{resort['slug']}", "actor": META_ACTOR if platform == "meta" else GOOGLE_ACTOR,
                 "run_id": run["id"], "status": "REUSED", "items": len(items),
                 "cost_usd": round(full.get("usageTotalUsd") or 0, 4),
