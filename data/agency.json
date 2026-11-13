@@ -143,9 +143,23 @@
   "changes": []
  },
  "crystal-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2025-09-11",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR11744452813801914369",
+    "still": false
+   }
+  ]
  },
  "summit-at-snoqualmie": {
   "known": {
@@ -155,9 +169,23 @@
   "changes": []
  },
  "stevens-pass": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 18,
+    "first": "2025-08-05",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR16216958999663214593",
+    "still": false
+   }
+  ]
  },
  "mission-ridge": {
   "known": {},
@@ -328,8 +356,10 @@
   ]
  },
  "schweitzer": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR02999074576446521345": "Schweitzer Mountain LLC"
+  },
+  "current": "AR02999074576446521345",
   "changes": []
  },
  "bogus-basin": {
@@ -399,9 +429,23 @@
   ]
  },
  "lookout-pass": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR01706293165562003457": "Windfall, Inc."
+  },
+  "current": "AR01706293165562003457",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Windfall, Inc.",
+    "to_kind": "other",
+    "ads": 11,
+    "first": "2025-10-06",
+    "url": "https://adstransparency.google.com/advertiser/AR01706293165562003457/creative/CR11030335327414779905",
+    "still": false
+   }
+  ]
  },
  "kelly-canyon": {
   "known": {},
@@ -623,9 +667,23 @@
   "changes": []
  },
  "crested-butte": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-05-12",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR06155213744675749889",
+    "still": false
+   }
+  ]
  },
  "aspen-snowmass": {
   "known": {
@@ -666,9 +724,35 @@
   ]
  },
  "winter-park": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc.",
+   "AR07524963572254769153": "Miles Media Group, Inc."
+  },
+  "current": "AR07524963572254769153",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 10,
+    "first": "2026-08-18",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR13747072703876038657",
+    "still": false
+   },
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Miles Media Group, Inc.",
+    "to_kind": "agency",
+    "ads": 20,
+    "first": "2026-08-02",
+    "url": "https://adstransparency.google.com/advertiser/AR07524963572254769153/creative/CR15169643559679688705",
+    "still": false
+   }
+  ]
  },
  "copper-mountain": {
   "known": {
@@ -690,9 +774,23 @@
   ]
  },
  "arapahoe-basin": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR13204530399230820353": "Dundee Base Camp, LLC"
+  },
+  "current": "AR13204530399230820353",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Dundee Base Camp, LLC",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2025-11-05",
+    "url": "https://adstransparency.google.com/advertiser/AR13204530399230820353/creative/CR16942173504722173953",
+    "still": false
+   }
+  ]
  },
  "eldora": {
   "known": {
@@ -855,9 +953,23 @@
   ]
  },
  "deer-valley": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2026-09-18",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR04910113033486860289",
+    "still": false
+   }
+  ]
  },
  "snowbird": {
   "known": {
@@ -917,9 +1029,23 @@
   ]
  },
  "solitude": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2025-09-01",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR09783370119383089153",
+    "still": false
+   }
+  ]
  },
  "brian-head": {
   "known": {
@@ -1200,9 +1326,23 @@
   "changes": []
  },
  "big-bear": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2025-04-19",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR14772841736044544001",
+    "still": false
+   }
+  ]
  },
  "snow-valley": {
   "known": {},
@@ -1598,19 +1738,62 @@
   "changes": []
  },
  "stowe": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR15982230386872680449": "Stowe Mountain Resort",
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 28,
+    "first": "2026-05-05",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR10430537165933903873",
+    "still": false
+   }
+  ]
  },
  "okemo": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-05-12",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR15737725036947046401",
+    "still": false
+   }
+  ]
  },
  "mount-snow": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-05-12",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR03733664350867554305",
+    "still": false
+   }
+  ]
  },
  "killington-pico": {
   "known": {
@@ -1632,14 +1815,42 @@
   ]
  },
  "stratton": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2026-04-13",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR06346911947711053825",
+    "still": false
+   }
+  ]
  },
  "sugarbush": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2025-09-02",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR07340833900458934273",
+    "still": false
+   }
+  ]
  },
  "bolton-valley": {
   "known": {
@@ -1816,8 +2027,10 @@
   ]
  },
  "attitash-wildcat-sunapee": {
-  "known": {},
-  "current": "",
+  "known": {
+   "AR16780561727983976449": "L.B.O. Holding, Inc."
+  },
+  "current": "AR16780561727983976449",
   "changes": []
  },
  "sunday-river": {
@@ -1982,9 +2195,23 @@
   ]
  },
  "hunter-mountain": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2025-11-13",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR11216652520543748097",
+    "still": false
+   }
+  ]
  },
  "windham-mountain-club": {
   "known": {
@@ -2023,9 +2250,24 @@
   "changes": []
  },
  "seven-springs-laurel-hidden-valley": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR08050884344874532865": "Adswerve, Inc.",
+   "AR05937783353188024321": "The Vail Corporation"
+  },
+  "current": "AR05937783353188024321",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "The Vail Corporation",
+    "to_kind": "resort",
+    "ads": 29,
+    "first": "2025-09-03",
+    "url": "https://adstransparency.google.com/advertiser/AR05937783353188024321/creative/CR13675524948225949697",
+    "still": false
+   }
+  ]
  },
  "liberty-roundtop-whitetail-jack-frost-big-boulder": {
   "known": {},
@@ -2063,9 +2305,23 @@
   "changes": []
  },
  "snowshoe": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR02584209048077336577": "Snowshoe Company"
+  },
+  "current": "AR02584209048077336577",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Snowshoe Company",
+    "to_kind": "resort",
+    "ads": 30,
+    "first": "2026-09-18",
+    "url": "https://adstransparency.google.com/advertiser/AR02584209048077336577/creative/CR08683634466112929793",
+    "still": false
+   }
+  ]
  },
  "massanutten": {
   "known": {
@@ -2111,9 +2367,23 @@
   "changes": []
  },
  "canaan-valley": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR00015851942605488129": "Regency Hotel Management, LLC"
+  },
+  "current": "AR00015851942605488129",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Regency Hotel Management, LLC",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2023-05-25",
+    "url": "https://adstransparency.google.com/advertiser/AR00015851942605488129/creative/CR10555699685534728193",
+    "still": false
+   }
+  ]
  },
  "winterplace": {
   "known": {
@@ -2773,9 +3043,23 @@
   ]
  },
  "blue-mountain-on": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR14555343862030663681": "Eighty Five Sixty, Inc."
+  },
+  "current": "AR14555343862030663681",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "Eighty Five Sixty, Inc.",
+    "to_kind": "other",
+    "ads": 30,
+    "first": "2026-09-16",
+    "url": "https://adstransparency.google.com/advertiser/AR14555343862030663681/creative/CR01400305891370074113",
+    "still": false
+   }
+  ]
  },
  "horseshoe-resort": {
   "known": {
