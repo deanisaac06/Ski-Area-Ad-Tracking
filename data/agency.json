@@ -1818,9 +1818,23 @@
   "changes": []
  },
  "greek-peak": {
-  "known": {},
-  "current": "",
-  "changes": []
+  "known": {
+   "AR05359798162372427777": "GCommerce Solutions, LLC"
+  },
+  "current": "AR05359798162372427777",
+  "changes": [
+   {
+    "date": "2026-11-13",
+    "from": "",
+    "from_kind": "",
+    "to": "GCommerce Solutions, LLC",
+    "to_kind": "other",
+    "ads": 3,
+    "first": "2024-09-25",
+    "url": "https://adstransparency.google.com/advertiser/AR05359798162372427777/creative/CR12466738529122123777",
+    "still": false
+   }
+  ]
  },
  "bristol-mountain": {
   "known": {},
