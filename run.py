@@ -121,6 +121,11 @@ def main():
     except Exception as e:
         print("Ad health check skipped:", str(e)[:200])
 
+    try:
+        __import__("r2").run()  # saved videos -> Cloudflare R2, so they don't fill up GitHub
+    except Exception as e:
+        print("R2 step skipped:", str(e)[:200])
+
     if args.report:
         do_report(st, now, (now.date() - timedelta(days=now.weekday())).isoformat(), force_send=True)
     elif args.auto:
