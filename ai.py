@@ -21,10 +21,10 @@ import taxonomy as TX
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta"
 MODELS = ["gemini-3.8-flash", "gemini-flash-latest"]                 # the weekly summary
-TAG_MODELS = ["gemini-flash-lite-latest", "gemini-3.8-flash-lite", "gemini-flash-latest"]   # tagging: simple, high volume
+TAG_MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest"]   # tagging: simple, high volume
 PACE = 6.5            # seconds between calls - keeps under the free tier's per-minute limit
 TEXT_BATCH, IMAGE_BATCH = 12, 5          # Groq accepts at most 5 images per request
-FALLBACK_AFTER = 3600                     # seconds Gemini must be failing before Groq / Cloudflare take over
+FALLBACK_AFTER = 0                     # seconds Gemini must be failing before Groq / Cloudflare take over
 AI_STATUS = os.path.join(library.DATA, "ai_status.json")
 GROQ_URL = "https://api.groq.com/openai/v1"
 GROQ_TEXT = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "meta-llama/llama-4-maverick-17b-128e-instruct"]
@@ -201,6 +201,7 @@ class Router:
     def __init__(self):
         self.st = library.load_json(AI_STATUS, {})
         self.failed = set()
+        self.gemini_retry = 0  # when Gemini fails, Groq answers for 15 minutes, then Gemini gets another try
 
     def save(self):
         library.save_json(AI_STATUS, self.st, indent=1)
@@ -214,7 +215,7 @@ class Router:
 
     def ask(self, parts, deadline, json_out=False, system=None, temperature=0.3, gemini_models=None):
         """Returns (text, provider) - text None and provider 'wait' while Gemini is down for under an hour."""
-        if key() and "gemini" not in self.failed:
+        if key() and time.time() >= self.gemini_retry:
             sub = min(deadline, time.time() + (300 if json_out else 600))
             out = ask(parts, sub, models=gemini_models, json_out=json_out, system=system, temperature=temperature)
             if out:
@@ -222,7 +223,7 @@ class Router:
                     self.st["gemini_down_since"] = None
                     self.save()
                 return out, "gemini"
-            self.failed.add("gemini")
+            self.gemini_retry = time.time() + 900
             if not self.st.get("gemini_down_since"):
                 self.st["gemini_down_since"] = datetime.now(timezone.utc).isoformat()
                 self.save()
