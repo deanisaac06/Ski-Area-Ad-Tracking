@@ -40,8 +40,8 @@ const FACETS=[
 ['ot','Offer type',TAX.offers,a=>a.ot],
 ['fl','Flight',TAX.flights,a=>a.fl?[a.fl]:[]],
 ['sn','Season',null,a=>a.sn?[a.sn]:[]],
-['pp','Pass push',['Ikon push','Epic push','Indy push','Ikon mention','Epic mention','Indy mention'],a=>a.pp||[]],
-['rp','Resort’s pass',['Ikon','Epic','Indy','None of these','Pass account'],a=>a.rp||[]]
+['pp','Pass push',['Ikon push','Epic push','Indy push','Mountain Collective push','Ikon mention','Epic mention','Indy mention','Mountain Collective mention'],a=>a.pp||[]],
+['rp','Resort’s pass',['Ikon','Epic','Indy','Mountain Collective','None of these','Pass account'],a=>a.rp||[]]
 ];
 const HAS_TAX=ADS.some(a=>a.obj||a.aud.length||a.ot.length||a.fl);
 
