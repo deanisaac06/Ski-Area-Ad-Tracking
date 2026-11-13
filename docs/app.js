@@ -6,7 +6,7 @@ const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
 const fmtDate = d => d ? MON[+d.slice(5,7)-1]+' '+(+d.slice(8,10))+', '+d.slice(0,4) : '—';
 const shortDate = d => d ? MON[+d.slice(5,7)-1]+' '+(+d.slice(8,10))+(d.slice(0,4)!==TODAY.slice(0,4)?' ’'+d.slice(2,4):'') : '—';
 const addDays=(d,n)=>{const x=new Date(d+'T00:00:00Z'); x.setUTCDate(x.getUTCDate()+n); return x.toISOString().slice(0,10);};
-const STATE={WA:'Washington',OR:'Oregon',ID:'Idaho',MT:'Montana',WY:'Wyoming',UT:'Utah',CO:'Colorado',NM:'New Mexico',AZ:'Arizona',CA:'California',NV:'Nevada',AK:'Alaska',SD:'South Dakota',MN:'Minnesota',WI:'Wisconsin',MI:'Michigan',IA:'Iowa',MO:'Missouri',IL:'Illinois',IN:'Indiana',OH:'Ohio',PA:'Pennsylvania',NY:'New York',VT:'Vermont',NH:'New Hampshire',ME:'Maine',MA:'Massachusetts',CT:'Connecticut',NJ:'New Jersey',WV:'West Virginia',VA:'Virginia',NC:'North Carolina',TN:'Tennessee',MD:'Maryland'};
+const STATE={WA:'Washington',OR:'Oregon',ID:'Idaho',MT:'Montana',WY:'Wyoming',UT:'Utah',CO:'Colorado',NM:'New Mexico',AZ:'Arizona',CA:'California',NV:'Nevada',AK:'Alaska',SD:'South Dakota',MN:'Minnesota',WI:'Wisconsin',MI:'Michigan',IA:'Iowa',MO:'Missouri',IL:'Illinois',IN:'Indiana',OH:'Ohio',PA:'Pennsylvania',NY:'New York',VT:'Vermont',NH:'New Hampshire',ME:'Maine',MA:'Massachusetts',CT:'Connecticut',NJ:'New Jersey',WV:'West Virginia',VA:'Virginia',NC:'North Carolina',TN:'Tennessee',MD:'Maryland',PASS:'Pass accounts'};
 const COLORS=['#2F6FB5','#5B8DCB','#2E8B6A','#7A9A3A','#B26B2E','#A34C7A','#C2873A','#2A9BA0','#6D6A8C','#4E6476'];
 const CC=Object.fromEntries(L.campaigns.map((c,i)=>[c,COLORS[i%COLORS.length]]));
 if(!CC.Unknown) CC.Unknown='#8895A3';
@@ -29,7 +29,7 @@ const why=a=>(a.q&&(a.q.why||a.q.msg))||'error page, blank or empty';
 let saved=new Set(); try{saved=new Set(JSON.parse(localStorage.getItem('ral-saved')||'[]'))}catch(e){}
 const persist=()=>{try{localStorage.setItem('ral-saved',JSON.stringify([...saved]))}catch(e){}};
 
-const st={folder:{t:'all'}, camp:null, d:'all', kind:'all', plat:'all', status:'all', obj:'all', aud:'all', ot:'all', fl:'all', sn:'all', sort:'new', view:'grid', open:{}};
+const st={folder:{t:'all'}, camp:null, d:'all', kind:'all', plat:'all', status:'all', obj:'all', aud:'all', ot:'all', fl:'all', sn:'all', pp:'all', rp:'all', sort:'new', view:'grid', open:{}};
 try{const p=JSON.parse(localStorage.getItem('ral-view')||'{}'); if(p.view) st.view=p.view;}catch(e){}
 
 // agency labels: [state key, label, preferred order, getter]
@@ -39,13 +39,15 @@ const FACETS=[
 ['aud','Audience',TAX.audiences,a=>a.aud],
 ['ot','Offer type',TAX.offers,a=>a.ot],
 ['fl','Flight',TAX.flights,a=>a.fl?[a.fl]:[]],
-['sn','Season',null,a=>a.sn?[a.sn]:[]]
+['sn','Season',null,a=>a.sn?[a.sn]:[]],
+['pp','Pass push',['Ikon push','Epic push','Indy push','Ikon mention','Epic mention','Indy mention'],a=>a.pp||[]],
+['rp','Resort’s pass',['Ikon','Epic','Indy','None of these','Pass account'],a=>a.rp||[]]
 ];
 const HAS_TAX=ADS.some(a=>a.obj||a.aud.length||a.ot.length||a.fl);
 
 // resort tree
 const tree={}; ADS.forEach(a=>{ (tree[a.rg]??={}); (tree[a.rg][a.s]??={}); tree[a.rg][a.s][a.n]=(tree[a.rg][a.s][a.n]||0)+1; });
-const RG=['West','Midwest','East','Canada'].filter(r=>tree[r]).concat(Object.keys(tree).filter(r=>!['West','Midwest','East','Canada'].includes(r)));
+const RG=['Passes','West','Midwest','East','Canada'].filter(r=>tree[r]).concat(Object.keys(tree).filter(r=>!['Passes','West','Midwest','East','Canada'].includes(r)));
 
 function inFolder(a,f=st.folder){
 switch(f.t){
@@ -65,7 +67,7 @@ return (!f||a.start>=f)&&(!t||a.start<=t);
 }
 function inSearch(a){
 const q=$('#q').value.trim().toLowerCase(); if(!q) return true;
-const hay=(a.n+' '+(STATE[a.s]||a.s)+' '+a.s+' '+a.copy+' '+(a.headlines||[]).join(' ')+' '+(a.cta||'')+' '+(a.offer||'')+' '+a.camp.join(' ')+' '+a.themes.join(' ')+' '+a.prices.join(' ')+' '+a.kind+' '+PN[a.p]+' '+(a.advertiser||'')+' '+(a.link||'')+' '+(a.obj||'')+' '+(FUN[a.obj]||'')+' '+a.aud.join(' ')+' '+a.ot.join(' ')+' '+(a.fl||'')+' '+(a.sn||'')+' '+(a.health||'')+(a.gone?' unavailable broken missing':'')).toLowerCase();
+const hay=(a.n+' '+(STATE[a.s]||a.s)+' '+a.s+' '+a.copy+' '+(a.headlines||[]).join(' ')+' '+(a.cta||'')+' '+(a.offer||'')+' '+a.camp.join(' ')+' '+a.themes.join(' ')+' '+a.prices.join(' ')+' '+a.kind+' '+PN[a.p]+' '+(a.advertiser||'')+' '+(a.link||'')+' '+(a.obj||'')+' '+(FUN[a.obj]||'')+' '+a.aud.join(' ')+' '+a.ot.join(' ')+' '+(a.fl||'')+' '+(a.sn||'')+' '+(a.health||'')+' '+(a.pp||[]).join(' ')+' '+(a.rp||[]).join(' ')+(a.gone?' unavailable broken missing':'')).toLowerCase();
 return q.split(/\s+/).every(w=>hay.includes(w));
 }
 // Unavailable ads live in their own bucket: hidden from normal views, shown when Status = Unavailable.
@@ -172,7 +174,7 @@ const txt=full?a.camp.join(', '):c+(a.camp.length>1?' +'+(a.camp.length-1):'');
 return `<div class="ccamp" title="${esc(a.camp.join(', '))}"><i class="dot" style="background:${CC[c]||'#999'}"></i><span>${esc(txt)}</span>${a.src==='button'?'<span class="guess">· guess</span>':''}</div>`;
 }
 function tagLine(a){
-const t=[a.obj,a.ot.find(x=>x!=='No offer'),a.aud.find(x=>x!=='General audience')].filter(Boolean);
+const t=[(a.pp||[]).find(x=>/push$/.test(x)),a.obj,a.ot.find(x=>x!=='No offer'),a.aud.find(x=>x!=='General audience')].filter(Boolean);
 return t.length?`<div class="ctag" title="${esc(t.join(' · '))}">${esc(t.join(' · '))}</div>`:'';
 }
 function qline(a){
@@ -277,7 +279,7 @@ return `<section class="pb" aria-label="Resort playbook">
 <div><span>New this week</span><b>${A.filter(a=>a.isnew).length}</b></div>
 <div><span>Unavailable</span><b>${X}</b><small>${X?'<button type="button" class="lnk" data-go="gone">Show them</button>':'every ad loaded'}</small></div>
 </div>
-${window.BUYER?BUYER(n):''}${window.PEERS&&PEERS.ok?PEERS.resort(n):''}<div class="pbtl"><h3>Timeline · follows the campaign tabs and filters below</h3><div id="tlx"></div></div>
+${window.PASSBOX?PASSBOX(n):''}${window.BUYER?BUYER(n):''}${window.PEERS&&PEERS.ok?PEERS.resort(n):''}<div class="pbtl"><h3>Timeline · follows the campaign tabs and filters below</h3><div id="tlx"></div></div>
 <div class="pbgrid">
 <div class="pbcol">
 <h3>Campaign mix</h3>
@@ -302,7 +304,7 @@ if(q.st==='fixed') return `<div class="qbox fixed"><b>Picture repaired</b><span>
 return '';
 }
 function labels(a){
-const L2=[['obj','Funnel stage',a.obj?[a.obj]:[]],['aud','Audience',a.aud],['ot','Offer type',a.ot],['fl','Flight',a.fl?[a.fl]:[]],['sn','Season',a.sn?[a.sn]:[]]].filter(x=>x[2].length);
+const L2=[['obj','Funnel stage',a.obj?[a.obj]:[]],['aud','Audience',a.aud],['ot','Offer type',a.ot],['fl','Flight',a.fl?[a.fl]:[]],['sn','Season',a.sn?[a.sn]:[]],['pp','Pass push',a.pp||[]],['rp','Resort’s pass',a.rp||[]]].filter(x=>x[2].length);
 if(!L2.length) return '';
 return `<div class="sec"><h3>Labels</h3><dl class="tags">${L2.map(([k,l,v])=>`<div><dt>${l}</dt><dd>${v.map(x=>`<button type="button" class="tagbtn" data-tk="${k}" data-tv="${esc(x)}" title="Show every ad labeled ${esc(x)}">${esc(x)}</button>`).join('')}</dd></div>`).join('')}</dl><p class="note">Click a label to see every ad with it.</p></div>`;
 }
@@ -402,7 +404,7 @@ const t=e.target.closest('.tagbtn'); if(t){ $('#drawer').close(); setF(t.dataset
 });
 $('#browseBtn').addEventListener('click',()=>{const o=!$('#side').classList.contains('open'); $('#side').classList.toggle('open',o); $('#scrim').classList.toggle('on',o); $('#browseBtn').setAttribute('aria-expanded',o);});
 $('#scrim').addEventListener('click',closeSide);
-window.RAL={go,openAd,render};
+window.RAL={go,openAd,render,setF};
 document.addEventListener('peers-ready',()=>render());
 render();
 })();
