@@ -30,6 +30,7 @@ BIWEEKLY, NO_GOOGLE_EVERY = 14, 56
 FIRST_DAYS, FIRST_GOOGLE, GOOGLE_CAP, META_CAP = 120, 30, 50, 150
 EST = {"meta": 0.03, "google": 0.06, "google_first": 0.07}  # a job's likely worst cost, for the budget check
 FAILS = os.path.join(library.DATA, "collect_fails.json")
+EMPTY = os.path.join(library.DATA, "meta_empty.json")  # {meta:slug: [days its Meta check came back empty]}
 
 
 def month_spend(today):
@@ -101,6 +102,7 @@ def run(st, now, platforms=("meta", "google"), force=False):
     """Collect whatever is due, within budget. force: re-check the weekly resorts now (manual runs)."""
     today = now.date().isoformat()
     fails = {k: v for k, v in library.load_json(FAILS, {}).items() if v == today}
+    zeros = library.load_json(EMPTY, {})
     jobs = [j for j in due(now, platforms, force) if f"{j[1]}:{j[2]['slug']}" not in fails]
     if not jobs:
         print("No collection due")
@@ -139,6 +141,17 @@ def run(st, now, platforms=("meta", "google"), force=False):
             fails[label] = today
             return {"label": label, "actor": actor, "status": "ERROR", "items": 0, "cost_usd": 0,
                     "run_id": "", "started": "", "finished": ""}
+        if info["status"] == "SUCCEEDED" and p == "meta" and not items:
+            seen = zeros.setdefault(label, [])
+            if today not in seen:
+                seen.append(today)
+            if len(seen) < 3:  # usually Facebook blocking the scraper, not a resort without ads: retry tomorrow
+                print(f"  {label}: no Meta ads returned - treated as blocked, retry tomorrow")
+                fails[label] = today
+                return info
+            items = [{"checked_empty": True}]  # empty on 3 different days: really no Meta ads now
+        elif p == "meta" and items:
+            zeros.pop(label, None)
         if info["status"] == "SUCCEEDED":
             collect.save_raw(p, r["slug"], items, today)
         else:  # half-finished: don't save it (it would end ads that are still running); retry tomorrow
@@ -149,6 +162,10 @@ def run(st, now, platforms=("meta", "google"), force=False):
         infos = list(ex.map(work, picked))
     collect.append_runs(infos)
     library.save_json(FAILS, fails, indent=1)
+    library.save_json(EMPTY, zeros, indent=1)
+    metas = [i for i in infos if i["label"].startswith("meta:") and i["status"] == "SUCCEEDED"]
+    if len(metas) >= 3 and not any(i["items"] for i in metas):
+        print("::warning::Meta returned no ads for any resort this run - Facebook is probably blocking the scraper")
     cost = sum(float(i["cost_usd"] or 0) for i in infos)
     print(f"Collected {sum(i['items'] for i in infos)} ads in {len(infos)} jobs, Apify ${cost:.2f}, "
           f"{sum(i['status'] != 'SUCCEEDED' for i in infos)} failed")
