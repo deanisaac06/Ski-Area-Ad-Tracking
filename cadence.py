@@ -30,6 +30,8 @@ BIWEEKLY, NO_GOOGLE_EVERY = 14, 56
 FIRST_DAYS, FIRST_GOOGLE, GOOGLE_CAP, META_CAP = 120, 30, 50, 150
 PASS_META_CAP = 500  # Ikon / Epic run ~300 live Meta ads; ~$0.25 a check at $0.50 per 1,000
 EST = {"meta": 0.03, "google": 0.06, "google_first": 0.07}  # a job's likely worst cost, for the budget check
+GOOGLE_BIG = 100  # Google cap for a resort whose last check came back full (see google_cap)
+ALERTS = os.path.join(library.DATA, "alerts.json")  # when the 'Meta is broken' email last went out
 FAILS = os.path.join(library.DATA, "collect_fails.json")
 EMPTY = os.path.join(library.DATA, "meta_empty.json")  # {meta:slug: [days its Meta check came back empty]}
 
@@ -99,6 +101,57 @@ def mark(st, now, platforms, fails):
             st[f"{p}_last"] = now.date().isoformat()
 
 
+def google_cap(slug, d):
+    """Ads to ask Google for: FIRST_GOOGLE on a first check, GOOGLE_CAP after that, GOOGLE_BIG when the last check
+    came back full (otherwise a busy resort loses ads, and its running ads look stopped)."""
+    if not d:
+        return FIRST_GOOGLE
+    try:
+        n = len(library.read_raw(os.path.join(library.DATA, "raw", "google", d, slug + ".json.gz")))
+    except Exception:
+        n = 0
+    return GOOGLE_BIG if n >= GOOGLE_CAP else GOOGLE_CAP
+
+
+def meta_alert(infos, today):
+    """Emails you once a day while Meta collection looks broken, and once when it works again."""
+    try:
+        metas = [i for i in infos if i["label"].startswith("meta:")]
+        if not metas:
+            return
+        good = [i for i in metas if i["status"] == "SUCCEEDED" and i["items"]]
+        errors = [i for i in metas if i["status"] != "SUCCEEDED"]
+        passes = [i for i in metas if i["label"] in ("meta:ikon-pass", "meta:epic-pass") and i["status"] == "SUCCEEDED" and not i["items"]]
+        broken = (len(metas) >= 5 and not good) or len(errors) >= max(3, len(metas) // 2) or bool(passes)
+        st = library.load_json(ALERTS, {})
+        mail = __import__("mailer").send_email
+        if broken and st.get("meta_sent") != today:
+            why = (f"{len(errors)} of {len(metas)} Meta checks failed outright" if errors else
+                   f"{len(metas) - len(good)} of {len(metas)} Meta checks came back with no ads, which usually means Facebook is blocking the scraper")
+            if passes and not errors:
+                why += " (even Ikon / Epic, which always have ads running)"
+            lines = [f"Meta collection looks broken ({today}): {why}.", "",
+                     f"Scraper in use: {collect.META_ACTOR} (META_ACTOR in collect.py)", "", "Checks this run:"]
+            lines += [f"  {i['label']}: {i['status']}, {i['items']} ads" + (f", https://console.apify.com/view/runs/{i['run_id']}" if i.get("run_id") else "") for i in metas[:12]]
+            lines += ["", "What to check:",
+                      "  1. Open one of the Apify runs above and read the end of its log (blocked? login wall? out of credit?).",
+                      "  2. Apify > Billing: is this month's usage limit or credit used up?",
+                      "  3. Try the scraper by hand on one resort in the Apify console. If Facebook blocks it, switch to another Ad Library scraper and change META_ACTOR in collect.py.",
+                      "", "Meanwhile Google collection, the site and the Monday report keep going. Meta ads still running when it's fixed are picked up then; ads that start and stop while it's down are missed.",
+                      "You get one of these a day while it stays broken, and one email when it works again."]
+            if mail("Ad tracker: Meta collection isn't working", "\n".join(lines)):
+                st["meta_sent"] = today
+            st["meta_down_since"] = st.get("meta_down_since") or today
+        elif good and not broken and st.get("meta_down_since"):
+            mail("Ad tracker: Meta collection is working again",
+                 f"Meta is back as of {today}: {len(good)} of {len(metas)} checks returned ads. It was down since {st['meta_down_since']}.")
+            st.pop("meta_down_since", None)
+            st.pop("meta_sent", None)
+        library.save_json(ALERTS, st, indent=1)
+    except Exception as e:
+        print(" Meta alert check failed:", str(e)[:150])
+
+
 def run(st, now, platforms=("meta", "google"), force=False):
     """Collect whatever is due, within budget. force: re-check the weekly resorts now (manual runs)."""
     today = now.date().isoformat()
@@ -117,7 +170,7 @@ def run(st, now, platforms=("meta", "google"), force=False):
     spent = used if used is not None else month_spend(now.date())  # Apify's own figure for this billing period
     left, picked = budget - spent, []
     for _, p, r, d in jobs:
-        est = EST["google_first" if p == "google" and not d else p]
+        est = EST["google_first" if p == "google" and not d else p] * (2 if p == "google" and d and google_cap(r["slug"], d) > GOOGLE_CAP else 1)
         if len(picked) < MAX_JOBS and est <= left:
             left -= est
             picked.append((p, r, d))
@@ -134,7 +187,7 @@ def run(st, now, platforms=("meta", "google"), force=False):
             actor, payload = collect.META_ACTOR, collect.meta_input(r, PASS_META_CAP if r.get("state") == "PASS" else META_CAP)
         else:
             since = (date.fromisoformat(d) - timedelta(days=3)) if d else (now.date() - timedelta(days=FIRST_DAYS))
-            actor, payload = collect.GOOGLE_ACTOR, collect.google_input(r, GOOGLE_CAP if d else FIRST_GOOGLE, since.isoformat())
+            actor, payload = collect.GOOGLE_ACTOR, collect.google_input(r, google_cap(r["slug"], d), since.isoformat())
         try:
             items, info = collect.run_actor(actor, payload, token, label)
         except Exception as e:
@@ -164,6 +217,7 @@ def run(st, now, platforms=("meta", "google"), force=False):
     collect.append_runs(infos)
     library.save_json(FAILS, fails, indent=1)
     library.save_json(EMPTY, zeros, indent=1)
+    meta_alert(infos, today)  # emails you when Meta collection breaks, and when it's back
     metas = [i for i in infos if i["label"].startswith("meta:") and i["status"] == "SUCCEEDED"]
     if len(metas) >= 3 and not any(i["items"] for i in metas):
         print("::warning::Meta returned no ads for any resort this run - Facebook is probably blocking the scraper")
