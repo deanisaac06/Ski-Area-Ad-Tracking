@@ -1,4 +1,4 @@
-"""AI for two jobs - Gemini (free tier) first; if Gemini has been unavailable for an hour, Groq, then
+"""AI for two jobs - Gemini (free tier) first; when it's overloaded, Groq covers for GEMINI_COOLDOWN (then Gemini again), then
 Cloudflare Workers AI (both free tiers, OpenAI-style APIs):
   tag_new_ads()  - reads each ad once (copy, or the saved image when there's no copy) and stores
                    campaign type, themes, prices, deadline, a one-line offer and anything that stands out
@@ -25,6 +25,7 @@ TAG_MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest"]   # tagging: si
 PACE = 6.5            # seconds between calls - keeps under the free tier's per-minute limit
 TEXT_BATCH, IMAGE_BATCH = 12, 5          # Groq accepts at most 5 images per request
 FALLBACK_AFTER = 0                     # seconds Gemini must be failing before Groq / Cloudflare take over
+GEMINI_COOLDOWN = 300  # after Gemini fails, Groq answers for 5 min, then Gemini gets another try
 AI_STATUS = os.path.join(library.DATA, "ai_status.json")
 GROQ_URL = "https://api.groq.com/openai/v1"
 GROQ_TEXT = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "meta-llama/llama-4-maverick-17b-128e-instruct"]
@@ -195,16 +196,23 @@ def openai_call(prov, parts, deadline, json_out=False, system=None, temperature=
 
 
 class Router:
-    """Gemini first. Once Gemini has been failing for FALLBACK_AFTER seconds (tracked across runs), Groq,
+    """Gemini first. When it fails, backups answer for GEMINI_COOLDOWN seconds, then Gemini again: Groq,
     then Cloudflare. Within one run a provider that fails isn't hammered again."""
 
     def __init__(self):
         self.st = library.load_json(AI_STATUS, {})
         self.failed = set()
-        self.gemini_retry = 0  # when Gemini fails, Groq answers for 15 minutes, then Gemini gets another try
+        self.gemini_retry = 0  # when Gemini fails, the backup answers for GEMINI_COOLDOWN, then Gemini gets another try
+        self.used = {}  # answers per provider this run, e.g. {"gemini": 30, "groq": 6}
 
     def save(self):
         library.save_json(AI_STATUS, self.st, indent=1)
+
+    def count(self, prov):
+        self.used[prov] = self.used.get(prov, 0) + 1
+
+    def split(self):
+        return " / ".join(f"{p.capitalize()} {n}" for p, n in sorted(self.used.items(), key=lambda x: -x[1])) or "none"
 
     def gemini_down_for(self):
         since = self.st.get("gemini_down_since")
@@ -214,7 +222,7 @@ class Router:
         return bool(key() or openai_provider("groq") or openai_provider("cloudflare"))
 
     def ask(self, parts, deadline, json_out=False, system=None, temperature=0.3, gemini_models=None):
-        """Returns (text, provider) - text None and provider 'wait' while Gemini is down for under an hour."""
+        """Returns (text, provider) - text None and provider 'wait' while Gemini is down for under FALLBACK_AFTER seconds."""
         if key() and time.time() >= self.gemini_retry:
             sub = min(deadline, time.time() + (300 if json_out else 600))
             out = ask(parts, sub, models=gemini_models, json_out=json_out, system=system, temperature=temperature)
@@ -222,19 +230,22 @@ class Router:
                 if self.st.get("gemini_down_since"):
                     self.st["gemini_down_since"] = None
                     self.save()
+                self.count("gemini")
                 return out, "gemini"
-            self.gemini_retry = time.time() + 900
+            self.gemini_retry = time.time() + GEMINI_COOLDOWN
+            print(f"  Gemini busy - backup answers for {GEMINI_COOLDOWN // 60} min, then Gemini again")
             if not self.st.get("gemini_down_since"):
                 self.st["gemini_down_since"] = datetime.now(timezone.utc).isoformat()
                 self.save()
         if key() and self.gemini_down_for() < FALLBACK_AFTER:
-            print(f"  Gemini unavailable for {self.gemini_down_for() / 60:.0f} min - Groq takes over after 60 min")
+            print(f"  Gemini unavailable for {self.gemini_down_for() / 60:.0f} min - waiting before using the backup")
             return None, "wait"
         for prov in ("groq", "cloudflare"):
             if prov in self.failed or not openai_provider(prov):
                 continue
             out = openai_call(prov, parts, deadline, json_out=json_out, system=system, temperature=temperature)
             if out:
+                self.count(prov)
                 return out, prov
             self.failed.add(prov)
         return None, None
@@ -320,7 +331,7 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
         calls += 1
         out, provider = rt.ask(parts, deadline, json_out=True, gemini_models=TAG_MODELS)
         if provider == "wait":
-            print("  tagging paused until Gemini is back or the 60-minute fallback kicks in")
+            print("  tagging paused until Gemini is back")
             break
         if not out:
             fails += 1
@@ -341,7 +352,7 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
                 done += 1
         library.save_json(library.TAGS, tags)
         time.sleep(PACE)
-    print(f"AI tags: tagged {done} ads in {calls} calls ({len(todo) - done} left for later runs)")
+    print(f"AI tags: tagged {done} ads in {calls} calls - answered by {rt.split()} ({len(todo) - done} left for later runs)")
     return done
 
 
