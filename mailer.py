@@ -1,6 +1,7 @@
 """Gmail sender (same setup as the Instagram tracker): SMTP_USER, SMTP_PASS and REPORT_TO (or ALERT_TO) secrets."""
 import os
 import smtplib
+import time
 import uuid
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -32,7 +33,24 @@ def send_email(subject, body, html=None, to=None, images=None):
     msg["Subject"], msg["From"], msg["To"] = subject, user, to
     msg["Message-ID"] = make_msgid(domain="ad-tracker.local")      # every email stands alone in Gmail
     msg["X-Entity-Ref-ID"] = uuid.uuid4().hex
-    with smtplib.SMTP_SSL(os.environ.get("SMTP_HOST", "smtp.gmail.com"), 465, timeout=30) as s:
-        s.login(user, pw)
-        s.sendmail(user, [a.strip() for a in to.split(",")], msg.as_string())
-    return True
+    rcpts, host, last = [a.strip() for a in to.split(",") if a.strip()], os.environ.get("SMTP_HOST") or "smtp.gmail.com", ""
+    for port in (465, 587):  # Gmail: SSL on 465; if that connection keeps dropping, STARTTLS on 587
+        for attempt in range(2):
+            stage = "connect"
+            try:
+                s = smtplib.SMTP_SSL(host, port, timeout=60) if port == 465 else smtplib.SMTP(host, port, timeout=60)
+                with s:
+                    if port != 465:
+                        s.starttls()
+                    stage = "login"
+                    s.login(user.strip(), pw.strip())
+                    stage = "send"
+                    s.sendmail(user.strip(), rcpts, msg.as_string())
+                return True
+            except smtplib.SMTPAuthenticationError:
+                raise  # wrong SMTP_USER / SMTP_PASS (Gmail needs an app password) - retrying won't help
+            except OSError as e:  # dropped connection, timeout, refused...
+                last = f"port {port}, failed at {stage}: {e}"
+                print("  email:", last)
+                time.sleep(5)
+    raise RuntimeError("email not sent - " + last)
