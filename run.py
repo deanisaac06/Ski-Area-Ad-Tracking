@@ -84,7 +84,16 @@ def do_report(st, now, week, force_send=False):
         return False
     notice = None if summary else ("The AI summary is broken this week (Gemini didn't answer for 24 hours), "
                                    "so this report has the data only.")
-    report.publish(g, summary, notice)
+    try:
+        report.publish(g, summary, notice)
+    except Exception as e:  # e.g. Gmail dropping the login - the report page is saved; retry the email next run
+        library.save_json(STATUS, st, indent=1)
+        if waited < AI_WAIT_HOURS:
+            print(f"Report email failed ({str(e)[:160]}) - the page is saved in docs/reports; retrying next run "
+                  f"({waited:.0f}h of {AI_WAIT_HOURS}h)")
+            return False
+        print(f"Report email still failing after {AI_WAIT_HOURS}h ({str(e)[:160]}) - giving up for this week; "
+              "the report is on the site under docs/reports")
     st["report_week"] = week
     st["report_sent"] = now.isoformat()
     st["report_first_try"] = {}
@@ -132,7 +141,7 @@ def main():
         library.save_json(library.os.path.join(library.DATA, "backlog.json"),
                           {"checked": now.isoformat(timespec="minutes"), "tags_left": left, "tagged_this_run": tagged,
                            "video_notes_left": notes["left"], "video_notes_this_run": notes["done"],
-                           "catch_up": more}, indent=1)
+                           "catch_up": more, "run_id": library.os.environ.get("GITHUB_RUN_ID", "")}, indent=1)
         print(f"Backlog: {left} ads waiting for AI tags, {notes['left']} videos waiting for notes"
               + (" - starting a catch-up run next" if more else ""))
     except Exception as e:
@@ -153,7 +162,10 @@ def main():
     elif args.auto or args.tag:
         week = report_due(st, now)
         if week:
-            do_report(st, now, week)
+            try:
+                do_report(st, now, week)
+            except Exception as e:  # never let the report stop the site rebuild or the AI catch-up
+                print("Report failed:", str(e)[:300])
     library.build(now)
 
 
