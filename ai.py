@@ -28,7 +28,8 @@ BACKUP_TEXT_BATCH, BACKUP_IMAGE_BATCH = 6, 3   # smaller while Groq/Cloudflare a
 BACKUP_MAX_TOKENS = 2048                 # Groq counts max_tokens against the per-minute limit, so ask for no more than needed
 BACKUP_RETRY = 90                        # a backup that didn't answer gets another try after this many seconds
 FALLBACK_AFTER = 0                     # seconds Gemini must be failing before Groq / Cloudflare take over
-GEMINI_COOLDOWN = 300  # after Gemini fails, Groq answers for 5 min, then Gemini gets another try
+GEMINI_COOLDOWN = 300  # after Gemini fails, Groq answers for 5 min, then Gemini gets another try;
+GEMINI_COOLDOWN_MAX = 3600   # each further failure in the same run doubles the wait, up to an hour
 AI_STATUS = os.path.join(library.DATA, "ai_status.json")
 GROQ_URL = "https://api.groq.com/openai/v1"
 # Preferred Groq models, in order. Names Groq has retired are skipped automatically: each run reads Groq's live model
@@ -264,6 +265,7 @@ class Router:
         self.st = library.load_json(AI_STATUS, {})
         self.failed = {}  # provider -> time it may be tried again
         self.gemini_retry = 0  # when Gemini fails, the backup answers for GEMINI_COOLDOWN, then Gemini gets another try
+        self.gemini_fails = 0  # Gemini failures in a row this run - each one doubles the cooldown
         self.used = {}  # answers per provider this run, e.g. {"gemini": 30, "groq": 6}
 
     def save(self):
@@ -292,9 +294,12 @@ class Router:
                     self.st["gemini_down_since"] = None
                     self.save()
                 self.count("gemini")
+                self.gemini_fails = 0
                 return out, "gemini"
-            self.gemini_retry = time.time() + GEMINI_COOLDOWN
-            print(f"  Gemini busy - backup answers for {GEMINI_COOLDOWN // 60} min, then Gemini again")
+            wait = min(GEMINI_COOLDOWN_MAX, GEMINI_COOLDOWN * 2 ** self.gemini_fails)
+            self.gemini_fails += 1
+            self.gemini_retry = time.time() + wait
+            print(f"  Gemini busy - backup answers for {wait // 60} min, then Gemini again")
             if not self.st.get("gemini_down_since"):
                 self.st["gemini_down_since"] = datetime.now(timezone.utc).isoformat()
                 self.save()
