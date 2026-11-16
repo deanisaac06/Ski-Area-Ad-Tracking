@@ -24,7 +24,7 @@ MODELS = ["gemini-3.8-flash", "gemini-flash-latest"]                 # the weekl
 TAG_MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest"]   # tagging: simple, high volume
 PACE = 6.5            # seconds between calls - keeps under the free tier's per-minute limit
 TEXT_BATCH, IMAGE_BATCH = 12, 5          # Groq accepts at most 5 images per request
-BACKUP_TEXT_BATCH, BACKUP_IMAGE_BATCH = 6, 3   # smaller while Groq/Cloudflare answer: their free tier allows ~8k tokens/min
+BACKUP_TEXT_BATCH, BACKUP_IMAGE_BATCH = 6, 5   # smaller text batches while Groq/Cloudflare answer: their free tier allows ~8k tokens/min
 BACKUP_MAX_TOKENS = 2048                 # Groq counts max_tokens against the per-minute limit, so ask for no more than needed
 BACKUP_RETRY = 90                        # a backup that didn't answer gets another try after this many seconds
 FALLBACK_AFTER = 0                     # seconds Gemini must be failing before Groq / Cloudflare take over
@@ -158,6 +158,7 @@ def to_messages(parts, system):
 
 
 DEAD_MODELS = set()          # backup models that answered "does not exist" this run
+OCR_ONLY = set()             # backups that tagged image ads from OCR words, without seeing the picture
 GROQ_LIVE = None             # (text models, vision models) from Groq's live list, read once per run
 
 
@@ -213,7 +214,13 @@ def openai_call(prov, parts, deadline, json_out=False, system=None, temperature=
         return None
     url, token, text_models, vision_models = conf
     msgs, has_images = to_messages(parts, system)
-    for model in (vision_models if has_images else text_models):
+    models = vision_models if has_images else text_models
+    if has_images and not [m for m in vision_models if (prov, m) not in DEAD_MODELS]:
+        # no picture-reading model on this backup: send the words read off each picture (OCR) instead
+        msgs, has_images = to_messages([p for p in parts if "text" in p], system)
+        models = text_models
+        OCR_ONLY.add(prov)
+    for model in models:
         if time.time() > deadline - 15:
             break
         if (prov, model) in DEAD_MODELS:
@@ -309,10 +316,11 @@ class Router:
         for prov in ("groq", "cloudflare"):
             if time.time() < self.failed.get(prov, 0) or not openai_provider(prov):
                 continue
+            OCR_ONLY.discard(prov)
             out = openai_call(prov, parts, deadline, json_out=json_out, system=system, temperature=temperature)
             if out:
                 self.count(prov)
-                return out, prov
+                return out, (prov + "-ocr" if prov in OCR_ONLY else prov)
             self.failed[prov] = time.time() + BACKUP_RETRY
         return None, None
 
@@ -364,6 +372,29 @@ def keep(t, provider="gemini"):
             "aud": [x for x in (t.get("aud") or []) if x in TX.AUDIENCES][:3], "ot": [x for x in (t.get("ot") or []) if x in TX.OFFER_TYPES][:2], "src": "ai", "ai": True, "by": provider}
 
 
+OCR_CACHE = None
+
+
+def image_words(path):
+    """Words printed on a saved ad picture (Tesseract OCR; reuses vision.py's readings). Lets text-only backup
+    models tag image ads when no backup vision model is available."""
+    global OCR_CACHE
+    try:
+        import media as M
+        import vision
+        from PIL import Image
+        if OCR_CACHE is None:
+            OCR_CACHE = (library.load_json(os.path.join(library.DATA, "vision.json"), {}) or {}).get("ocr") or {}
+        with Image.open(path) as im:
+            im = M.to_rgb(im)
+            fp = M.dhash(im)
+            if fp not in OCR_CACHE:
+                OCR_CACHE[fp] = vision.read(im)
+            return (OCR_CACHE[fp] or "").strip()
+    except Exception:
+        return ""
+
+
 def tag_backlog():
     """Ads still waiting for AI tags (same rule tag_new_ads uses)."""
     ads, _ = library.build_ads()
@@ -403,7 +434,12 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
         if kind == "text":
             parts = [{"text": prompt([ad_line(a) for a in batch])}]
         else:
-            parts = [{"text": prompt([ad_line(a) + " | (image below, in this order)" for a in batch])}]
+            lines = []
+            for a in batch:
+                words = image_words(os.path.join(library.DOCS, media[a["key"]]))
+                lines.append(ad_line(a) + (f" | words on the image (OCR, may be messy): {words[:300]}" if words else "")
+                             + " | (image below, in this order)")
+            parts = [{"text": prompt(lines)}]
             for a in batch:
                 with open(os.path.join(library.DOCS, media[a["key"]]), "rb") as f:
                     parts += [{"text": f"image for k={a['key']}:"},
