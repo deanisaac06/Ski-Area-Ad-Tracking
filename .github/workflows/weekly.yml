@@ -6,10 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "auto (whatever is due), collect-meta, collect-google, collect-both, report, build"
+        description: "auto (whatever is due), collect-meta, collect-google, collect-both, report, build, tag (AI catch-up)"
         default: "auto"
 permissions:
   contents: write
+  actions: write      # lets a run start the next catch-up run when the AI backlog isn't done
 concurrency: collect
 jobs:
   run:
@@ -47,6 +48,7 @@ jobs:
             collect-both)    python run.py --collect both ;;
             report)          python run.py --report ;;
             build)           python run.py --build ;;
+            tag)             python run.py --tag ;;
             *) echo "unknown action $ACTION"; exit 1 ;;
           esac
       - name: Save data and site
@@ -59,6 +61,16 @@ jobs:
           # if another run saved in the meantime, this run's freshly built files win any conflict
           for i in 1 2 3; do git pull --rebase -X theirs --quiet && git push && exit 0; sleep 10; done
           exit 1
+      - name: Start a catch-up run if the AI backlog isn't done
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if python -c "import json,sys; sys.exit(0 if json.load(open('data/backlog.json')).get('catch_up') else 1)" 2>/dev/null; then
+            gh workflow run weekly.yml --ref "${{ github.ref_name }}" -f action=tag && echo "Catch-up run queued"
+          else
+            echo "No catch-up needed (backlog done, or no AI progress this run - the hourly schedule takes over)"
+          fi
       - name: Keep the data even if saving to the repo failed
         if: failure()
         uses: actions/upload-artifact@v4
