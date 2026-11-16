@@ -11,12 +11,13 @@ with a weekly emailed report.
 | Meta collection (active US ads per resort page, via Apify) | Mondays + Thursdays |
 | Google collection (ads shown since the last check, via Apify) | Mondays |
 | Save images to `docs/media/` (Meta links expire in ~5 days) | every run |
-| AI tags with Gemini: campaign type, offer, prices, deadline, standouts | every run, newest first |
+| AI tags with Gemini (Groq/Cloudflare while Gemini is busy): campaign type, offer, prices, deadline, standouts | every run, newest first |
+| Catch-up: if tags or video notes are still waiting and the run made progress, it queues a `tag` run (no collection, up to 200 AI calls) | right after any run; progress in `data/backlog.json` |
 | Weekly report: emailed + saved to `docs/reports/` | Mondays ~6–7am Pacific; if the AI summary fails it retries hourly and sends without it after 24h |
 | Rebuild the site data (`docs/data.js`) and spreadsheets (`data/ads_*.csv`) | every run |
 
 Run it by hand: **Actions → Ad library (weekly) → Run workflow**, with action `auto`, `collect-meta`,
-`collect-google`, `collect-both`, `report` or `build`.
+`collect-google`, `collect-both`, `report`, `build` or `tag` (clear the AI backlog without collecting).
 
 ## Files
 - `collect.py`: Apify runs, saving `data/raw/<platform>/<date>/<resort>.json.gz` and costs in `data/runs.csv`

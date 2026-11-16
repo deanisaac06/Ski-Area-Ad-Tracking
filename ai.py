@@ -24,12 +24,19 @@ MODELS = ["gemini-3.8-flash", "gemini-flash-latest"]                 # the weekl
 TAG_MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest"]   # tagging: simple, high volume
 PACE = 6.5            # seconds between calls - keeps under the free tier's per-minute limit
 TEXT_BATCH, IMAGE_BATCH = 12, 5          # Groq accepts at most 5 images per request
+BACKUP_TEXT_BATCH, BACKUP_IMAGE_BATCH = 6, 3   # smaller while Groq/Cloudflare answer: their free tier allows ~8k tokens/min
+BACKUP_MAX_TOKENS = 2048                 # Groq counts max_tokens against the per-minute limit, so ask for no more than needed
+BACKUP_RETRY = 90                        # a backup that didn't answer gets another try after this many seconds
 FALLBACK_AFTER = 0                     # seconds Gemini must be failing before Groq / Cloudflare take over
 GEMINI_COOLDOWN = 300  # after Gemini fails, Groq answers for 5 min, then Gemini gets another try
 AI_STATUS = os.path.join(library.DATA, "ai_status.json")
 GROQ_URL = "https://api.groq.com/openai/v1"
-GROQ_TEXT = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "meta-llama/llama-4-maverick-17b-128e-instruct"]
+# Preferred Groq models, in order. Names Groq has retired are skipped automatically: each run reads Groq's live model
+# list, keeps the ones below that still exist, then adds any other live models that look suitable.
+GROQ_TEXT = ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b", "qwen/qwen3-32b"]
 GROQ_VISION = ["meta-llama/llama-4-scout-17b-16e-instruct", "meta-llama/llama-4-maverick-17b-128e-instruct"]
+GROQ_SKIP = re.compile(r"whisper|tts|guard|playai|orpheus|embed|prompt-guard|safeguard|compound|allam", re.I)
+GROQ_VISION_HINT = re.compile(r"llama-4|vision|scout|maverick|-vl|vl-", re.I)
 CF_TEXT = ["@cf/meta/llama-3.3-70b-instruct-fp8-fast", "@cf/meta/llama-4-scout-17b-16e-instruct"]
 CF_VISION = ["@cf/meta/llama-4-scout-17b-16e-instruct"]
 
@@ -149,9 +156,50 @@ def to_messages(parts, system):
     return msgs + [{"role": "user", "content": content}], bool(images)
 
 
+DEAD_MODELS = set()          # backup models that answered "does not exist" this run
+GROQ_LIVE = None             # (text models, vision models) from Groq's live list, read once per run
+
+
+def groq_models():
+    """GROQ_TEXT / GROQ_VISION minus retired names, plus other live chat models as a last resort."""
+    global GROQ_LIVE
+    if GROQ_LIVE is None:
+        GROQ_LIVE = (GROQ_TEXT, GROQ_VISION)
+        try:
+            r = requests.get(f"{GROQ_URL}/models", headers={"Authorization": f"Bearer {os.environ['GROQ_API_KEY']}"}, timeout=30)
+            live = [m["id"] for m in r.json().get("data", []) if m.get("active", True)]
+            if live:
+                chat = [m for m in live if not GROQ_SKIP.search(m)]
+                text = [m for m in GROQ_TEXT if m in live] + [m for m in chat if m not in GROQ_TEXT and not GROQ_VISION_HINT.search(m)]
+                vision = [m for m in GROQ_VISION if m in live] + [m for m in chat if m not in GROQ_VISION and GROQ_VISION_HINT.search(m)]
+                gone = [m for m in GROQ_TEXT + GROQ_VISION if m not in live]
+                if gone:
+                    print(f"  Groq: retired model(s) skipped: {', '.join(gone)}")
+                GROQ_LIVE = (text[:4], vision[:3])
+                print(f"  Groq models this run - text: {', '.join(GROQ_LIVE[0]) or 'none'}; images: {', '.join(GROQ_LIVE[1]) or 'none'}")
+        except Exception as e:
+            print("  Groq: couldn't read the model list:", str(e)[:120])
+    return GROQ_LIVE
+
+
+def wait_hint(r):
+    """Seconds Groq/Cloudflare ask us to wait after a 429 (retry-after header or 'try again in 12.3s')."""
+    try:
+        if r.headers.get("retry-after"):
+            return float(r.headers["retry-after"])
+        m = re.search(r"try again in (?:(\d+)m)?([\d.]+)(ms|s)", r.text)
+        if m:
+            secs = float(m.group(2)) / (1000 if m.group(3) == "ms" else 1)
+            return secs + 60 * int(m.group(1) or 0)
+    except Exception:
+        pass
+    return 20
+
+
 def openai_provider(prov):
     if prov == "groq" and os.environ.get("GROQ_API_KEY"):
-        return f"{GROQ_URL}/chat/completions", os.environ["GROQ_API_KEY"], GROQ_TEXT, GROQ_VISION
+        text, vision = groq_models()
+        return f"{GROQ_URL}/chat/completions", os.environ["GROQ_API_KEY"], text, vision
     acct, tok = os.environ.get("CLOUDFLARE_ACCOUNT_ID"), os.environ.get("CLOUDFLARE_API_TOKEN")
     if prov == "cloudflare" and acct and tok:
         return (f"https://api.cloudflare.com/client/v4/accounts/{acct}/ai/v1/chat/completions", tok, CF_TEXT, CF_VISION)
@@ -167,10 +215,13 @@ def openai_call(prov, parts, deadline, json_out=False, system=None, temperature=
     for model in (vision_models if has_images else text_models):
         if time.time() > deadline - 15:
             break
-        body = {"model": model, "messages": msgs, "temperature": temperature, "max_tokens": 4096}
+        if (prov, model) in DEAD_MODELS:
+            continue
+        body = {"model": model, "messages": msgs, "temperature": temperature,
+                "max_tokens": BACKUP_MAX_TOKENS if json_out else 4096}
         if json_out and prov == "groq":
             body["response_format"] = {"type": "json_object"}
-        for attempt in range(2):
+        for attempt in range(4):
             try:
                 r = requests.post(url, headers={"Authorization": f"Bearer {token}"}, json=body,
                                   timeout=max(20, min(120, deadline - time.time())))
@@ -180,9 +231,19 @@ def openai_call(prov, parts, deadline, json_out=False, system=None, temperature=
             if r.status_code == 400 and "response_format" in body:
                 body.pop("response_format")
                 continue
-            if r.status_code in (429, 500, 503) and attempt == 0 and time.time() + 30 < deadline:
-                print(f"  {prov} {model}: busy (HTTP {r.status_code}), retrying in 20s")
-                time.sleep(20)
+            if r.status_code == 404 or (r.status_code == 400 and "decommissioned" in r.text):
+                DEAD_MODELS.add((prov, model))
+                print(f"  {prov} {model}: no longer available - skipped for the rest of the run")
+                break
+            if r.status_code == 413 or (r.status_code == 429 and "tokens per day" in r.text.lower()):
+                print(f"  {prov} {model}: HTTP {r.status_code} (request too big or daily limit) - next model")
+                break
+            if r.status_code in (429, 500, 503) and attempt < 3:
+                wait = min(65, max(5, wait_hint(r) + 1)) if r.status_code == 429 else 20
+                if time.time() + wait + 30 > deadline:
+                    break
+                print(f"  {prov} {model}: busy (HTTP {r.status_code}), retrying in {wait:.0f}s")
+                time.sleep(wait)
                 continue
             try:
                 text = (r.json()["choices"][0]["message"].get("content") or "").strip()
@@ -201,7 +262,7 @@ class Router:
 
     def __init__(self):
         self.st = library.load_json(AI_STATUS, {})
-        self.failed = set()
+        self.failed = {}  # provider -> time it may be tried again
         self.gemini_retry = 0  # when Gemini fails, the backup answers for GEMINI_COOLDOWN, then Gemini gets another try
         self.used = {}  # answers per provider this run, e.g. {"gemini": 30, "groq": 6}
 
@@ -241,14 +302,18 @@ class Router:
             print(f"  Gemini unavailable for {self.gemini_down_for() / 60:.0f} min - waiting before using the backup")
             return None, "wait"
         for prov in ("groq", "cloudflare"):
-            if prov in self.failed or not openai_provider(prov):
+            if time.time() < self.failed.get(prov, 0) or not openai_provider(prov):
                 continue
             out = openai_call(prov, parts, deadline, json_out=json_out, system=system, temperature=temperature)
             if out:
                 self.count(prov)
                 return out, prov
-            self.failed.add(prov)
+            self.failed[prov] = time.time() + BACKUP_RETRY
         return None, None
+
+    def on_backup(self):
+        """True while Gemini is cooling down and a backup is answering - tagging uses smaller batches then."""
+        return bool(key()) and time.time() < self.gemini_retry or not key()
 
 
 ROUTER = None
@@ -294,6 +359,14 @@ def keep(t, provider="gemini"):
             "aud": [x for x in (t.get("aud") or []) if x in TX.AUDIENCES][:3], "ot": [x for x in (t.get("ot") or []) if x in TX.OFFER_TYPES][:2], "src": "ai", "ai": True, "by": provider}
 
 
+def tag_backlog():
+    """Ads still waiting for AI tags (same rule tag_new_ads uses)."""
+    ads, _ = library.build_ads()
+    tags = library.load_json(library.TAGS, {})
+    media = library.load_json(library.MEDIA, {})
+    return sum(1 for k, a in ads.items() if k not in tags and (a.get("title") or a.get("body") or k in media))
+
+
 def tag_new_ads(max_calls=60, max_seconds=1200):
     rt = router()
     if not rt.any_provider():
@@ -307,19 +380,21 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
     has_text = lambda a: a.get("title") or a.get("body")
     todo = [a for k, a in ads.items() if k not in tags and (has_text(a) or k in media)]
     todo.sort(key=lambda a: a.get("start") or "", reverse=True)          # newest first
-    text_ads = [a for a in todo if has_text(a)]
-    img_ads = [a for a in todo if not has_text(a)]
-    batches = [("text", text_ads[i:i + TEXT_BATCH]) for i in range(0, len(text_ads), TEXT_BATCH)] + \
-              [("image", img_ads[i:i + IMAGE_BATCH]) for i in range(0, len(img_ads), IMAGE_BATCH)]
-    print(f"AI tags: {len(todo)} ads to tag ({len(text_ads)} with copy, {len(img_ads)} image-only), {len(batches)} calls")
+    queues = {"text": [a for a in todo if has_text(a)], "image": [a for a in todo if not has_text(a)]}
+    print(f"AI tags: {len(todo)} ads to tag ({len(queues['text'])} with copy, {len(queues['image'])} image-only), "
+          f"up to {max_calls} calls this run")
     year = int(time.strftime("%Y"))
     prompt = lambda lines: TAG_PROMPT.format(campaigns=", ".join(library.CAMPAIGNS), themes=", ".join(library.THEMES),
                                              year=year, next_year=year + 1, audiences=", ".join(TX.AUDIENCES), offer_types=", ".join(TX.OFFER_TYPES), ads="\n".join(lines))
     deadline = time.time() + max_seconds
     done, calls, fails = 0, 0, 0
-    for kind, batch in batches:
+    while queues["text"] or queues["image"]:
         if calls >= max_calls or time.time() > deadline - 60:
             break
+        kind = "text" if queues["text"] else "image"
+        backup = rt.on_backup()          # Gemini resting -> Groq/Cloudflare, which need smaller requests
+        size = {"text": BACKUP_TEXT_BATCH if backup else TEXT_BATCH, "image": BACKUP_IMAGE_BATCH if backup else IMAGE_BATCH}[kind]
+        batch = queues[kind][:size]
         if kind == "text":
             parts = [{"text": prompt([ad_line(a) for a in batch])}]
         else:
@@ -335,24 +410,35 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
             break
         if not out:
             fails += 1
-            if fails >= 2:
-                print("  tagging stopped - no AI provider answering; the rest wait for the next run")
+            if fails >= 4:
+                print("  tagging stopped - no AI provider answered 4 times in a row; the rest wait for the next run")
                 break
+            pause = min(90, 30 * fails)
+            if time.time() + pause > deadline - 60:
+                break
+            print(f"  no AI answered - waiting {pause}s, then trying again")
+            time.sleep(pause)
             continue
         fails = 0
         try:
             got = parse(out)
         except Exception as e:
             print(f"  couldn't read {provider}'s answer:", str(e)[:100])
+            queues[kind] = queues[kind][len(batch):] + batch   # try these again later, don't loop on them
             continue
         wanted = {a["key"] for a in batch}
         for t in got:
             if t["k"] in wanted:
+                done += t["k"] not in tags
                 tags[t["k"]] = keep(t, provider)
-                done += 1
+        queues[kind] = [a for a in queues[kind] if a["key"] not in tags]
+        missed = [a for a in batch if a["key"] not in tags]
+        if missed:                                         # answer skipped some: move them to the back
+            queues[kind] = [a for a in queues[kind] if a not in missed] + missed
         library.save_json(library.TAGS, tags)
         time.sleep(PACE)
-    print(f"AI tags: tagged {done} ads in {calls} calls - answered by {rt.split()} ({len(todo) - done} left for later runs)")
+    left = len(queues["text"]) + len(queues["image"])
+    print(f"AI tags: tagged {done} ads in {calls} calls - answered by {rt.split()} ({left} left for later runs)")
     return done
 
 

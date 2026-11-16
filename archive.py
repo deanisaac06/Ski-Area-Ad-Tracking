@@ -200,6 +200,9 @@ def parse_note(text):
         return {}
 
 
+NOTES = {"done": 0, "left": 0}   # this run's video-note progress, read by run.py
+
+
 def save_notes(ads, arc, fails, until, max_calls=30):
     import ai
     if not ai.key():
@@ -260,6 +263,7 @@ def save_notes(ads, arc, fails, until, max_calls=30):
             fails["n" + k] = fails.get("n" + k, 0) + 1
             misses += 1
         time.sleep(ai.PACE)
+    NOTES.update(done=done, left=max(0, len(todo) - done))
     print(f"Archive: described {done} videos in {calls} AI calls")
 
 
@@ -412,7 +416,7 @@ def report_health(ads):
             fh.write(line + "\n")
 
 
-def run(max_seconds=900):
+def run(max_seconds=900, note_calls=30):
     t0 = time.time()
     ads, _ = library.build_ads()
     for k, a in ads.items():
@@ -422,7 +426,7 @@ def run(max_seconds=900):
     ph = library.load_json(media.PHASH, {})
     steps = (("frames", lambda u: save_frames(ads, arc, fails, u), 0.1),
              ("cards", lambda u: save_cards(ads, arc, fails, ph, u), 0.3),
-             ("notes", lambda u: save_notes(ads, arc, fails, u), 0.6),
+             ("notes", lambda u: save_notes(ads, arc, fails, u, max_calls=note_calls), 0.6),
              ("landing", lambda u: save_landing(ads, arc, fails, u), 1.0))
     for name, fn, share in steps:
         try:

@@ -5,15 +5,18 @@ Each run works out what's due and does only that, so a late or skipped GitHub ru
   Google collection   Mondays (from 12:00 UTC); also if 8+ days have passed. Only ads shown since the
                       last check, so it's cheap.
   Images              every run, for any ad without a saved image (Meta links expire in ~5 days)
-  AI tags             every run, up to 60 Gemini calls, newest ads first
+  AI tags             every run, up to 60 AI calls, newest ads first (Gemini; Groq/Cloudflare while it's busy)
+  Catch-up            when a run leaves AI tags or video notes waiting and made progress, it starts a "tag" run
+                      (no collection, up to 200 AI calls) straight after - see data/backlog.json
   Weekly report       Mondays from 14:00 UTC (~6-7am Pacific), after Monday's collection. If the AI summary
                       fails it tries again every hour; after 24 hours it sends without it, with a note.
   Site data           rebuilt at the end of every run
 
 State lives in data/status.json.
-Run:  python run.py --auto | --collect | --report | --build
+Run:  python run.py --auto | --collect | --report | --build | --tag
 """
 import argparse
+import json
 from datetime import date, datetime, timedelta, timezone
 
 import ai
@@ -95,6 +98,7 @@ def main():
     ap.add_argument("--collect", choices=["meta", "google", "both"], help="collect now")
     ap.add_argument("--report", action="store_true", help="build and send the report now")
     ap.add_argument("--build", action="store_true", help="just save images, tag and rebuild the site")
+    ap.add_argument("--tag", action="store_true", help="catch-up: no collection, a long AI tagging session, then rebuild")
     args = ap.parse_args()
     now = datetime.now(timezone.utc)
     st = library.load_json(STATUS, {})
@@ -114,7 +118,25 @@ def main():
         print("No collection due")
 
     media.run()                      # before tagging: image-only ads are tagged from their saved image
-    ai.tag_new_ads(); __import__("archive").run()  # frames, every card/version, AI video notes, landing pages
+    arch = __import__("archive")
+    if args.tag:                     # catch-up run: most of the job's time goes to the AI backlog
+        tagged = ai.tag_new_ads(max_calls=200, max_seconds=3600)
+        arch.run(max_seconds=1800, note_calls=60)
+    else:
+        tagged = ai.tag_new_ads()
+        arch.run()                   # frames, every card/version, AI video notes, landing pages
+    try:
+        left = ai.tag_backlog()
+        notes = arch.NOTES
+        more = (left > 0 and tagged >= 5) or (notes["left"] > 0 and notes["done"] >= 3)
+        library.save_json(library.os.path.join(library.DATA, "backlog.json"),
+                          {"checked": now.isoformat(timespec="minutes"), "tags_left": left, "tagged_this_run": tagged,
+                           "video_notes_left": notes["left"], "video_notes_this_run": notes["done"],
+                           "catch_up": more}, indent=1)
+        print(f"Backlog: {left} ads waiting for AI tags, {notes['left']} videos waiting for notes"
+              + (" - starting a catch-up run next" if more else ""))
+    except Exception as e:
+        print("Backlog check failed:", str(e)[:200])
 
     try:
         __import__("quality").run()  # ad health check: repair broken ads or set them aside as unavailable
@@ -128,7 +150,7 @@ def main():
 
     if args.report:
         do_report(st, now, (now.date() - timedelta(days=now.weekday())).isoformat(), force_send=True)
-    elif args.auto:
+    elif args.auto or args.tag:
         week = report_due(st, now)
         if week:
             do_report(st, now, week)
