@@ -313,7 +313,9 @@ class Router:
         if key() and self.gemini_down_for() < FALLBACK_AFTER:
             print(f"  Gemini unavailable for {self.gemini_down_for() / 60:.0f} min - waiting before using the backup")
             return None, "wait"
-        for prov in ("groq", "cloudflare"):
+        # pictures: Cloudflare first (its model sees the image; Groq has no picture model now and reads OCR words)
+        order = ("cloudflare", "groq") if any("inline_data" in p for p in parts) else ("groq", "cloudflare")
+        for prov in order:
             if time.time() < self.failed.get(prov, 0) or not openai_provider(prov):
                 continue
             OCR_ONLY.discard(prov)
