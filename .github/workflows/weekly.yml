@@ -62,11 +62,11 @@ jobs:
           for i in 1 2 3; do git pull --rebase -X theirs --quiet && git push && exit 0; sleep 10; done
           exit 1
       - name: Start a catch-up run if the AI backlog isn't done
-        if: success()
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if python -c "import json,sys; sys.exit(0 if json.load(open('data/backlog.json')).get('catch_up') else 1)" 2>/dev/null; then
+          if python -c "import json,os,sys; b=json.load(open('data/backlog.json')); sys.exit(0 if b.get('catch_up') and b.get('run_id') == os.environ['GITHUB_RUN_ID'] else 1)" 2>/dev/null; then
             gh workflow run weekly.yml --ref "${{ github.ref_name }}" -f action=tag && echo "Catch-up run queued"
           else
             echo "No catch-up needed (backlog done, or no AI progress this run - the hourly schedule takes over)"
