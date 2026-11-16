@@ -1,6 +1,9 @@
 {
- "meta_last": "2026-11-14",
- "google_last": "2026-11-14",
+ "meta_last": "2026-11-16",
+ "google_last": "2026-11-16",
  "report_week": "2026-11-09",
- "note": "pilot collected Nov 10 (Google: latest 50 ads per resort). First report Mon Nov 16."
+ "note": "pilot collected Nov 10 (Google: latest 50 ads per resort). First report Mon Nov 16.",
+ "report_first_try": {
+  "2026-11-16": "2026-11-16T17:27:47.807921+00:00"
+ }
 }
