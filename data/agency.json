@@ -3076,10 +3076,23 @@
  },
  "ikon-pass": {
   "known": {
-   "AR03789125014452699137": "IKON Pass, Inc."
+   "AR03789125014452699137": "IKON Pass, Inc.",
+   "AR13204530399230820353": "Dundee Base Camp, LLC"
   },
   "current": "AR03789125014452699137",
-  "changes": []
+  "changes": [
+   {
+    "date": "2026-11-21",
+    "from": "IKON Pass, Inc.",
+    "from_kind": "resort",
+    "to": "Dundee Base Camp, LLC",
+    "to_kind": "other",
+    "ads": 1,
+    "first": "2026-09-24",
+    "url": "https://adstransparency.google.com/advertiser/AR13204530399230820353/creative/CR17830161635302440961",
+    "still": true
+   }
+  ]
  },
  "epic-pass": {
   "known": {
