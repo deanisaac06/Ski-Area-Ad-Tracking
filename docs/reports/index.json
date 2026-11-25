@@ -30,5 +30,13 @@
   "new": 0,
   "ended": 0,
   "ai": true
+ },
+ {
+  "date": "2026-11-25",
+  "since": "2026-11-24",
+  "file": "reports/2026-11-25.html",
+  "new": 32,
+  "ended": 0,
+  "ai": true
  }
 ]
