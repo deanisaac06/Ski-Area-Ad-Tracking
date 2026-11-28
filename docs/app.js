@@ -290,7 +290,7 @@ ${window.PASSBOX?PASSBOX(n):''}${window.BUYER?BUYER(n):''}${window.PEERS&&PEERS.
 <div class="pbcol">
 <h3>What it does</h3><ul class="reads">${reads.map(x=>`<li>${x}</li>`).join('')}</ul>
 ${top?`<h3>Top-scoring live ad</h3><button class="topad" data-id="${top.key}"><div class="mini">${top.img?`<img src="${esc(top.img)}" alt="">`:''}</div><div style="min-width:0"><div style="font-weight:600">${esc(top.camp[0])} · ${PN[top.p]} ${esc(top.kind)}</div><div class="note">${shortDate(top.start)} · ${top.days||0}d live${top.offer?' · '+esc(top.offer):''}</div></div>${perf(top)}</button>`:''}
-${r.domain?`<h3>Links</h3><div class="legend"><a href="https://${esc(r.domain)}" target="_blank" rel="noopener">${esc(r.domain)}</a>${r.meta_page_id?` · <a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id=${esc(r.meta_page_id)}" target="_blank" rel="noopener">Meta Ad Library</a>`:''} · <a href="https://adstransparency.google.com/?domain=${esc(r.domain)}&region=US" target="_blank" rel="noopener">Google Transparency</a></div>`:''}
+${r.domain?`<h3>Links</h3><div class="legend"><a href="https://${esc(r.domain)}" target="_blank" rel="noopener">${esc(r.domain)}</a>${r.meta_page_id?` · <a href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id=${esc(String(r.meta_page_id).split(';')[0])}" target="_blank" rel="noopener">Meta Ad Library</a>`:''} · <a href="https://adstransparency.google.com/?domain=${esc(r.domain)}&region=US" target="_blank" rel="noopener">Google Transparency</a></div>`:''}
 </div>
 </div></section>`;
 }

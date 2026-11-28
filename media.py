@@ -120,7 +120,7 @@ def save_images(ads, max_new):
         if k.startswith("_") or k in ph or not isinstance(rel, str):
             continue
         try:
-            with Image.open(os.path.join(library.DOCS, rel)) as im:
+            with Image.open(__import__("r2").local(rel)) as im:
                 ph[k] = dhash(to_rgb(im))
         except Exception:
             pass

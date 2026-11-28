@@ -194,6 +194,11 @@ def build_ads():
                     continue
                 key = f"{platform[0]}{ad['id']}"
                 old = ads.get(key)
+                if a.get("_listing") and old:
+                    # a free listing row (gfree.py): keep the details bought earlier, move the dates forward
+                    ad = dict(old, last_shown=max(old.get("last_shown") or "", ad["last_shown"] or ""),
+                              served_days=max(old.get("served_days") or 0, ad.get("served_days") or 0),
+                              advertiser=old.get("advertiser") or ad.get("advertiser"))
                 ad["first_seen"] = old["first_seen"] if old else d
                 ad["last_seen"] = d
                 ad["seen"] = (old["seen"] if old else 0) + 1; ad["v_first"] = old.get("v_first", old.get("versions")) if old else ad.get("versions")
@@ -331,6 +336,24 @@ def write_csv(path, rows, cols):
             w.writerow({k: "|".join(map(str, v)) if isinstance(v, list) else v for k, v in r.items()})
 
 
+def _to_r2(ads):
+    """Copies of the ads with every saved-media path ("media/...") swapped for its R2 address once it's there."""
+    try:
+        url = __import__("r2").url
+    except Exception:
+        return ads
+
+    def walk(v):
+        if isinstance(v, str):
+            return url(v) if v.startswith("media/") else v
+        if isinstance(v, list):
+            return [walk(x) for x in v]
+        if isinstance(v, dict):
+            return {k: walk(x) for k, x in v.items()}
+        return v
+    return [walk(a) for a in ads]
+
+
 def build(now=None):
     now = now or datetime.now(timezone.utc)
     today = now.date()
@@ -372,8 +395,12 @@ def build(now=None):
            "last_check": max(latest_run.values(), default=""), "health": __import__("archive").health(), "campaigns": CAMPAIGNS, "tax": __import__("taxonomy").LISTS,
            "resorts": resorts, "reports": reports, "ads": out}
     os.makedirs(DOCS, exist_ok=True)
+    site_ads = _to_r2(out)  # pictures and videos moved to Cloudflare R2 load from there
+    head = json.dumps(dict(lib, ads=[]), ensure_ascii=False, separators=(",", ":"))
+    # one ad per line: git stores only the lines that changed, instead of a new 15 MB line every run
+    body = ",\n".join(json.dumps(a, ensure_ascii=False, separators=(",", ":")) for a in site_ads)
     with open(os.path.join(DOCS, "data.js"), "w", encoding="utf-8") as f:
-        f.write("window.LIB=" + json.dumps(lib, ensure_ascii=False, separators=(",", ":")) + ";\n")
+        f.write("window.LIB=" + head[:-len('[]}')] + "[\n" + body + "\n]};\n")
     print(f"Library: {sum(a['p'] == 'meta' for a in out)} Meta ads ({sum(a['p'] == 'meta' and a['live'] for a in out)} live), "
           f"{sum(a['p'] == 'google' for a in out)} Google ads; {sum(1 for a in out if a['img'])} with saved images")
     return lst, out

@@ -224,7 +224,7 @@ def publish(g, summary, notice=None, send=True):
             k = "a" + a["key"]
             if k not in images:
                 try:
-                    with open(os.path.join(library.DOCS, a["img"]), "rb") as f:
+                    with open(__import__("r2").local(a["img"]) or os.path.join(library.DOCS, a["img"]), "rb") as f:
                         images[k] = f.read()
                 except OSError:
                     return ""

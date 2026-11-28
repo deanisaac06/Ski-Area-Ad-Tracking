@@ -9,8 +9,8 @@ with a weekly emailed report.
 | Step | When |
 |---|---|
 | Meta collection (active US ads per resort page, via Apify) | Mondays + Thursdays |
-| Google collection (ads shown since the last check, via Apify) | Mondays |
-| Save images to `docs/media/` (Meta links expire in ~5 days) | every run |
+| Google collection: free listing from Google's Ads Transparency Center (`gfree.py`), then Apify only for ads not already in the library | Mondays |
+| Save images to `docs/media/` (Meta links expire in ~5 days), then move them and the videos to Cloudflare R2 (`r2.py`) so the site stays under GitHub Pages' 1 GB limit | every run |
 | AI tags with Gemini (Groq/Cloudflare while Gemini is busy): campaign type, offer, prices, deadline, standouts | every run, newest first |
 | Catch-up: if tags or video notes are still waiting and the run made progress, it queues a `tag` run (no collection, up to 200 AI calls) | right after any run; progress in `data/backlog.json` |
 | Weekly report: emailed + saved to `docs/reports/` | Mondays ~6–7am Pacific; if the AI summary fails it retries hourly and sends without it after 24h |
@@ -24,6 +24,8 @@ Run it by hand: **Actions → Ad library (weekly) → Run workflow**, with actio
 - `library.py`: rebuilds every ad from the raw downloads, plus the winner score → `docs/data.js`, `data/ads_*.csv`
 - `media.py`: image copies; `ai.py`: Gemini tags and summary; `report.py`: weekly report; `mailer.py`: Gmail
 - `resorts.csv`: resorts (`pilot=yes` are tracked)
+- `meta_pages.csv`: Facebook page ids found by hand for resorts the atlas had none for (one row per page; grouped rows like Liberty / Roundtop / Whitetail list one per resort)
+- `r2.py`: moves saved videos and pictures to Cloudflare R2 (`python r2.py --status` shows how much is where)
 - `docs/index.html` + `docs/app.js`: the site
 
 ## Secrets
@@ -31,5 +33,5 @@ Run it by hand: **Actions → Ad library (weekly) → Run workflow**, with actio
 (Gmail sender, app password, recipient; same values as the Instagram tracker).
 
 ## Costs
-Apify free plan ($5/month credit): Meta is close to free. Google is about $0.002 per ad, capped at 50 per resort
-per check, and only ads shown since the last check are pulled.
+Apify free plan ($5/month credit): Meta is close to free. Google is about $0.002 per ad, and only ads the library doesn't have yet are paid for:
+the list of each resort's ads (and the last-shown dates of ones we already have) comes free from `gfree.py`.

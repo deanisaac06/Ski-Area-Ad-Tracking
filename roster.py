@@ -24,6 +24,7 @@ OUT = os.path.join(HERE, "data", "roster.csv")
 TOP_SPENDERS = 10
 PROVINCES = {"AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK", "YT", "NT"}
 PRIORITY = os.path.join(HERE, "priority.csv")
+META_PAGES = os.path.join(HERE, "meta_pages.csv")  # Facebook page ids found by hand (slug -> one or more pages)
 GROUPS = ("prospect", "benchmark", "mid", "low")
 COLS = ["slug", "resort", "state", "region", "country", "group", "priority_rank", "tier", "domain", "meta_page_id",
         "meta_every", "opportunity", "atlas_rank", "mm", "google_known", "source", "pilot", "owner", "pass"]
@@ -71,6 +72,28 @@ def priority_ranks():
                     for r in csv.DictReader(f) if r.get("resort") and str(r.get("rank") or "").strip().isdigit()}
     except FileNotFoundError:
         return {}
+
+
+def meta_pages():
+    """{slug: "id;id"} from meta_pages.csv. A row per Facebook page; a grouped roster row (e.g. Liberty / Roundtop /
+    Whitetail) lists one page per resort, and cadence.py checks them all in one Apify job."""
+    out = {}
+    try:
+        with open(META_PAGES, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                pid = (r.get("meta_page_id") or "").strip()
+                if r.get("slug") and pid.isdigit():
+                    ids = out.setdefault(r["slug"].strip(), [])
+                    if pid not in ids:
+                        ids.append(pid)
+    except FileNotFoundError:
+        pass
+    return {k: ";".join(v) for k, v in out.items()}
+
+
+def page_ids(r):
+    """The Facebook page ids for one roster row (usually one)."""
+    return [p for p in str(r.get("meta_page_id") or "").split(";") if p.strip()]
 
 
 def group_of(r, ranks):
@@ -161,6 +184,10 @@ def load():
             s = slugify(r["resort"].split("(")[0] + "-" + st)
         r["slug"] = s
         seen.add(s)
+    pages = meta_pages()
+    for r in out:  # pages found by hand fill the gaps the atlas left
+        if not r.get("meta_page_id") and pages.get(r["slug"]):
+            r["meta_page_id"] = pages[r["slug"]]
     _cache[:] = out
     try:
         os.makedirs(os.path.dirname(OUT), exist_ok=True)

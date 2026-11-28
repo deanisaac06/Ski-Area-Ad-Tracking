@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 import requests
 
 import library
+import r2
 import taxonomy as TX
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta"
@@ -438,12 +439,12 @@ def tag_new_ads(max_calls=60, max_seconds=1200):
         else:
             lines = []
             for a in batch:
-                words = image_words(os.path.join(library.DOCS, media[a["key"]]))
+                words = image_words(r2.local(media[a["key"]]) or os.path.join(library.DOCS, media[a["key"]]))
                 lines.append(ad_line(a) + (f" | words on the image (OCR, may be messy): {words[:300]}" if words else "")
                              + " | (image below, in this order)")
             parts = [{"text": prompt(lines)}]
             for a in batch:
-                with open(os.path.join(library.DOCS, media[a["key"]]), "rb") as f:
+                with open(r2.local(media[a["key"]]) or os.path.join(library.DOCS, media[a["key"]]), "rb") as f:
                     parts += [{"text": f"image for k={a['key']}:"},
                               {"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(f.read()).decode()}}]
         calls += 1

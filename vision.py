@@ -163,7 +163,7 @@ def ask_ai(batch, deadline):
     for i, (fp, path) in enumerate(batch):
         label = "p" + str(i + 1)
         labels[label] = fp
-        with open(path, "rb") as f:
+        with open(__import__("r2").local(path) or os.path.join(library.DOCS, path), "rb") as f:
             data = base64.b64encode(f.read()).decode()
         parts += [{"text": label + ":"}, {"inline_data": {"mime_type": "image/jpeg", "data": data}}]
     text, prov = ai.router().ask(parts, deadline, json_out=True, gemini_models=ai.TAG_MODELS)
@@ -185,19 +185,26 @@ def run(max_calls=MAX_CALLS, max_seconds=MAX_SECONDS):
     vs = library.load_json(VISION, {})
     fpv, bad = vs.get("fp") or {}, vs.get("bad") or {}
     rows = []
-    for k, a in ads.items():
+    import r2
+    seen_img, keep = vs.get("img") or {}, {}  # free checks cached per saved picture (path + size), so pictures
+    for k, a in ads.items():                   # moved to Cloudflare R2 aren't downloaded again every run
         rel = saved.get(k)
         if not isinstance(rel, str) or not rel:
             continue
-        path = os.path.join(library.DOCS, rel)
-        try:
-            with Image.open(path) as im:
-                im = media.to_rgb(im)
-                v, how = local(im)
-                rows.append({"k": k, "a": a, "fp": media.dhash(im), "path": path, "w": im.size[0], "h": im.size[1],
-                             "size": os.path.getsize(path), "v": v, "how": how})
-        except Exception:
-            continue
+        n = r2.size(rel)
+        c = seen_img.get(rel)
+        if not (c and c.get("size") == n and n):
+            path = r2.local(rel)
+            try:
+                with Image.open(path) as im:
+                    im = media.to_rgb(im)
+                    v, how = local(im)
+                    c = {"fp": media.dhash(im), "w": im.size[0], "h": im.size[1], "size": os.path.getsize(path), "v": v, "how": how}
+            except Exception:
+                continue
+        keep[rel] = c
+        rows.append(dict(c, k=k, a=a, path=rel))
+    vs["img"] = keep
     # pictures quality.py already found broken teach the check what placeholders look like
     for r in rows:
         rec = q.get(r["k"]) or {}
@@ -219,7 +226,7 @@ def run(max_calls=MAX_CALLS, max_seconds=MAX_SECONDS):
             if r["v"] or r["fp"] in ocr or time.time() > stop:
                 continue
             try:
-                with Image.open(r["path"]) as im:
+                with Image.open(r2.local(r["path"])) as im:
                     ocr[r["fp"]] = read(media.to_rgb(im))
                 read_n += 1
             except Exception:

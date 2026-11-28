@@ -85,9 +85,11 @@ def meta_to_old(x):
             "snapshot": snap, "source": "automation-lab"}
 
 def meta_input(resort, limit):
-    url = ("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=" + (resort.get("country") or "US")
-           + f"&media_type=all&search_type=page&view_all_page_id={resort['meta_page_id']}")
-    return {"adsLibraryUrls": [url], "maxAds": limit, "activeStatus": "active", "country": resort.get("country") or "US",
+    """One Ad Library URL per Facebook page (a grouped row like 'Liberty / Roundtop / Whitetail' has several)."""
+    urls = [("https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=" + (resort.get("country") or "US")
+             + f"&media_type=all&search_type=page&view_all_page_id={pid.strip()}")
+            for pid in str(resort["meta_page_id"]).split(";") if pid.strip()]
+    return {"adsLibraryUrls": urls, "maxAds": limit * len(urls), "activeStatus": "active", "country": resort.get("country") or "US",
             "mediaType": "all", "includeAdDetails": False}
 
 
@@ -113,7 +115,7 @@ def fetch_items(dataset_id, token):
 def reuse_runs(since, resorts, token):
     """Results of Apify runs that already finished since `since` (ISO time), keyed by (platform, slug).
     Used when a collection ran fine but its results never got saved - no need to pay for it twice."""
-    by_page = {r["meta_page_id"]: r for r in resorts if r.get("meta_page_id")}
+    by_page = {pid: r for r in resorts for pid in str(r.get("meta_page_id") or "").split(";") if pid}
     by_domain = {r["domain"]: r for r in resorts if r.get("domain")}
     runs = requests.get(f"{API}/actor-runs", params={"token": token, "desc": 1, "limit": 200}, timeout=60).json()["data"]["items"]
     found = {}
