@@ -1,7 +1,7 @@
 """Which resorts to check this run, kept inside the Apify budget (called by run.py every hour).
 
 Cadence (each resort's group comes from roster.py; days between checks in GROUPS below):
-  prospect   Meta weekly (from Monday 12:00 UTC), Google every 3 weeks
+  prospect   Meta weekly (from Monday 12:00 UTC), Google every 2 weeks
   benchmark  Meta every 2 weeks, Google every 4 weeks
   mid        Meta every 2 weeks, Google every 6 weeks
   low        Meta every 4 weeks, Google every 12 weeks
@@ -31,7 +31,7 @@ import roster
 
 BUDGET = float(os.environ.get("APIFY_MONTHLY_BUDGET") or 18.8)  # just under the $19 plan's limit
 MAX_JOBS = int(os.environ.get("MAX_JOBS_PER_RUN") or 60)
-GROUPS = {"prospect": (7, 21), "benchmark": (14, 28), "mid": (14, 42), "low": (28, 84)}  # (Meta, Google) days
+GROUPS = {"prospect": (7, 14), "benchmark": (14, 28), "mid": (14, 42), "low": (28, 84)}  # (Meta, Google) days
 NO_GOOGLE_EVERY = 56
 META_RESERVE = float(os.environ.get("APIFY_META_RESERVE") or 1.5)  # last $ of the budget, kept for prospects' Meta
 FIRST_DAYS, FIRST_GOOGLE, GOOGLE_CAP, META_CAP = 120, 30, 50, 150
