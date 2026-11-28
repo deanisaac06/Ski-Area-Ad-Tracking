@@ -1,11 +1,14 @@
 """Which resorts are tracked: the hand-picked ones in resorts.csv (pilot=yes) plus every ski area in the
 Ski Area Ad Atlas (docs/atlas.html, about 275 areas across the US and Canada).
 
-Each resort gets a check cadence (tier):
-  weekly    the hand-picked resorts in resorts.csv (top prospects / potential clients) plus the
-            TOP_SPENDERS biggest spenders in the atlas (estimated paid media)
-  biweekly  everyone else (every 2 weeks)
-To change one, add or edit its row in resorts.csv with pilot=yes and a tier column (weekly / biweekly).
+Each resort gets a group, which sets how often cadence.py checks it (GROUPS there):
+  prospect   resorts we might work with: the hand-picked ones in resorts.csv plus priority.csv ranks 1-PROSPECT_TOP
+  benchmark  the TOP_SPENDERS biggest spenders in the atlas and the pass accounts (Ikon, Epic, ...)
+  mid        priority.csv ranks PROSPECT_TOP+1 and below (the rest of the top 120)
+  low        everyone else
+priority.csv is the prospect ranking from the Ski Area Ad Atlas (expected agency profit). Edit it to re-rank;
+a 'state' column settles names shared by two resorts. A 'group' column in resorts.csv overrides the group.
+tier (weekly / biweekly) is kept for the report and site: weekly = prospects (Meta checked weekly).
 Used by collect.py, library.py and cadence.py. Also writes data/roster.csv so the full list is easy to see.
 """
 import csv
@@ -18,8 +21,11 @@ ATLAS = os.path.join(HERE, "docs", "atlas.html")
 OUT = os.path.join(HERE, "data", "roster.csv")
 TOP_SPENDERS = 10
 PROVINCES = {"AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK", "YT", "NT"}
-COLS = ["slug", "resort", "state", "region", "country", "tier", "domain", "meta_page_id", "opportunity",
-        "atlas_rank", "mm", "google_known", "source", "pilot", "owner", "pass"]
+PRIORITY = os.path.join(HERE, "priority.csv")
+PROSPECT_TOP = 50
+GROUPS = ("prospect", "benchmark", "mid", "low")
+COLS = ["slug", "resort", "state", "region", "country", "group", "priority_rank", "tier", "domain", "meta_page_id",
+        "opportunity", "atlas_rank", "mm", "google_known", "source", "pilot", "owner", "pass"]
 _cache = []
 
 
@@ -54,6 +60,32 @@ def atlas_rows():
         return []
 
 
+def priority_ranks():
+    """{(name key, state or ''): rank} from priority.csv."""
+    try:
+        with open(PRIORITY, newline="", encoding="utf-8") as f:
+            return {(nk(r["resort"]), (r.get("state") or "").strip()): int(r["rank"]) for r in csv.DictReader(f)
+                    if r.get("resort") and str(r.get("rank") or "").strip().isdigit()}
+    except FileNotFoundError:
+        return {}
+
+
+def group_of(r, ranks):
+    """(group, priority rank or None) for one roster row."""
+    rank = ranks.get((nk(r["resort"]), str(r.get("state") or ""))) or ranks.get((nk(r["resort"]), ""))
+    g = (r.get("group") or "").strip().lower()
+    if g not in GROUPS:
+        if r["source"] == "resorts.csv" or (rank and rank <= PROSPECT_TOP):
+            g = "prospect"
+        elif r["source"] == "pass account" or r.get("big"):
+            g = "benchmark"
+        elif rank:
+            g = "mid"
+        else:
+            g = "low"
+    return g, rank
+
+
 def load():
     """Every tracked resort: the resorts.csv columns plus tier, country, mm (est. paid media), google_known."""
     if _cache:
@@ -80,7 +112,7 @@ def load():
             r = {"resort": str(x.get("n") or "").strip(), "state": st, "domain": d,
                  "meta_page_id": str(x.get("mp") or "").strip(), "opportunity": str(x.get("op") or "")[:1],
                  "atlas_rank": str(x.get("rank") or ""), "pilot": "yes", "source": "atlas",
-                 "tier": "weekly" if key in big else "biweekly"}
+                 "tier": "weekly" if key in big else "biweekly", "big": key in big}
             if not r["resort"]:
                 continue
             out.append(r)
@@ -105,15 +137,16 @@ def load():
                             "opportunity": "", "atlas_rank": ""})
     except Exception as e:
         print(" roster: pass accounts not added:", str(e)[:120])
-    names, seen = {}, set()
+    names, seen, ranks = {}, set(), priority_ranks()
     for r in out:
         names[nk(r["resort"])] = names.get(nk(r["resort"]), 0) + 1
     for r in out:
         st = str(r.get("state") or "")
         r["region"] = r.get("region") or ("Canada" if st in PROVINCES else "West")
         r["country"] = "CA" if r["region"] == "Canada" or st in PROVINCES else "US"
-        if r["tier"] not in ("weekly", "biweekly"):
-            r["tier"] = "biweekly"
+        r["group"], rank = group_of(r, ranks)
+        r["priority_rank"] = rank or ""
+        r["tier"] = "weekly" if r["group"] == "prospect" else "biweekly"
         if r["source"] == "atlas" and names[nk(r["resort"])] > 1 and "(" not in r["resort"]:
             r["resort"] = f"{r['resort']} ({st})"  # e.g. Crystal Mountain (WA) next to Crystal Mountain (MI)
         s = r.get("slug") or slugify(r["resort"].split("(")[0])
@@ -135,5 +168,5 @@ def load():
 
 if __name__ == "__main__":
     L = load()
-    print(len(L), "resorts:", sum(r["tier"] == "weekly" for r in L), "weekly,",
+    print(len(L), "resorts:", {g: sum(r["group"] == g for r in L) for g in GROUPS},
           sum(r["country"] == "CA" for r in L), "in Canada")
