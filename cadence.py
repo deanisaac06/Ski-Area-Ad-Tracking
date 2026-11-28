@@ -89,7 +89,7 @@ def due(now, platforms=("meta", "google"), force=False):
                 continue
             d = last.get((p, r["slug"]))
             age = (today - date.fromisoformat(d)).days if d else 999
-            days = every[0] if p == "meta" else every[1]
+            days = (int(r["meta_every"]) if r.get("meta_every") else every[0]) if p == "meta" else every[1]
             if p == "google" and r.get("google_known") == "no":
                 days = max(days, NO_GOOGLE_EVERY)
             if days == 7:  # weekly: Monday's round, or any day once a check is overdue
