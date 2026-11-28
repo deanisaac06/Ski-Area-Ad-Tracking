@@ -7,8 +7,9 @@ Each resort gets a group, which sets how often cadence.py checks it (GROUPS ther
   mid        every other resort ranked in priority.csv (the rest of the top 120)
   low        everyone else
 priority.csv is the prospect ranking from the Ski Area Ad Atlas (expected agency profit). Mark or unmark
-prospect=yes to change the top group; a 'state' column settles names shared by two resorts. A 'group'
-column in resorts.csv overrides the group.
+prospect=yes to change the top group; a 'state' column settles names shared by two resorts; a
+'meta_page_id' column fills in a Facebook page the atlas didn't find. A 'group' column in resorts.csv
+overrides the group.
 tier (weekly / biweekly) is kept for the report and site: weekly = prospects (Meta checked weekly).
 Used by collect.py, library.py and cadence.py. Also writes data/roster.csv so the full list is easy to see.
 """
@@ -61,19 +62,23 @@ def atlas_rows():
 
 
 def priority_ranks():
-    """{(name key, state or ''): (rank, prospect?)} from priority.csv."""
+    """{(name key, state or ''): (rank, prospect?, meta page id)} from priority.csv."""
     try:
         with open(PRIORITY, newline="", encoding="utf-8") as f:
             return {(nk(r["resort"]), (r.get("state") or "").strip()):
-                    (int(r["rank"]), (r.get("prospect") or "").strip().lower() == "yes")
+                    (int(r["rank"]), (r.get("prospect") or "").strip().lower() == "yes",
+                     (r.get("meta_page_id") or "").strip())
                     for r in csv.DictReader(f) if r.get("resort") and str(r.get("rank") or "").strip().isdigit()}
     except FileNotFoundError:
         return {}
 
 
 def group_of(r, ranks):
-    """(group, priority rank or None) for one roster row."""
-    rank, top = ranks.get((nk(r["resort"]), str(r.get("state") or ""))) or ranks.get((nk(r["resort"]), "")) or (None, False)
+    """(group, priority rank or None) for one roster row; fills a missing Meta page id from priority.csv."""
+    rank, top, pid = (ranks.get((nk(r["resort"]), str(r.get("state") or "")))
+                      or ranks.get((nk(r["resort"]), "")) or (None, False, ""))
+    if pid and not r.get("meta_page_id"):
+        r["meta_page_id"] = pid
     g = (r.get("group") or "").strip().lower()
     if g not in GROUPS:
         if top:
