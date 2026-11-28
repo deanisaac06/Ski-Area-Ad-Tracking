@@ -1,16 +1,21 @@
 """Which resorts to check this run, kept inside the Apify budget (called by run.py every hour).
 
-Cadence (each resort's tier comes from roster.py):
-  weekly     Meta + Google every week, from Monday 12:00 UTC (any collection day once 8+ days old)
-  biweekly   Meta + Google every 2 weeks, on any collection day (Mon/Tue/Thu/Fri)
-  Google for a resort where the atlas found no Google ads: every 8 weeks, in case they start
-Each run takes the weekly resorts first, then the most overdue, then resorts never checked (best
+Cadence (each resort's group comes from roster.py; days between checks in GROUPS below):
+  prospect   Meta weekly (from Monday 12:00 UTC), Google every 3 weeks
+  benchmark  Meta every 2 weeks, Google every 4 weeks
+  mid        Meta every 2 weeks, Google every 6 weeks
+  low        Meta every 4 weeks, Google every 12 weeks
+  Google for a resort where the atlas found no Google ads: at most every 8 weeks, in case they start
+Google is spaced out because it's ~95% of the Apify bill and loses little: each check asks for every ad shown
+since the last one, so a later check catches up. Meta only shows ads that are live at that moment, so a
+missed Meta check loses ads for good - it stays frequent (and it's cheap).
+Each run takes the weekly-Meta groups first, then the most overdue, then resorts never checked (best
 prospects first), up to MAX_JOBS Apify jobs; the next hourly run carries on.
 
-Budget: a job only starts if this month's Apify spend plus the job's likely cost stays under
-APIFY_MONTHLY_BUDGET (default $18, for the $19 plan) and under the Apify account's own monthly limit.
-Whatever doesn't fit waits for the next month, weekly resorts first. A resort's first check only pulls
-Google ads shown in the last FIRST_DAYS days (max FIRST_GOOGLE) to keep the start-up cost down.
+Budget: jobs only start while this period's Apify spend plus the job's likely cost stays under
+APIFY_MONTHLY_BUDGET minus META_RESERVE; prospects' Meta checks may use the reserve too. So when credit runs
+low, everything else pauses first and prospects' Meta keeps going until the period resets. Apify's own limit (default $19 plan) always caps it.
+A resort's first check only pulls Google ads shown in the last FIRST_DAYS days (max FIRST_GOOGLE).
 A job that fails is skipped for the rest of the day (data/collect_fails.json) so it can't eat the budget.
 """
 import csv
@@ -24,12 +29,16 @@ import collect
 import library
 import roster
 
-BUDGET = float(os.environ.get("APIFY_MONTHLY_BUDGET") or 18)
+BUDGET = float(os.environ.get("APIFY_MONTHLY_BUDGET") or 18.8)  # just under the $19 plan's limit
 MAX_JOBS = int(os.environ.get("MAX_JOBS_PER_RUN") or 60)
-BIWEEKLY, NO_GOOGLE_EVERY = 14, 56
+GROUPS = {"prospect": (7, 21), "benchmark": (14, 28), "mid": (14, 42), "low": (28, 84)}  # (Meta, Google) days
+NO_GOOGLE_EVERY = 56
+META_RESERVE = float(os.environ.get("APIFY_META_RESERVE") or 1.5)  # last $ of the budget, kept for prospects' Meta
 FIRST_DAYS, FIRST_GOOGLE, GOOGLE_CAP, META_CAP = 120, 30, 50, 150
-PASS_META_CAP = 500  # Ikon / Epic run ~300 live Meta ads; ~$0.25 a check at $0.50 per 1,000
-EST = {"meta": 0.03, "google": 0.06, "google_first": 0.07}  # a job's likely worst cost, for the budget check
+PASS_META_CAP = 500  # Ikon / Epic run ~300 live Meta ads
+# A job's likely worst cost, for the budget check. Apify bills about 40% more than runs.csv logs
+# (Nov 2026: Google ~$0.0022 per ad billed), so these are set from the bill, not the log.
+EST = {"meta": 0.03, "meta_pass": 0.5, "google": 0.12, "google_first": 0.07}
 GOOGLE_BIG = 100  # Google cap for a resort whose last check came back full (see google_cap)
 ALERTS = os.path.join(library.DATA, "alerts.json")  # when the 'Meta is broken' email last went out
 FAILS = os.path.join(library.DATA, "collect_fails.json")
@@ -73,31 +82,37 @@ def due(now, platforms=("meta", "google"), force=False):
     monday = today.weekday() == 0 and now.hour >= 12
     for r in roster.load():
         weekly = r.get("tier") == "weekly"
-        rank = roster.num(r.get("atlas_rank")) or 999
+        rank = roster.num(r.get("priority_rank")) or roster.num(r.get("atlas_rank")) or 999
+        every = GROUPS.get(r.get("group"), GROUPS["low"])
         for p in platforms:
             if not (r.get("meta_page_id") if p == "meta" else r.get("domain")):
                 continue
             d = last.get((p, r["slug"]))
             age = (today - date.fromisoformat(d)).days if d else 999
+            days = every[0] if p == "meta" else every[1]
             if p == "google" and r.get("google_known") == "no":
-                ok = age >= NO_GOOGLE_EVERY
-            elif weekly:
+                days = max(days, NO_GOOGLE_EVERY)
+            if days == 7:  # weekly: Monday's round, or any day once a check is overdue
                 ok = (force and age >= 1) or (monday and age >= 5) or age >= 8
             else:
-                ok = age >= BIWEEKLY - 1
+                ok = age >= days - 1
             if ok:
-                jobs.append(((0 if weekly else 1, 0 if d else 1, -age if d else rank), p, r, d))
+                order = 1 + list(GROUPS).index(r.get("group") if r.get("group") in GROUPS else "low")
+                if weekly and p == "meta":  # weekly Meta first
+                    order = 0
+                jobs.append(((order, 0 if d else 1, -age if d else rank), p, r, d))
     jobs.sort(key=lambda j: j[0])
     return jobs
 
 
-def mark(st, now, platforms, fails):
-    """The Monday report waits (st meta_last / google_last) until every weekly resort is checked."""
+def mark(st, now, platforms, fails, paused=()):
+    """The Monday report waits (st meta_last / google_last) until every weekly resort is checked.
+    paused: platforms out of budget this period - the report goes out without waiting for them."""
     if now.weekday() == 0 and now.hour < 12:
         return
     left = [j for j in due(now, platforms) if j[2].get("tier") == "weekly" and f"{j[1]}:{j[2]['slug']}" not in fails]
     for p in platforms:
-        if not any(j[1] == p for j in left):
+        if p in paused or not any(j[1] == p for j in left):
             st[f"{p}_last"] = now.date().isoformat()
 
 
@@ -168,17 +183,27 @@ def run(st, now, platforms=("meta", "google"), force=False):
     cap, used = apify_limits(token)
     budget = min(BUDGET, cap) if cap else BUDGET
     spent = used if used is not None else month_spend(now.date())  # Apify's own figure for this billing period
-    left, picked = budget - spent, []
+    left, picked, starved = budget - spent, [], set()
     for _, p, r, d in jobs:
-        est = EST["google_first" if p == "google" and not d else p] * (2 if p == "google" and d and google_cap(r["slug"], d) > GOOGLE_CAP else 1)
-        if len(picked) < MAX_JOBS and est <= left:
+        if p == "meta":
+            est = EST["meta_pass" if r.get("state") == "PASS" else "meta"]
+        else:
+            est = EST["google_first" if not d else "google"] * (2 if d and google_cap(r["slug"], d) > GOOGLE_CAP else 1)
+        reserved = p == "meta" and r.get("group") == "prospect"  # the reserve is for prospects' Meta only
+        room = left - (0 if reserved else META_RESERVE)
+        if len(picked) < MAX_JOBS and est <= room:
             left -= est
             picked.append((p, r, d))
+        elif est > room:
+            starved.add(p)
     wait = len(jobs) - len(picked)
     print(f"Collection: {len(jobs)} jobs due ({sum(j[2].get('tier') == 'weekly' for j in jobs)} weekly), running {len(picked)}; "
-          f"Apify ${spent:.2f} used of ${budget:.2f} this month" + (f"; {wait} wait for the next run / month" if wait else ""))
+          f"Apify ${spent:.2f} used of ${budget:.2f} this period" + (f"; {wait} wait for the next run / period" if wait else "")
+          + ("; low on credit: only prospects' Meta runs until the Apify period resets" if starved else ""))
+    # a platform the budget has run out for doesn't hold up the Monday report
+    paused = tuple(p for p in starved if not any(x[0] == p for x in picked))
     if not picked:
-        return mark(st, now, platforms, fails)
+        return mark(st, now, platforms, fails, paused)
 
     def work(job):
         p, r, d = job
@@ -224,4 +249,4 @@ def run(st, now, platforms=("meta", "google"), force=False):
     cost = sum(float(i["cost_usd"] or 0) for i in infos)
     print(f"Collected {sum(i['items'] for i in infos)} ads in {len(infos)} jobs, Apify ${cost:.2f}, "
           f"{sum(i['status'] != 'SUCCEEDED' for i in infos)} failed")
-    mark(st, now, platforms, fails)
+    mark(st, now, platforms, fails, paused)
