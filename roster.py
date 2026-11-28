@@ -8,8 +8,8 @@ Each resort gets a group, which sets how often cadence.py checks it (GROUPS ther
   low        everyone else
 priority.csv is the prospect ranking from the Ski Area Ad Atlas (expected agency profit). Mark or unmark
 prospect=yes to change the top group; a 'state' column settles names shared by two resorts; a
-'meta_page_id' column fills in a Facebook page the atlas didn't find. A 'group' column in resorts.csv
-overrides the group.
+'meta_page_id' column fills in a Facebook page the atlas didn't find; 'meta_every' (days) overrides how often
+its Meta ads are checked (e.g. 14 for a heavy advertiser). A 'group' column in resorts.csv overrides the group.
 tier (weekly / biweekly) is kept for the report and site: weekly = prospects (Meta checked weekly).
 Used by collect.py, library.py and cadence.py. Also writes data/roster.csv so the full list is easy to see.
 """
@@ -26,7 +26,7 @@ PROVINCES = {"AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK", "YT", "
 PRIORITY = os.path.join(HERE, "priority.csv")
 GROUPS = ("prospect", "benchmark", "mid", "low")
 COLS = ["slug", "resort", "state", "region", "country", "group", "priority_rank", "tier", "domain", "meta_page_id",
-        "opportunity", "atlas_rank", "mm", "google_known", "source", "pilot", "owner", "pass"]
+        "meta_every", "opportunity", "atlas_rank", "mm", "google_known", "source", "pilot", "owner", "pass"]
 _cache = []
 
 
@@ -62,12 +62,12 @@ def atlas_rows():
 
 
 def priority_ranks():
-    """{(name key, state or ''): (rank, prospect?, meta page id)} from priority.csv."""
+    """{(name key, state or ''): (rank, prospect?, meta page id, Meta days override)} from priority.csv."""
     try:
         with open(PRIORITY, newline="", encoding="utf-8") as f:
             return {(nk(r["resort"]), (r.get("state") or "").strip()):
                     (int(r["rank"]), (r.get("prospect") or "").strip().lower() == "yes",
-                     (r.get("meta_page_id") or "").strip())
+                     (r.get("meta_page_id") or "").strip(), (r.get("meta_every") or "").strip())
                     for r in csv.DictReader(f) if r.get("resort") and str(r.get("rank") or "").strip().isdigit()}
     except FileNotFoundError:
         return {}
@@ -75,10 +75,11 @@ def priority_ranks():
 
 def group_of(r, ranks):
     """(group, priority rank or None) for one roster row; fills a missing Meta page id from priority.csv."""
-    rank, top, pid = (ranks.get((nk(r["resort"]), str(r.get("state") or "")))
-                      or ranks.get((nk(r["resort"]), "")) or (None, False, ""))
+    rank, top, pid, every = (ranks.get((nk(r["resort"]), str(r.get("state") or "")))
+                             or ranks.get((nk(r["resort"]), "")) or (None, False, "", ""))
     if pid and not r.get("meta_page_id"):
         r["meta_page_id"] = pid
+    r["meta_every"] = every if every.isdigit() else ""
     g = (r.get("group") or "").strip().lower()
     if g not in GROUPS:
         if top:
