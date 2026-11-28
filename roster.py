@@ -2,12 +2,13 @@
 Ski Area Ad Atlas (docs/atlas.html, about 275 areas across the US and Canada).
 
 Each resort gets a group, which sets how often cadence.py checks it (GROUPS there):
-  prospect   resorts we might work with: the hand-picked ones in resorts.csv plus priority.csv ranks 1-PROSPECT_TOP
+  prospect   the resorts marked prospect=yes in priority.csv (hand-picked top 25)
   benchmark  the TOP_SPENDERS biggest spenders in the atlas and the pass accounts (Ikon, Epic, ...)
-  mid        priority.csv ranks PROSPECT_TOP+1 and below (the rest of the top 120)
+  mid        every other resort ranked in priority.csv (the rest of the top 120)
   low        everyone else
-priority.csv is the prospect ranking from the Ski Area Ad Atlas (expected agency profit). Edit it to re-rank;
-a 'state' column settles names shared by two resorts. A 'group' column in resorts.csv overrides the group.
+priority.csv is the prospect ranking from the Ski Area Ad Atlas (expected agency profit). Mark or unmark
+prospect=yes to change the top group; a 'state' column settles names shared by two resorts. A 'group'
+column in resorts.csv overrides the group.
 tier (weekly / biweekly) is kept for the report and site: weekly = prospects (Meta checked weekly).
 Used by collect.py, library.py and cadence.py. Also writes data/roster.csv so the full list is easy to see.
 """
@@ -22,7 +23,6 @@ OUT = os.path.join(HERE, "data", "roster.csv")
 TOP_SPENDERS = 10
 PROVINCES = {"AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK", "YT", "NT"}
 PRIORITY = os.path.join(HERE, "priority.csv")
-PROSPECT_TOP = 50
 GROUPS = ("prospect", "benchmark", "mid", "low")
 COLS = ["slug", "resort", "state", "region", "country", "group", "priority_rank", "tier", "domain", "meta_page_id",
         "opportunity", "atlas_rank", "mm", "google_known", "source", "pilot", "owner", "pass"]
@@ -61,21 +61,22 @@ def atlas_rows():
 
 
 def priority_ranks():
-    """{(name key, state or ''): rank} from priority.csv."""
+    """{(name key, state or ''): (rank, prospect?)} from priority.csv."""
     try:
         with open(PRIORITY, newline="", encoding="utf-8") as f:
-            return {(nk(r["resort"]), (r.get("state") or "").strip()): int(r["rank"]) for r in csv.DictReader(f)
-                    if r.get("resort") and str(r.get("rank") or "").strip().isdigit()}
+            return {(nk(r["resort"]), (r.get("state") or "").strip()):
+                    (int(r["rank"]), (r.get("prospect") or "").strip().lower() == "yes")
+                    for r in csv.DictReader(f) if r.get("resort") and str(r.get("rank") or "").strip().isdigit()}
     except FileNotFoundError:
         return {}
 
 
 def group_of(r, ranks):
     """(group, priority rank or None) for one roster row."""
-    rank = ranks.get((nk(r["resort"]), str(r.get("state") or ""))) or ranks.get((nk(r["resort"]), ""))
+    rank, top = ranks.get((nk(r["resort"]), str(r.get("state") or ""))) or ranks.get((nk(r["resort"]), "")) or (None, False)
     g = (r.get("group") or "").strip().lower()
     if g not in GROUPS:
-        if r["source"] == "resorts.csv" or (rank and rank <= PROSPECT_TOP):
+        if top:
             g = "prospect"
         elif r["source"] == "pass account" or r.get("big"):
             g = "benchmark"
