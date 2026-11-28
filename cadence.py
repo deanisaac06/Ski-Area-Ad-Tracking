@@ -7,7 +7,9 @@ Cadence (each resort's group comes from roster.py; days between checks in GROUPS
   low        Meta every 4 weeks, Google every 12 weeks
   Google for a resort where the atlas found no Google ads: at most every 8 weeks, in case they start
 Google is spaced out because it's ~95% of the Apify bill and loses little: each check asks for every ad shown
-since the last one, so a later check catches up. Meta only shows ads that are live at that moment, so a
+since the last one, so a later check catches up. Since Nov 2026 a Google check lists the resort's ads for free
+(gfree.py) and pays Apify only for creatives the library doesn't have yet; known ads get their last-shown date
+from the free listing. If the free listing fails, the check falls back to the paid domain search. Meta only shows ads that are live at that moment, so a
 missed Meta check loses ads for good - it stays frequent (and it's cheap).
 Each run takes the weekly-Meta groups first, then the most overdue, then resorts never checked (best
 prospects first), up to MAX_JOBS Apify jobs; the next hourly run carries on.
@@ -26,6 +28,7 @@ from datetime import date, timedelta
 import requests
 
 import collect
+import gfree
 import library
 import roster
 
@@ -128,6 +131,65 @@ def google_cap(slug, d):
     return GOOGLE_BIG if n >= GOOGLE_CAP else GOOGLE_CAP
 
 
+_KNOWN, _LOCK = {}, __import__("threading").Lock()
+
+
+def known_google(slug):
+    """Creative ids this resort's earlier Google checks already bought full details for (not free listing rows)."""
+    with _LOCK:
+        if not _KNOWN:
+            _load_known()
+        return _KNOWN.setdefault(slug, set())
+
+
+def _load_known():
+    if not _KNOWN:
+        for d, sl, path in library.raw_files("google"):
+            ids = _KNOWN.setdefault(sl, set())
+            for a in library.read_raw(path):
+                if a.get("creativeId") and not a.get("_listing"):
+                    ids.add(str(a["creativeId"]))
+        _KNOWN["_loaded"] = set()
+
+
+def google_free(r, d, since, token, label, now):
+    """A Google check that only pays for new ads: free listing, then Apify for creatives we don't have yet.
+    Returns (items, run info) like collect.run_actor; items mix paid detail rows and free listing rows."""
+    country = r.get("country") or "US"
+    listed = gfree.list_creatives(r["domain"], country)
+    recent = [x for x in listed if (x.get("lastShown") or "")[:10] >= since.isoformat()]
+    known = known_google(r["slug"])
+    new = sorted((x for x in recent if x["creativeId"] not in known), key=lambda x: x.get("firstShown") or "", reverse=True)
+    cap = FIRST_GOOGLE if not d else GOOGLE_BIG
+    buy = new[:cap]
+    stamp = now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    info = {"label": label, "actor": "gfree (free listing)", "run_id": "", "status": "SUCCEEDED", "items": 0,
+            "cost_usd": 0, "started": stamp, "finished": stamp}
+    items = []
+    if buy:
+        try:
+            got, info = collect.run_actor(collect.GOOGLE_ACTOR, gfree.details_input(buy, country), token, label)
+        except Exception as e:
+            raise gfree.ListingFailed(f"details for new ads failed: {str(e)[:120]}")
+        if info["status"] != "SUCCEEDED":
+            collect.append_runs([info])  # log what that attempt cost before the paid domain search runs
+            raise gfree.ListingFailed(f"details for new ads came back {info['status']}")
+        items = [x for x in got if isinstance(x, dict) and x.get("creativeId")]
+        if not items:
+            print(f"::warning::{label}: Apify returned no details for {len(buy)} new ads - they will be retried next check")
+    have = {str(x.get("creativeId")) for x in items}
+    # listing rows only for ads already in the library (to move their last-shown date); new ads that weren't
+    # bought this time (over the cap, or Apify failed) wait for the next check instead of showing up blank
+    items += [x for x in recent if x["creativeId"] in known and x["creativeId"] not in have]
+    with _LOCK:
+        known |= have
+    info["items"] = len(items)
+    print(f"  {label}: {len(listed)} ads listed free, {len(recent)} shown since {since}, {len(new)} new, "
+          f"paid details for {len(have)}" + (f" ({len(new) - len(buy)} more next check)" if len(new) > len(buy) else "")
+          + f", ${info['cost_usd']}")
+    return items, info
+
+
 def meta_alert(infos, today):
     """Emails you once a day while Meta collection looks broken, and once when it works again."""
     try:
@@ -186,7 +248,7 @@ def run(st, now, platforms=("meta", "google"), force=False):
     left, picked, starved = budget - spent, [], set()
     for _, p, r, d in jobs:
         if p == "meta":
-            est = EST["meta_pass" if r.get("state") == "PASS" else "meta"]
+            est = EST["meta_pass" if r.get("state") == "PASS" else "meta"] * max(1, str(r.get("meta_page_id") or "").count(";") + 1)
         else:
             est = EST["google_first" if not d else "google"] * (2 if d and google_cap(r["slug"], d) > GOOGLE_CAP else 1)
         reserved = p == "meta" and r.get("group") == "prospect"  # the reserve is for prospects' Meta only
@@ -214,7 +276,14 @@ def run(st, now, platforms=("meta", "google"), force=False):
             since = (date.fromisoformat(d) - timedelta(days=3)) if d else (now.date() - timedelta(days=FIRST_DAYS))
             actor, payload = collect.GOOGLE_ACTOR, collect.google_input(r, google_cap(r["slug"], d), since.isoformat())
         try:
-            items, info = collect.run_actor(actor, payload, token, label)
+            if p == "google":
+                try:  # free listing first; Apify only for ads the library hasn't got (gfree.py)
+                    items, info = google_free(r, d, since, token, label, now)
+                except gfree.ListingFailed as e:
+                    print(f"  {label}: free listing failed ({e}) - paid domain search instead")
+                    items, info = collect.run_actor(actor, payload, token, label)
+            else:
+                items, info = collect.run_actor(actor, payload, token, label)
         except Exception as e:
             print(f"  {label} failed: {str(e)[:200]}")
             fails[label] = today

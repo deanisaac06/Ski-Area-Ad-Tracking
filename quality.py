@@ -75,17 +75,16 @@ def inspect(im):
         return "collapsed"  # a short, mostly white strip: usually an error banner or an empty template
     return ""
 
-def sig(path):
-    try:
-        s = os.stat(path)
-        return f"{s.st_size}-{int(s.st_mtime)}"
-    except OSError:
-        return ""
+def sig(rel):
+    """The cache key for a saved picture's check: its size in bytes, on GitHub or on Cloudflare R2. (It used to
+    include the file time, which changes on every fresh checkout, so the cache never held in GitHub Actions.)"""
+    n = __import__("r2").size(rel)
+    return f"b{n}" if n else ""
 
 def check_file(rel):
-    """(problem, width, height) for a saved picture under docs/."""
+    """(problem, width, height) for a saved picture (on GitHub, or downloaded from R2)."""
     try:
-        with Image.open(os.path.join(library.DOCS, rel)) as im:
+        with Image.open(__import__("r2").local(rel)) as im:
             im = media.to_rgb(im)
             return inspect(im), im.size[0], im.size[1]
     except Exception:
@@ -121,7 +120,7 @@ def examine(k, a, rel, tags, rec, failed):
         txt_prob = ""
     out = {k2: rec[k2] for k2 in ("st", "why", "src", "d", "tries") if k2 in rec}
     if rel:
-        f = sig(os.path.join(library.DOCS, rel))
+        f = sig(rel)
         if f and rec.get("f") == f and "p" in rec:
             p, w, h = rec["p"], rec.get("w", 0), rec.get("h", 0)
         else:
@@ -182,7 +181,7 @@ def fetch(src):
     if isinstance(src, tuple) and src[0] == "frame":
         return video_frame(src[1], src[2])
     if isinstance(src, tuple):
-        with Image.open(os.path.join(library.DOCS, src[1])) as im:
+        with Image.open(__import__("r2").local(src[1])) as im:
             return media.to_rgb(im)
     r = requests.get(src, headers=media.UA, timeout=20)
     r.raise_for_status()
@@ -256,7 +255,7 @@ def run(max_fix=200):
         if fixed:
             p, w, h = check_file(media_map[k])
             out.update({"st": "fixed", "why": prob, "src": fixed, "d": out.get("d") or today, "p": p, "w": w, "h": h,
-                        "f": sig(os.path.join(library.DOCS, media_map[k]))})
+                        "f": sig(media_map[k])})
             out.pop("tries", None)
             if not has_copy(a):
                 tags.pop(k, None)  # the AI read the broken picture; let it read the new one
